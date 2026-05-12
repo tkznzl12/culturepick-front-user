@@ -1,0 +1,12 @@
+.footer {
+  max-width: var(--max-width);
+}
+.footerContent {
+  display: flex;
+  gap: 2rem;
+}
+
+.footerBottom {
+  display: flex;
+  justify-content: space-between;
+}
