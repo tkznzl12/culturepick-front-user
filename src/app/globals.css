@@ -5,6 +5,7 @@
   /* site color */
   --dark-mode-background-color: #0a0a0f;
   --dark-mode-main-font-color: #ffffff;
+  --dark-mode-content-font-color: #d1d5dc;
   --color-primary: #155dfc;
   --color-secondary: #51a2ff;
   --gradient-button: linear-gradient(90deg, #155dfc 0%, #193cb8 100%);
@@ -12,10 +13,13 @@
   --line-component-background-color: #ffffff1a;
   --line-component-font-color: #99a1af;
   --hover-point-text: #8ec5ff;
-
+  --caption-text-color: #6a7282;
+  --caption-content-color: #4a5565;
   /* text */
   --font-size-body: 0.875rem;
+  --font-size-caption: 0.75rem;
   --font-weight-body: 400;
+  --font-weight-bold: 700;
 }
 
 body {
