@@ -1,21 +1,12 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import "./reset.css";
-import Header from "@/components/layout/header";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { Metadata } from 'next';
+import { wantedSans } from '@/styles/fonts';
+import './globals.css';
+import './reset.css';
+import Header from '@/components/layout/header';
 
 export const metadata: Metadata = {
-  title: "CultruePick",
-  description: "컬처픽",
+  title: 'CultruePick',
+  description: '컬처픽',
 };
 
 export default function RootLayout({
@@ -24,9 +15,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="ko" className={wantedSans.variable}>
       <body>
-        <Header/>
+        <Header />
         {children}
       </body>
     </html>

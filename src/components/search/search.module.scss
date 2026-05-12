@@ -1,0 +1,23 @@
+.search {
+  border: 1px solid var(--line-component-border-color);
+  background-color: var(--line-component-background-color);
+  display: flex;
+  align-items: center;
+  border-radius: 50rem;
+  padding: 0.375rem 1rem;
+  height: fit-content;
+
+  input {
+    background-color: transparent;
+    border: none;
+    color: var(--line-component-font-color);
+    &:focus {
+      border: none;
+    }
+  }
+
+  button {
+    background-color: transparent;
+    border: none;
+  }
+}

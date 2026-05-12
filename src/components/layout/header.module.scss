@@ -1,0 +1,31 @@
+.navContainer {
+  display: flex;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+}
+
+.navLeft {
+  display: flex;
+  gap: 6em;
+  .logo {
+    display: block;
+    height: 2.5em;
+    img {
+      height: 100%;
+    }
+  }
+  li {
+    display: flex;
+    ul {
+      padding: 0.5rem 0.75em;
+    }
+  }
+}
+
+.navRight {
+  display: flex;
+  gap: 0.5rem;
+}
