@@ -1,0 +1,23 @@
+.commonButton {
+  color: var(--dark-mode-main-font-color);
+  border: none;
+  padding: 0.375em 0.75rem;
+  border-radius: 50rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375em;
+  height: fit-content;
+}
+
+.gradient {
+  background: var(--gradient-button);
+}
+
+.line {
+  border: 1px solid var(--line-component-border-color);
+  background-color: transparent;
+}
+
+.commonButtonIcon {
+  width: 0.875rem;
+}
