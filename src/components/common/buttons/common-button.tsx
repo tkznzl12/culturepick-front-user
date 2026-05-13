@@ -1,4 +1,4 @@
-import styles from './line-btn.module.scss';
+import styles from './common-button.module.scss';
 type ButtonProps = {
   variant: 'gradient' | 'line';
   text: string;
