@@ -1,0 +1,75 @@
+// main background
+.page {
+  min-height: 75vh;
+  overflow: hidden;
+  position: relative;
+}
+.mainBg {
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pre {
+    color: var(--dark-mode-content-font-color);
+    font-size: 1.125rem;
+    text-align: center;
+
+    margin-bottom: 2.5rem;
+  }
+}
+
+// --blue-tag-background-color: #2b7fff33;
+// --blue-tag-border-color: #2b7fff4d;
+// --blue-tag-font-color: #8ec5ff;
+.mainTag {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  border: 1px solid var(--blue-tag-border-color);
+  background-color: var(--blue-tag-background-color);
+  color: var(--blue-tag-font-color);
+  padding: 0.4rem 1rem;
+  border-radius: 50rem;
+
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 3.75rem;
+  line-height: 1.25;
+  font-weight: var(--font-weight-bold);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+
+  margin-bottom: 1.5rem;
+
+  span {
+    // font 그라데이션 설정 방법
+    background: var(--gradient-text);
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    background-clip: text;
+    color: transparent;
+
+    white-space: nowrap;
+  }
+}

@@ -1,4 +1,4 @@
-import CommonButton from '../common/buttons/line-btn';
+import CommonButton from '../common/buttons/common-button';
 import styles from './header.module.scss';
 import AiIcon from '../../assets/icons/ai-icon.svg';
 import Logo from '../../assets/logo.svg';
