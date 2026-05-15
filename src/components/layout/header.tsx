@@ -4,6 +4,7 @@ import AiIcon from '../../assets/icons/ai-icon.svg';
 import Logo from '../../assets/logo.svg';
 import SearchComponent from '../search/search';
 import { SiteRouter } from '@/data/router';
+import Image from 'next/image';
 export default function Header() {
   const headerMockData = [
     { name: '공연 홈', type: 'ALL' },
@@ -14,8 +15,8 @@ export default function Header() {
     <nav>
       <div className={styles.navContainer}>
         <div className={styles.navLeft}>
-          <span className={styles.logo}>
-            <img src={Logo.src} alt="logo" />
+          <span className={`${styles.logo} span-image`}>
+            <Image fill src={Logo.src} alt="logo" />
           </span>
           <li>
             {headerMockData.map((headerCategory, index) => (
@@ -28,7 +29,7 @@ export default function Header() {
           <CommonButton
             variant="gradient"
             text="AI 추천"
-            icon={<img src={AiIcon.src} alt="AI" />}
+            icon={<Image fill src={AiIcon.src} alt="AI" />}
           />
           <CommonButton variant="line" text="로그인" href={SiteRouter.login} />
         </div>

@@ -8,6 +8,7 @@ import MailIcon from '@/assets/icons/mail.svg';
 import CommonButton from '@/components/common/buttons/common-button';
 import Link from 'next/link';
 import { SiteRouter } from '@/data/router';
+import Image from 'next/image';
 
 export default function LoginForm() {
   // 비밀번호 보기
@@ -18,8 +19,8 @@ export default function LoginForm() {
       <div className={styles.formData}>
         <label htmlFor="id">이메일</label>
         <div className={styles.formInput}>
-          <span>
-            <img src={MailIcon.src} alt="email" />
+          <span className="span-image">
+            <Image fill src={MailIcon.src} alt="email" />
           </span>
           <input type="text" id="id" />
         </div>
@@ -27,8 +28,8 @@ export default function LoginForm() {
       <div className={styles.formData}>
         <label htmlFor="password">비밀번호</label>
         <div className={styles.formInput}>
-          <span>
-            <img src={LockIcon.src} alt="lock" />
+          <span className="span-image">
+            <Image fill src={LockIcon.src} alt="lock" />
           </span>
           <input type={showPassword ? 'text' : 'password'} id="password" />
           <button
@@ -37,9 +38,9 @@ export default function LoginForm() {
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? (
-              <img src={EyeIcon.src} alt="eye" />
+              <Image fill src={EyeIcon.src} alt="eye" />
             ) : (
-              <img src={CloseEyeIcon.src} alt="close-eye" />
+              <Image fill src={CloseEyeIcon.src} alt="close-eye" />
             )}
           </button>
         </div>

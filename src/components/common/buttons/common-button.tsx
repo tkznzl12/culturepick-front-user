@@ -31,7 +31,11 @@ export default function CommonButton({
           className={`${styles.commonButton} ${styles[variant]}`}
           {...props}
         >
-          {icon && <span className={styles.commonButtonIcon}>{icon}</span>}
+          {icon && (
+            <span className={`${styles.commonButtonIcon} span-image`}>
+              {icon}
+            </span>
+          )}
           {text}
         </button>
       )}

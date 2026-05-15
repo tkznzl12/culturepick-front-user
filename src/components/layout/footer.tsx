@@ -2,14 +2,15 @@ import styles from './footer.module.scss';
 import genreList from '../../data/ganre';
 import Logo from '../../assets/logo.svg';
 import Link from 'next/link';
+import Image from 'next/image';
 export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.footerContainer}>
         <div className={styles.footerContent}>
           <div className={styles.footerContentItem}>
-            <span>
-              <img src={Logo.src} alt="로고" />
+            <span className="span-image">
+              <Image src={Logo.src} alt="로고" fill />
             </span>
             <p>국내 모든 공연 정보를 한 곳에서.</p>
             <p> AI와 함께 나만의 공연을 찾아보세요.</p>

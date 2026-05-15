@@ -34,9 +34,6 @@
   }
 }
 
-// --blue-tag-background-color: #2b7fff33;
-// --blue-tag-border-color: #2b7fff4d;
-// --blue-tag-font-color: #8ec5ff;
 .mainTag {
   display: flex;
   gap: 0.5rem;
@@ -48,6 +45,10 @@
   border-radius: 50rem;
 
   margin-bottom: 1rem;
+  span {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
 }
 
 .title {

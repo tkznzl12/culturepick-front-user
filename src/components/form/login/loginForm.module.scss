@@ -41,10 +41,17 @@
     border: none;
     color: var(--line-component-font-color);
   }
+  span {
+    width: 0.9375rem;
+    height: 0.9375rem;
+  }
 }
 
 .showPassword {
   background-color: transparent;
   outline: none;
   border: none;
+  position: relative;
+  width: 0.9375rem;
+  height: 0.9375rem;
 }
