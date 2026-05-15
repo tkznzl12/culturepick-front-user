@@ -1,8 +1,9 @@
 import styles from './footer.module.scss';
-import genreList from '../../data/ganre';
 import Logo from '../../assets/logo.svg';
 import Link from 'next/link';
 import Image from 'next/image';
+import { genreListType } from '@/data/type';
+import { genreList } from '@/data/filterList';
 export default function Footer() {
   return (
     <footer className={styles.footer}>
@@ -18,7 +19,7 @@ export default function Footer() {
           <div className={styles.footerContentItem}>
             <p className={styles.footerContentTitle}>공연 카테고리</p>
             <div className={styles.footerContentList}>
-              {genreList.map((genre, index) => (
+              {genreList.map((genre: genreListType, index: Number) => (
                 <Link href="" key={`footer-genre-${index}`}>
                   {genre.name}
                 </Link>
@@ -28,11 +29,7 @@ export default function Footer() {
           <div className={styles.footerContentItem}>
             <p className={styles.footerContentTitle}>서비스</p>
             <div className={styles.footerContentList}>
-              {genreList.map((genre, index) => (
-                <Link href="" key={`footer-genre-${index}`}>
-                  {genre.name}
-                </Link>
-              ))}
+              <Link href="">AI 채팅</Link>
             </div>
           </div>
           <div className={styles.footerContentItem}>

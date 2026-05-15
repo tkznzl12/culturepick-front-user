@@ -1,14 +1,6 @@
 //qurey Type
-type SearchQueryProps = {
-  root: string;
-  genre?: string;
-  pageNum?: string;
-  pageSize?: string;
-  sorted?: string;
-  keyword?: string;
-  local?: string;
-  status?: string;
-};
+
+import { SearchQueryProps } from './type';
 
 export const SiteRouter = {
   //고정 path

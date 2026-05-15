@@ -55,3 +55,29 @@
   width: 0.9375rem;
   height: 0.9375rem;
 }
+
+// 회원가입
+.passwordStrength {
+  width: 100%;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.strengthBar {
+  background-color: var(--line-component-background-color);
+  height: 0.25rem;
+  flex: 1;
+  border-radius: 50rem;
+}
+
+.strong {
+  background-color: #00d492;
+}
+
+.weak {
+  background-color: #fb2c36;
+}
+
+.medium {
+  background-color: #ff8904;
+}

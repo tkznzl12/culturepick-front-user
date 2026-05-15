@@ -1,4 +1,4 @@
-.login {
+.auth {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,7 +19,7 @@
 
 .title,
 .content,
-.moveSignup {
+.moveAuth {
   text-align: center;
 }
 
@@ -45,7 +45,7 @@
   }
 }
 
-.moveSignup {
+.moveAuth {
   margin-top: 1.5rem;
   color: var(--caption-text-color);
   a {

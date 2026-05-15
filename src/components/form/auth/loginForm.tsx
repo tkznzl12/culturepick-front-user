@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import styles from './loginForm.module.scss';
+import styles from './auth-form.module.scss';
 import EyeIcon from '@/assets/icons/eye.svg';
 import CloseEyeIcon from '@/assets/icons/close-eye.svg';
 import LockIcon from '@/assets/icons/lock.svg';
