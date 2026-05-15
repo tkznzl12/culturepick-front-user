@@ -16,6 +16,9 @@
   --hover-point-text: #8ec5ff;
   --caption-text-color: #6a7282;
   --caption-content-color: #4a5565;
+
+  --input-background-color: #ffffff0d;
+  --input-border-color: #ffffff1a;
   /* text */
   --font-size-body: 0.875rem;
   --font-size-caption: 0.75rem;
@@ -39,6 +42,27 @@ body {
 
 pre {
   font-family: var(--font-wanted-sans);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: transparent !important;
+  -webkit-text-fill-color: var(--line-component-font-color) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:focus {
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
 }
 
 @media (prefers-color-scheme: dark) {

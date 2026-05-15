@@ -3,6 +3,7 @@ import styles from './header.module.scss';
 import AiIcon from '../../assets/icons/ai-icon.svg';
 import Logo from '../../assets/logo.svg';
 import SearchComponent from '../search/search';
+import { SiteRouter } from '@/data/router';
 export default function Header() {
   const headerMockData = [
     { name: '공연 홈', type: 'ALL' },
@@ -29,7 +30,7 @@ export default function Header() {
             text="AI 추천"
             icon={<img src={AiIcon.src} alt="AI" />}
           />
-          <CommonButton variant="line" text="로그인" />
+          <CommonButton variant="line" text="로그인" href={SiteRouter.login} />
         </div>
       </div>
     </nav>

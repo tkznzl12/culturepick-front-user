@@ -32,11 +32,8 @@
   background-color: transparent;
   border: none;
   color: var(--line-component-font-color);
-  width: 100%;
+  flex: 1;
   font-size: 1rem;
-  &:focus {
-    outline: none;
-  }
 }
 
 .searchButton {
