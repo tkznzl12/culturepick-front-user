@@ -6,9 +6,9 @@ import CloseEyeIcon from '@/assets/icons/close-eye.svg';
 import LockIcon from '@/assets/icons/lock.svg';
 import MailIcon from '@/assets/icons/mail.svg';
 import CommonButton from '@/components/common/buttons/common-button';
-import Link from 'next/link';
-import { SiteRouter } from '@/data/router';
+import CheckIcon from '@/assets/active-icon/check-active.svg';
 import Image from 'next/image';
+import { PasswordRuleType } from '@/data/type';
 
 export default function SignUpForm() {
   // 비밀번호 보기
@@ -22,6 +22,7 @@ export default function SignUpForm() {
     nickname: '',
   });
   // state 변경 시 재렌더링되기 때문에 useEffect 불필요
+  // 비밀번호 확인 파트
   const passwordRules = {
     length: signupData.password.length >= 8,
     english: /[A-Za-z]/.test(signupData.password),
@@ -38,8 +39,17 @@ export default function SignUpForm() {
         ? styles.medium
         : styles.weak;
 
-  const checkListText = ['8자 이상','영문'];
+  const passwordCheckList: {
+    type: PasswordRuleType;
+    label: string;
+  }[] = [
+    { type: 'length', label: '8자 이상' },
+    { type: 'english', label: '영문 포함' },
+    { type: 'number', label: '숫자 포함' },
+    { type: 'special', label: '특수문자 포함' },
+  ];
 
+  // 비밀번호 확인파트 종료
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setSignupData({ ...signupData, [id]: value });
@@ -104,17 +114,32 @@ export default function SignUpForm() {
             )}
           </button>
         </div>
-        <div className={styles.passwordStrength}>
-          {[1, 2, 3, 4].map((item) => (
-            <div
-              key={item}
-              className={`${styles.strengthBar} ${passedCount >= item ? strengthClass : ''}`}
-            />
-          ))}
-        </div>
-        <ul>
-          <li>8자이상</li>
-        </ul>
+        {signupData.password.length > 0 && (
+          <>
+            <div className={styles.passwordStrength}>
+              {[1, 2, 3, 4].map((item) => (
+                <div
+                  key={item}
+                  className={`${styles.strengthBar} ${passedCount >= item ? strengthClass : ''}`}
+                />
+              ))}
+            </div>
+            <ul className={styles.passwordChackList}>
+              {passwordCheckList.map((data) => {
+                return (
+                  <li
+                    className={`${
+                      passwordRules[data.type] ? styles.active : styles.discard
+                    }
+                     ${styles.passwordChacklabel}`}
+                  >
+                    <CheckIcon /> {data.label}
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
       </div>
       <div className={styles.formData}>
         <label htmlFor="password">비밀번호 확인</label>
@@ -140,6 +165,20 @@ export default function SignUpForm() {
             )}
           </button>
         </div>
+        {signupData.password_confirm.length > 0 &&
+          signupData.password.length > 0 && (
+            <div
+              className={`${
+                signupData.password === signupData.password_confirm
+                  ? styles.active
+                  : styles.discard
+              }
+            ${styles.passwordChacklabel}`}
+            >
+              <CheckIcon />
+              <p>비밀번호가 일치합니다.</p>
+            </div>
+          )}
       </div>
       <CommonButton variant="gradient-shadow" text="회원가입" type="submit" />
     </form>

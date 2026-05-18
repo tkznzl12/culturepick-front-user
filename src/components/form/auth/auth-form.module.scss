@@ -70,6 +70,14 @@
   border-radius: 50rem;
 }
 
+.discard {
+  color: var(--caption-text-color);
+}
+
+.active {
+  color: #00d492;
+}
+
 .strong {
   background-color: #00d492;
 }
@@ -80,4 +88,16 @@
 
 .medium {
   background-color: #ff8904;
+}
+
+.passwordChackList {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+}
+
+.passwordChacklabel {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }

@@ -14,3 +14,5 @@ export type genreListType = {
   name: string;
   code: string;
 };
+
+export type PasswordRuleType = 'length' | 'english' | 'number' | 'special';
