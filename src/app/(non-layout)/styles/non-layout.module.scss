@@ -1,0 +1,27 @@
+.nonLayout {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.gradientTop {
+  position: absolute;
+  bottom: -7.63rem;
+  right: -10.4rem;
+  width: 37.5rem;
+  height: 37.5rem;
+  border-radius: 50rem;
+  background: rgba(0, 166, 244, 0.08);
+  filter: blur(6.25rem);
+}
+
+.gradientBottom {
+  position: absolute;
+  top: -15.26rem;
+  left: -10.4rem;
+  width: 31.3rem;
+  height: 31.3rem;
+  border-radius: 50rem;
+  background: rgba(21, 93, 252, 0.1);
+  filter: blur(7.5rem);
+}
