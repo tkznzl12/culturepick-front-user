@@ -30,6 +30,30 @@
   --blue-tag-background-color: #2b7fff33;
   --blue-tag-border-color: #2b7fff4d;
   --blue-tag-font-color: #8ec5ff;
+
+  --mint-tag-background-color: #00b8db33;
+  --mint-tag-border-color: #00b8db4d;
+  --mint-tag-font-color: #53eafd;
+
+  --red-tag-background-color: #ff205633;
+  --red-tag-border-color: #ff20564d;
+  --red-tag-font-color: #ffa1ad;
+
+  --pink-tag-background-color: #f6339a33;
+  --pink-tag-border-color: #f6339a4d;
+  --pink-tag-font-color: #fda5d5;
+
+  --yellow-tag-background-color: #fe9a0033;
+  --yellow-tag-border-color: #fe9a004d;
+  --yellow-tag-font-color: #ffd230;
+
+  --gray-tag-background-color: #6a728233;
+  --gray-tag-border-color: #6a72824d;
+  --gray-tag-font-color: #d1d5dc;
+
+  --green-tag-background-color: #00bc7d33;
+  --green-tag-border-color: #00bc7d4d;
+  --green-tag-font-color: #5ee9b5;
 }
 
 body {

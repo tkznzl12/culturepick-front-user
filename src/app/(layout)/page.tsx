@@ -4,10 +4,12 @@ import { mainContent, mainTitle } from '@/data/text';
 import MainSearch from '@/components/search/mainSearch';
 import MainBg from '@/assets/mock/main-bg.png';
 import AiIconColor from '@/assets/icons/ai-icon-color.svg';
+import CardTag from '@/components/common/card/common-card-tag';
 // main페이지
 export default function Home() {
   return (
     <div className={styles.page}>
+      <CardTag tag="done" />
       <div className={styles.mainBg}>
         <Image src={MainBg.src} alt="" fill />
       </div>

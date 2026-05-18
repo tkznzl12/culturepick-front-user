@@ -16,3 +16,14 @@ export type genreListType = {
 };
 
 export type PasswordRuleType = 'length' | 'english' | 'number' | 'special';
+
+export type TagType =
+  | 'musical'
+  | 'play'
+  | 'classic'
+  | 'koreanMusic'
+  | 'concert'
+  | 'dancing'
+  | 'upcomming'
+  | 'performing'
+  | 'done';
