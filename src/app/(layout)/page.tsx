@@ -9,12 +9,12 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <div className={styles.mainBg}>
-        <img src={MainBg.src} alt="" />
+        <Image src={MainBg.src} alt="" fill />
       </div>
       <main className={styles.container}>
         <div className={styles.mainTag}>
-          <span>
-            <img src={AiIconColor.src} alt="" />
+          <span className="span-image">
+            <Image src={AiIconColor.src} alt="" fill />
           </span>
           <p>AI가 나에게 맞는 공연을 추천해드려요</p>
         </div>

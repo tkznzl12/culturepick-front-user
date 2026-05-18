@@ -1,14 +1,17 @@
 import styles from './footer.module.scss';
-import genreList from '../../data/ganre';
 import Logo from '../../assets/logo.svg';
+import Link from 'next/link';
+import Image from 'next/image';
+import { genreListType } from '@/data/type';
+import { genreList } from '@/data/filterList';
 export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.footerContainer}>
         <div className={styles.footerContent}>
           <div className={styles.footerContentItem}>
-            <span>
-              <img src={Logo.src} alt="로고" />
+            <span className="span-image">
+              <Image src={Logo.src} alt="로고" fill />
             </span>
             <p>국내 모든 공연 정보를 한 곳에서.</p>
             <p> AI와 함께 나만의 공연을 찾아보세요.</p>
@@ -16,21 +19,17 @@ export default function Footer() {
           <div className={styles.footerContentItem}>
             <p className={styles.footerContentTitle}>공연 카테고리</p>
             <div className={styles.footerContentList}>
-              {genreList.map((genre, index) => (
-                <a href="" key={`footer-genre-${index}`}>
+              {genreList.map((genre: genreListType, index: Number) => (
+                <Link href="" key={`footer-genre-${index}`}>
                   {genre.name}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
           <div className={styles.footerContentItem}>
             <p className={styles.footerContentTitle}>서비스</p>
             <div className={styles.footerContentList}>
-              {genreList.map((genre, index) => (
-                <a href="" key={`footer-genre-${index}`}>
-                  {genre.name}
-                </a>
-              ))}
+              <Link href="">AI 채팅</Link>
             </div>
           </div>
           <div className={styles.footerContentItem}>

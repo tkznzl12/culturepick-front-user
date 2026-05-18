@@ -19,6 +19,14 @@
   background-color: transparent;
 }
 
+.gradient-shadow {
+  background: var(--gradient-button);
+  box-shadow:
+    0 10px 15px -3px #1c398e4d,
+    0 4px 6px -4px #1c398e4d;
+}
+
 .commonButtonIcon {
   width: 0.875rem;
+  height: 0.875rem;
 }

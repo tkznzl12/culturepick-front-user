@@ -14,13 +14,12 @@
   .logo {
     display: block;
     height: 2.5em;
-    img {
-      height: 100%;
-    }
+    width: 4rem;
   }
   li {
     display: flex;
-    ul {
+    a {
+      color: var(--dark-mode-main-font-color);
       padding: 0.5rem 0.75em;
     }
   }

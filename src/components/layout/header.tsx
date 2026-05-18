@@ -3,22 +3,24 @@ import styles from './header.module.scss';
 import AiIcon from '../../assets/icons/ai-icon.svg';
 import Logo from '../../assets/logo.svg';
 import SearchComponent from '../search/search';
+import { SiteRouter } from '@/data/router';
+import Image from 'next/image';
+import { genreList } from '@/data/filterList';
+import { genreListType } from '@/data/type';
+import Link from 'next/link';
 export default function Header() {
-  const headerMockData = [
-    { name: '공연 홈', type: 'ALL' },
-    { name: '뮤지컬', type: 'category' },
-    { name: '연극', type: 'category' },
-  ];
   return (
     <nav>
       <div className={styles.navContainer}>
         <div className={styles.navLeft}>
-          <span className={styles.logo}>
-            <img src={Logo.src} alt="logo" />
+          <span className={`${styles.logo} span-image`}>
+            <Image fill src={Logo.src} alt="logo" />
           </span>
           <li>
-            {headerMockData.map((headerCategory, index) => (
-              <ul key={`header${index}`}>{headerCategory.name}</ul>
+            {genreList.map((genre: genreListType, index) => (
+              <Link href="#" key={`header${index}`}>
+                {genre.name}
+              </Link>
             ))}
           </li>
         </div>
@@ -27,9 +29,9 @@ export default function Header() {
           <CommonButton
             variant="gradient"
             text="AI 추천"
-            icon={<img src={AiIcon.src} alt="AI" />}
+            icon={<Image fill src={AiIcon.src} alt="AI" />}
           />
-          <CommonButton variant="line" text="로그인" />
+          <CommonButton variant="line" text="로그인" href={SiteRouter.login} />
         </div>
       </div>
     </nav>

@@ -11,13 +11,13 @@
     background-color: transparent;
     border: none;
     color: var(--line-component-font-color);
-    &:focus {
-      outline: none;
-    }
   }
 
   button {
     background-color: transparent;
     border: none;
+    width: 0.9375rem;
+    height: 0.9375rem;
+    position: relative;
   }
 }
