@@ -2,10 +2,23 @@
 
 @source "../**/*.{vue,ts,tsx}";
 
+@font-face {
+  font-family: "Wanted Sans Variable";
+  src: url("./fonts/WantedSansStdVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: var(--font-wanted-sans);
+}
+
 :root {
+  --font-wanted-sans: "Wanted Sans Variable", ui-sans-serif, system-ui, sans-serif;
+
   /* width */
   --max-width: 80rem;
-
   /* site color */
   --dark-mode-background-color: #0a0a0f;
   --dark-mode-main-font-color: #ffffff;
@@ -19,6 +32,29 @@
   --hover-point-text: #8ec5ff;
   --caption-text-color: #6a7282;
   --caption-content-color: #4a5565;
+
+  /* card tag */
+  --blue-tag-background-color: #2b7fff33;
+  --blue-tag-border-color: #2b7fff4d;
+  --blue-tag-font-color: #8ec5ff;
+  --mint-tag-background-color: #00b8db33;
+  --mint-tag-border-color: #00b8db4d;
+  --mint-tag-font-color: #53eafd;
+  --red-tag-background-color: #ff205633;
+  --red-tag-border-color: #ff20564d;
+  --red-tag-font-color: #ffa1ad;
+  --pink-tag-background-color: #f6339a33;
+  --pink-tag-border-color: #f6339a4d;
+  --pink-tag-font-color: #fda5d5;
+  --yellow-tag-background-color: #fe9a0033;
+  --yellow-tag-border-color: #fe9a004d;
+  --yellow-tag-font-color: #ffd230;
+  --gray-tag-background-color: #6a728233;
+  --gray-tag-border-color: #6a72824d;
+  --gray-tag-font-color: #d1d5dc;
+  --green-tag-background-color: #00bc7d33;
+  --green-tag-border-color: #00bc7d4d;
+  --green-tag-font-color: #5ee9b5;
 
   /* text */
   --font-size-body: 0.875rem;
@@ -40,6 +76,12 @@ input:focus {
   outline: none;
 }
 
+html,
+body,
+#app {
+  font-family: var(--font-wanted-sans);
+}
+
 body {
   min-height: 100vh;
   background-color: var(--dark-mode-background-color);
@@ -48,4 +90,11 @@ body {
   font-weight: var(--font-weight-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
