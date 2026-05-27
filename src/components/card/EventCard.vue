@@ -101,26 +101,8 @@ function onToggleFavorite() {
         {{ title }}
       </h3>
 
-      <p class="flex items-center gap-1.5 text-sm text-[var(--dark-mode-content-font-color)]">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          class="h-4 w-4 shrink-0"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-          <circle cx="12" cy="10" r="3" />
-        </svg>
-        <span class="truncate">{{ venue }}</span>
-      </p>
-
-      <div class="flex items-end justify-between gap-3">
-        <p class="flex min-w-0 items-center gap-1.5 text-sm text-[var(--dark-mode-content-font-color)]">
+      <div class="flex flex-col gap-1">
+        <p class="flex items-center gap-1.5 text-sm text-[var(--dark-mode-content-font-color)]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -132,17 +114,37 @@ function onToggleFavorite() {
             stroke-linejoin="round"
             aria-hidden="true"
           >
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
           </svg>
-          <span class="truncate">{{ formattedDateRange }}</span>
+          <span class="truncate">{{ venue }}</span>
         </p>
 
-        <p class="shrink-0 text-sm font-semibold text-[var(--color-secondary)]">
-          {{ price_info }}
-        </p>
+        <div class="flex items-center justify-between gap-3">
+          <p class="flex min-w-0 items-center gap-1.5 text-sm text-[var(--dark-mode-content-font-color)]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="h-4 w-4 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <span class="truncate">{{ formattedDateRange }}</span>
+          </p>
+
+          <p class="shrink-0 text-base font-semibold text-[var(--hover-point-text)]">
+            {{ price_info }}
+          </p>
+        </div>
       </div>
     </div>
   </article>

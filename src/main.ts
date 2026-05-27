@@ -1,3 +1,4 @@
+import './assets/fonts/wanted-sans.css'
 import './assets/main.css'
 
 import { createApp } from 'vue'

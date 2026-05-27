@@ -1,21 +1,23 @@
 @import "tailwindcss";
-
 @source "../**/*.{vue,ts,tsx}";
 
-@font-face {
-  font-family: "Wanted Sans Variable";
-  src: url("./fonts/WantedSansStdVariable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme {
-  --font-sans: var(--font-wanted-sans);
+  --font-sans: "Wanted Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --font-wanted-sans: "Wanted Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-wanted-sans: "Wanted Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* font weight (variable font 100–900) */
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-body: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
 
   /* width */
   --max-width: 80rem;
@@ -59,9 +61,6 @@
   /* text */
   --font-size-body: 0.875rem;
   --font-size-caption: 0.75rem;
-  --font-weight-body: 400;
-  --font-weight-medium: 500;
-  --font-weight-bold: 700;
 }
 
 a {
@@ -76,25 +75,33 @@ input:focus {
   outline: none;
 }
 
-html,
-body,
-#app {
-  font-family: var(--font-wanted-sans);
+@layer base {
+  html {
+    font-family: var(--font-wanted-sans);
+    font-synthesis: none;
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--dark-mode-background-color);
+    color: var(--dark-mode-main-font-color);
+    font-family: inherit;
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #app {
+    font-family: inherit;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
 }
 
-body {
-  min-height: 100vh;
-  background-color: var(--dark-mode-background-color);
-  color: var(--dark-mode-main-font-color);
-  font-size: var(--font-size-body);
-  font-weight: var(--font-weight-body);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 
-button,
-input,
-textarea,
-select {
-  font-family: inherit;
-}
