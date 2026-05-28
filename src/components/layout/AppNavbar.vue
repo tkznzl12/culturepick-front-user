@@ -5,6 +5,7 @@ import { genreList } from '@/constants'
 import aiIcon from '@/assets/icons/ai-icon.svg'
 import searchIcon from '@/assets/icons/search-icon.svg'
 import userIcon from '@/assets/icons/user-icon.svg'
+import logoUrl from '@/assets/logo.svg'
 
 const searchQuery = ref('')
 
@@ -39,6 +40,10 @@ function onSearchSubmit() {
 <template>
   <header class="app-navbar">
     <div class="app-navbar__inner">
+      <RouterLink to="/" class="app-navbar__logo-link" aria-label="홈으로">
+        <img :src="logoUrl" alt="Culture Pick" class="app-navbar__logo" />
+      </RouterLink>
+
       <nav class="app-navbar__nav">
         <RouterLink
           v-for="link in navLinks"
@@ -149,6 +154,21 @@ function onSearchSubmit() {
   flex-shrink: 0;
   align-items: center;
   gap: 0.5rem;
+}
+
+.app-navbar__logo-link {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.app-navbar__logo {
+  display: block;
+  height: 2.5rem;
+  width: auto;
+  object-fit: contain;
 }
 
 .app-navbar__search {
@@ -279,15 +299,20 @@ function onSearchSubmit() {
     padding-bottom: 0.75rem;
   }
 
+  .app-navbar__logo-link {
+    order: 0;
+  }
+
   .app-navbar__nav {
     flex: 1 1 100%;
-    order: 1;
+    order: 2;
   }
 
   .app-navbar__actions {
-    flex: 1 1 100%;
-    order: 2;
+    flex: 1 1 auto;
+    order: 1;
     justify-content: flex-end;
+    min-width: 0;
   }
 }
 </style>

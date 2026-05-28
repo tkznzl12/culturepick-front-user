@@ -27,7 +27,7 @@ const legalLinks = [
           <RouterLink to="/" class="inline-flex w-fit" aria-label="컬처픽 홈">
             <img :src="logo" alt="컬처픽" class="h-8 w-auto" width="120" height="32" />
           </RouterLink>
-          <p class="max-w-xs text-sm leading-relaxed text-[var(--dark-mode-content-font-color)]">
+          <p class="max-w-xs text-sm leading-relaxed text-[var(--caption-text-color)]">
             국내 모든 공연 정보를 한 곳에서.
             <br />
             AI와 함께 나만의 공연을 찾아보세요.
