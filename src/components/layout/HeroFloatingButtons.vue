@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import userIcon from '@/assets/icons/user-icon.svg'
+import qnaIcon from '@/assets/icons/qna-icon.svg'
 import IconAi from '@/components/icons/IconAi.vue'
 
 const emit = defineEmits<{
@@ -38,36 +39,7 @@ const emit = defineEmits<{
       aria-label="고객지원"
       @click="emit('support')"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="M3 11v2a8 8 0 0 0 8 8h1v-3H11a5 5 0 0 1-5-5v-2H3z"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M21 11v2a8 8 0 0 1-8 8h-1v-3h1a5 5 0 0 0 5-5v-2h3z"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M7 11a5 5 0 0 1 10 0v5a5 5 0 0 1-10 0v-5z"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
+      <img :src="qnaIcon" alt="" width="20" height="20" class="block" />
     </button>
   </div>
 </template>
