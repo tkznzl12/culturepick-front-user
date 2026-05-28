@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import CardTag from '@/components/card/CardTag.vue'
-import locationIcon from '@/assets/icons/location-icon.svg'
-import calenderIcon from '@/assets/icons/calender-icon.svg'
-import timeIcon from '@/assets/icons/time-icon.svg'
-import ticketIcon from '@/assets/icons/ticket-icon.svg'
-import infoIcon from '@/assets/icons/info-icon.svg'
-import sharedIcon from '@/assets/icons/shared-icon.svg'
+import LocationIcon from '@/assets/icons/detail-location-icon.svg?component'
+import CalenderIcon from '@/assets/icons/detail-calender-icon.svg?component'
+import TimeIcon from '@/assets/icons/time-icon.svg?component'
+import HeartIcon from '@/assets/icons/heart-active.svg?component'
+import UpcommingIcon from '@/assets/icons/upcomming-icon.svg?component'
+import ShareIcon from '@/assets/icons/shared-icon.svg?component'
+import InfoIcon from '@/assets/icons/info-icon.svg?component'
+import UsersIcon from '@/assets/icons/users-Icon.svg?component'
 import { mockData } from '@/mocks/performanceDetail'
 import type { GenreTagType, StatusTagType } from '@/types/tag'
 
@@ -46,6 +48,17 @@ const castList = computed(() => {
   return cleaned
 })
 
+const isFavorite = ref(false)
+const isPlanned = ref(false)
+
+function onToggleFavorite() {
+  isFavorite.value = !isFavorite.value
+}
+
+function onTogglePlanned() {
+  isPlanned.value = !isPlanned.value
+}
+
 function onCopyLink() {
   const url = window.location.href
   navigator.clipboard?.writeText(url)
@@ -60,87 +73,131 @@ function onCopyLink() {
           <div class="relative aspect-[4/5] w-full">
             <img :src="mockData.poster_url" :alt="mockData.title" class="h-full w-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/20" />
+
+            <div class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5">
+              <CardTag :tag="genreTag" />
+            </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-3">
           <button
             type="button"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-[var(--line-component-border-color)] bg-[var(--line-component-background-color)] px-4 py-3 text-sm font-semibold text-[var(--dark-mode-main-font-color)] transition-opacity hover:opacity-90"
+            class="inline-flex h-11 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-semibold leading-none transition-opacity hover:opacity-90"
+            :class="
+              isFavorite
+                ? 'border border-[#FF6467] bg-[#FF6467]/10 text-[#FF6467]'
+                : 'border border-[var(--line-component-border-color)] bg-[var(--line-component-background-color)] text-[var(--dark-mode-main-font-color)]'
+            "
+            :aria-label="isFavorite ? '관심 해제' : '관심'"
+            :aria-pressed="isFavorite"
+            @click="onToggleFavorite"
           >
+            <HeartIcon
+              class="detail-inline-icon"
+              :style="{
+                '--icon-stroke': 'currentColor',
+                '--icon-fill': isFavorite ? 'currentColor' : 'none',
+              }"
+              aria-hidden="true"
+            />
             관심
           </button>
           <button
             type="button"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-[var(--line-component-border-color)] bg-[var(--line-component-background-color)] px-4 py-3 text-sm font-semibold text-[var(--dark-mode-main-font-color)] transition-opacity hover:opacity-90"
+            class="inline-flex h-11 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-semibold leading-none transition-opacity hover:opacity-90"
+            :class="
+              isPlanned
+                ? 'border border-[#51A2FF] bg-[#51A2FF]/10 text-[#51A2FF]'
+                : 'border border-[var(--line-component-border-color)] bg-[var(--line-component-background-color)] text-[var(--dark-mode-main-font-color)]'
+            "
+            :aria-label="isPlanned ? '볼 예정 해제' : '볼 예정'"
+            :aria-pressed="isPlanned"
+            @click="onTogglePlanned"
           >
-            <img :src="ticketIcon" alt="" class="h-4 w-4" />
-            찜 예정
+            <UpcommingIcon
+              class="detail-inline-icon"
+              :style="{
+                '--icon-stroke': 'currentColor',
+                '--icon-fill': isPlanned ? 'currentColor' : 'none',
+              }"
+              aria-hidden="true"
+            />
+            볼 예정
           </button>
           <button
             type="button"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-[var(--line-component-border-color)] bg-[var(--line-component-background-color)] px-4 py-3 text-sm font-semibold text-[var(--dark-mode-main-font-color)] transition-opacity hover:opacity-90"
+            class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--line-component-border-color)] bg-[var(--line-component-background-color)] text-[var(--dark-mode-main-font-color)] leading-none transition-opacity hover:opacity-90"
             @click="onCopyLink"
+            aria-label="공유"
           >
-            <img :src="sharedIcon" alt="" class="h-4 w-4" />
-            공유
+            <ShareIcon
+              class="detail-inline-icon"
+              :style="{
+                '--icon-stroke': '#D1D5DC',
+              }"
+              aria-hidden="true"
+            />
           </button>
         </div>
       </div>
 
       <div class="flex flex-col gap-5">
         <div class="flex flex-wrap items-center gap-2">
-          <CardTag :tag="genreTag" />
           <CardTag :tag="statusTag" />
-          <span class="text-xs text-[var(--line-component-font-color)]">ID: {{ id }}</span>
+          <span class="text-sm text-[var(--line-component-font-color)]"> | {{ mockData.age_rating }}</span>
         </div>
 
-        <h1 class="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+        <h1 class="text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">
           {{ mockData.title }}
         </h1>
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div class="detail-info-card">
             <div class="detail-info-card__label">
-              <img :src="locationIcon" alt="" class="h-4 w-4" />
-              장소
+              <span class="detail-card-icon-wrap" aria-hidden="true">
+                <LocationIcon class="detail-card-icon" />
+              </span>
+              공연장
             </div>
             <div class="detail-info-card__value">{{ mockData.venues }}</div>
-            <div class="detail-info-card__sub">{{ mockData.local }} · {{ mockData.venues }}</div>
           </div>
 
           <div class="detail-info-card">
             <div class="detail-info-card__label">
-              <img :src="calenderIcon" alt="" class="h-4 w-4" />
+              <span class="detail-card-icon-wrap" aria-hidden="true">
+                <LocationIcon class="detail-card-icon" />
+              </span>
+              지역
+            </div>
+            <div class="detail-info-card__value">{{ mockData.local }}</div>
+          </div>
+
+          <div class="detail-info-card">
+            <div class="detail-info-card__label">
+              <span class="detail-card-icon-wrap" aria-hidden="true">
+                <CalenderIcon class="detail-card-icon" />
+              </span>
               기간
             </div>
             <div class="detail-info-card__value">{{ formattedDateRange }}</div>
-            <div class="detail-info-card__sub">공연 일정</div>
           </div>
 
           <div class="detail-info-card">
             <div class="detail-info-card__label">
-              <img :src="timeIcon" alt="" class="h-4 w-4" />
-              상영 시간
+              <span class="detail-card-icon-wrap" aria-hidden="true">
+                <TimeIcon class="detail-card-icon" />
+              </span>
+              공연 시간
             </div>
             <div class="detail-info-card__value">{{ mockData.runtime }}</div>
-            <div class="detail-info-card__sub">공연 러닝타임</div>
-          </div>
-
-          <div class="detail-info-card">
-            <div class="detail-info-card__label">
-              <img :src="infoIcon" alt="" class="h-4 w-4" />
-              관람 등급
-            </div>
-            <div class="detail-info-card__value">{{ mockData.age_rating }}</div>
-            <div class="detail-info-card__sub">연령 제한</div>
           </div>
         </div>
 
         <div class="detail-price-bar">
           <div class="flex min-w-0 flex-col gap-1">
             <span class="text-xs text-[var(--line-component-font-color)]">티켓 가격</span>
-            <p class="truncate text-lg font-bold text-[var(--hover-point-text)]">
+            <p class="truncate text-xl font-extrabold text-[var(--hover-point-text)]">
               {{ priceInfo }}
             </p>
           </div>
@@ -152,28 +209,30 @@ function onCopyLink() {
             rel="noreferrer"
           >
             예매하기
-            <span class="text-xs opacity-80">({{ mockData.bookingLink?.[0]?.sitename }})</span>
           </a>
         </div>
 
-        <button
-          type="button"
-          class="w-full rounded-2xl px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          style="background: var(--gradient-button)"
-        >
-          공연 정보
-        </button>
 
         <div class="grid grid-cols-1 gap-6 pt-2">
           <section class="detail-section">
-            <h2 class="detail-section__title">공연 소개</h2>
+            <h2 class="detail-section__title">
+              <span class="detail-card-icon-wrap" aria-hidden="true">
+                <InfoIcon class="detail-card-icon" />
+              </span>
+              공연 소개
+            </h2>
             <p class="detail-section__content">
               {{ mockData.story }}
             </p>
           </section>
 
           <section class="detail-section">
-            <h2 class="detail-section__title">출연진</h2>
+            <h2 class="detail-section__title">
+              <span class="detail-card-icon-wrap" aria-hidden="true">
+                <UsersIcon class="detail-card-icon" />
+              </span>
+              출연진
+            </h2>
             <div class="flex flex-wrap gap-2">
               <span v-for="cast in castList" :key="cast" class="detail-chip">{{ cast }}</span>
             </div>
@@ -190,11 +249,65 @@ function onCopyLink() {
 </template>
 
 <style scoped>
+.detail-inline-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  display: block;
+  align-self: center;
+}
+
+.detail-inline-icon :deep(path) {
+  stroke: var(--icon-stroke, currentColor);
+}
+
+.detail-inline-icon :deep(svg),
+.detail-inline-icon :deep(g),
+.detail-inline-icon :deep(path) {
+  vector-effect: non-scaling-stroke;
+}
+
+.detail-inline-icon :deep(path[stroke]) {
+  stroke: var(--icon-stroke, currentColor);
+}
+
+.detail-inline-icon :deep(path) {
+  fill: var(--icon-fill, none);
+}
+
+.detail-card-icon {
+  width: 0.9375rem; /* 15px */
+  height: 0.9375rem; /* 15px */
+  flex-shrink: 0;
+  display: block;
+  overflow: visible;
+  transform-origin: center;
+  transform-box: fill-box;
+  color: #99a1af;
+}
+
+.detail-card-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem; /* 라벨 라인하이트 기준 */
+  flex-shrink: 0;
+}
+
+.detail-card-icon :deep(path[stroke]) {
+  stroke: currentColor;
+}
+
+.detail-card-icon :deep(path) {
+  fill: none;
+}
+
 .detail-info-card {
   border: 1px solid var(--line-component-border-color);
   background: var(--line-component-background-color);
-  border-radius: 1rem;
-  padding: 1.1rem 1.2rem;
+  border-radius: 1.25rem;
+  padding: 1rem 1.1rem;
   box-shadow: 0 10px 30px rgb(0 0 0 / 0.18);
 }
 
@@ -202,15 +315,19 @@ function onCopyLink() {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  min-height: 1.25rem;
   color: var(--line-component-font-color);
   margin-bottom: 0.4rem;
 }
 
 .detail-info-card__value {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--dark-mode-main-font-color);
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.25rem;
+  color: #fff;
 }
 
 .detail-info-card__sub {
@@ -252,11 +369,13 @@ function onCopyLink() {
 }
 
 .detail-section {
-  border-top: 1px solid rgb(255 255 255 / 0.06);
   padding-top: 1.25rem;
 }
 
 .detail-section__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-size: 1rem;
   font-weight: 800;
   margin-bottom: 0.75rem;
@@ -275,7 +394,6 @@ function onCopyLink() {
   border-radius: 9999px;
   padding: 0.35rem 0.7rem;
   font-size: 0.8125rem;
-  font-weight: 700;
   color: var(--dark-mode-main-font-color);
   border: 1px solid var(--line-component-border-color);
   background: var(--line-component-background-color);
