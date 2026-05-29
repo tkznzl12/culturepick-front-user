@@ -39,6 +39,14 @@
   --input-border-color: #ffffff1a;
   --card-background-color: #12121a;
 
+  /* performance list filter */
+  --filter-panel-radius: 0.875rem;
+  --filter-panel-border-color: var(--input-border-color);
+  --filter-panel-background-color: var(--card-background-color);
+  --filter-toggle-radius: 0.625rem;
+  --filter-toggle-active-border-color: var(--blue-tag-border-color);
+  --filter-toggle-active-background-color: #155dfc33;
+
   /* card tag */
   --blue-tag-background-color: #2b7fff33;
   --blue-tag-border-color: #2b7fff4d;

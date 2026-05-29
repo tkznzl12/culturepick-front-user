@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { RouterLink, type RouteLocationRaw } from 'vue-router'
 import { genreList } from '@/constants'
+import { SiteRouter } from '@/constants/routes'
 import logo from '@/assets/logo.svg'
 
 const currentYear = new Date().getFullYear()
 
-function toGenreRoute(code: string, name: string): RouteLocationRaw {
-  return {
-    path: '/',
-    query: code ? { genre: code } : { genre: name },
-  }
+function toGenreRoute(code: string): RouteLocationRaw {
+  return { path: SiteRouter.performanceList, query: { genre: code } }
 }
 
 const legalLinks = [
@@ -41,7 +39,7 @@ const legalLinks = [
           <ul class="flex flex-col gap-2.5">
             <li v-for="genre in genreList" :key="genre.name">
               <RouterLink
-                :to="toGenreRoute(genre.code, genre.name)"
+                :to="toGenreRoute(genre.code)"
                 class="text-sm text-[var(--caption-text-color)] transition-colors hover:text-[var(--hover-point-text)]"
               >
                 {{ genre.name }}

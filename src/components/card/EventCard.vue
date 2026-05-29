@@ -11,11 +11,13 @@ const props = withDefaults(
     EventCardData & {
       isHot?: boolean
       isFavorite?: boolean
+      variant?: 'grid' | 'list'
     }
   >(),
   {
     isHot: false,
     isFavorite: false,
+    variant: 'grid',
   },
 )
 
@@ -25,6 +27,7 @@ const emit = defineEmits<{
 
 const genreTag = computed(() => props.genre as GenreTagType)
 const statusTag = computed(() => props.status as StatusTagType)
+const isList = computed(() => props.variant === 'list')
 
 const formattedDateRange = computed(() => {
   const start = props.start_date
@@ -42,26 +45,36 @@ const formattedDateRange = computed(() => {
   return `${start} ~ ${end}`
 })
 
-function onToggleFavorite() {
+function onToggleFavorite(event: MouseEvent) {
+  event.preventDefault()
+  event.stopPropagation()
   emit('toggleFavorite', props.id)
 }
 </script>
 
 <template>
   <article
-    class="group flex w-full flex-col overflow-hidden rounded-3xl bg-[#12121b] shadow-lg transition-transform duration-200 hover:-translate-y-0.5"
+    class="event-card group w-full overflow-hidden rounded-3xl bg-[var(--card-background-color)] shadow-lg transition-transform duration-200"
+    :class="isList ? 'event-card--list' : 'flex flex-col hover:-translate-y-0.5'"
   >
-    <div class="relative aspect-[4/3] w-full overflow-hidden">
+    <div
+      class="event-card__media relative shrink-0 overflow-hidden"
+      :class="isList ? 'event-card__media--list' : 'aspect-[4/3] w-full'"
+    >
       <img
         :src="img"
         :alt="title"
-        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        class="h-full w-full object-cover transition-transform duration-300"
+        :class="{ 'group-hover:scale-105': !isList }"
         loading="lazy"
       />
 
-      <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
+      <div
+        v-if="!isList"
+        class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20"
+      />
 
-      <div class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5">
+      <div v-if="!isList" class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5">
         <CardTag :tag="genreTag" />
         <span
           v-if="isHot"
@@ -73,15 +86,17 @@ function onToggleFavorite() {
 
       <button
         type="button"
-        class="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50"
+        class="event-card__favorite absolute flex items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50"
+        :class="isList ? 'event-card__favorite--list' : 'top-3 right-3 h-9 w-9'"
         :aria-label="isFavorite ? '찜 해제' : '찜하기'"
         :aria-pressed="isFavorite"
-        @click.stop="onToggleFavorite"
+        @click="onToggleFavorite"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          class="h-5 w-5"
+          class="event-card__favorite-icon"
+          :class="isList ? 'event-card__favorite-icon--list' : 'h-5 w-5'"
           :fill="isFavorite ? 'currentColor' : 'none'"
           stroke="currentColor"
           stroke-width="2"
@@ -95,10 +110,43 @@ function onToggleFavorite() {
         </svg>
       </button>
 
-      <CardTag class="absolute bottom-3 left-3" :tag="statusTag" />
+      <CardTag v-if="!isList" class="absolute bottom-3 left-3" :tag="statusTag" />
     </div>
 
-    <div class="flex flex-col gap-2 p-4">
+    <template v-if="isList">
+      <div class="event-card__body">
+        <h3 class="event-card__title line-clamp-2 text-base leading-snug font-bold text-[var(--dark-mode-main-font-color)]">
+          {{ title }}
+        </h3>
+
+        <p class="event-card__meta flex items-center gap-1.5 text-sm text-[var(--dark-mode-content-font-color)]">
+          <img :src="locationIcon" alt="" width="16" height="16" class="h-4 w-4 shrink-0" />
+          <span class="truncate">{{ venue }}</span>
+        </p>
+
+        <p class="event-card__meta flex items-center gap-1.5 text-sm text-[var(--dark-mode-content-font-color)]">
+          <img :src="calenderIcon" alt="" width="16" height="16" class="h-4 w-4 shrink-0" />
+          <span class="truncate">{{ formattedDateRange }}</span>
+        </p>
+
+        <p class="event-card__price text-base font-semibold text-[var(--hover-point-text)]">
+          {{ price_info }}
+        </p>
+      </div>
+
+      <div class="event-card__tags">
+        <CardTag :tag="genreTag" />
+        <CardTag :tag="statusTag" />
+        <span
+          v-if="isHot"
+          class="inline-flex items-center justify-center rounded-full bg-orange-600/80 px-2.5 py-1 text-[var(--font-size-caption)] font-medium text-white"
+        >
+          HOT
+        </span>
+      </div>
+    </template>
+
+    <div v-else class="flex flex-col gap-2 p-4">
       <h3 class="line-clamp-2 text-base leading-snug font-bold text-white">
         {{ title }}
       </h3>
@@ -123,3 +171,63 @@ function onToggleFavorite() {
     </div>
   </article>
 </template>
+
+<style scoped>
+.event-card--list {
+  --event-card-list-thumb: 7.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.event-card--list:hover {
+  transform: translateY(-0.125rem);
+}
+
+.event-card__media--list {
+  width: var(--event-card-list-thumb);
+  height: var(--event-card-list-thumb);
+  border-radius: 0.875rem;
+}
+
+.event-card__body,
+.event-card__tags {
+  display: flex;
+  flex-direction: column;
+  height: var(--event-card-list-thumb);
+  min-height: var(--event-card-list-thumb);
+}
+
+.event-card__body {
+  flex: 1;
+  min-width: 0;
+  justify-content: space-evenly;
+}
+
+.event-card__tags {
+  flex-shrink: 0;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-right: 0.25rem;
+}
+
+.event-card__favorite--list {
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.event-card__favorite-icon--list {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.event-card__title,
+.event-card__meta,
+.event-card__price {
+  margin: 0;
+}
+</style>

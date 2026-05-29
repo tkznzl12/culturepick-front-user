@@ -18,19 +18,18 @@ type NavLink = {
   to: RouteLocationRaw
 }
 
-function toGenreRoute(code: string, name: string): RouteLocationRaw {
-  return {
-    path: '/',
-    query: code ? { genre: code } : { genre: name },
-  }
+function toGenreRoute(code: string): RouteLocationRaw {
+  return code
+    ? { path: SiteRouter.performanceList, query: { genre: code } }
+    : SiteRouter.performanceList
 }
 
 const navLinks = computed<NavLink[]>(() => [
-  { key: 'home', label: '공연 홈', to: '/' },
+  { key: 'home', label: '공연', to: SiteRouter.performanceList },
   ...genreList.map((genre) => ({
     key: `genre-${genre.code || genre.name}`,
     label: genre.name,
-    to: toGenreRoute(genre.code, genre.name),
+    to: toGenreRoute(genre.code),
   })),
 ])
 

@@ -1,0 +1,204 @@
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
+import EventCard from '@/components/card/EventCard.vue'
+import HeroFloatingButtons from '@/components/layout/HeroFloatingButtons.vue'
+import PerformanceEmpty from '@/components/performances/PerformanceEmpty.vue'
+import PerformanceFilters from '@/components/performances/PerformanceFilters.vue'
+import PerformanceListToolbar from '@/components/performances/PerformanceListToolbar.vue'
+import PerformancePagination from '@/components/performances/PerformancePagination.vue'
+import PerformanceSearchBar from '@/components/performances/PerformanceSearchBar.vue'
+import { usePerformances } from '@/composables/usePerformances'
+import { SiteRouter } from '@/constants/routes'
+import { navigateUnlessFavoriteClick } from '@/utils/event-card-navigation'
+
+const {
+  listQuery,
+  performances,
+  totalCount,
+  totalPages,
+  isLoading,
+  errorMessage,
+  showPagination,
+  viewMode,
+  activeGenreHeader,
+  genreList,
+  localList,
+  performanceStatusList,
+  setGenre,
+  setRegion,
+  setStatus,
+  setSort,
+  submitKeyword,
+  goToPage,
+  toggleFavorite,
+  isFavorite,
+} = usePerformances()
+
+const sortValue = computed({
+  get: () => listQuery.value.sort ?? 'latest',
+  set: (value: string) => setSort(value),
+})
+
+const gridClass = computed(() =>
+  viewMode.value === 'grid'
+    ? 'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+    : 'performance-list__list flex flex-col gap-4',
+)
+
+const skeletonCount = 12
+const isFilterExpanded = ref(false)
+
+function toggleFilterPanel() {
+  isFilterExpanded.value = !isFilterExpanded.value
+}
+
+watch(
+  () => [listQuery.value.region, listQuery.value.status],
+  ([region, status]) => {
+    if (region || status) {
+      isFilterExpanded.value = true
+    }
+  },
+  { immediate: true },
+)
+
+function onAiRecommend() {
+  // TODO: AI 추천 페이지 이동
+}
+
+function onProfile() {
+  // TODO: 마이페이지 이동
+}
+
+function onSupport() {
+  // TODO: 고객지원 이동
+}
+</script>
+
+<template>
+  <section class="performance-list relative w-full py-10 sm:py-14">
+    <div class="mx-auto w-full max-w-[var(--max-width)] px-6">
+      <header class="mb-6">
+        <h1
+          class="flex items-center gap-2 text-2xl font-bold text-[var(--dark-mode-main-font-color)] sm:text-3xl"
+        >
+          <span aria-hidden="true">{{ activeGenreHeader.icon }}</span>
+          {{ activeGenreHeader.label }}
+        </h1>
+        <p class="mt-2 text-base text-[var(--dark-mode-content-font-color)]">
+          총
+          <span class="font-semibold text-[var(--hover-point-text)]">{{ totalCount }}</span>
+          개의 공연이 있습니다
+        </p>
+      </header>
+
+      <PerformanceSearchBar
+        class="mb-6"
+        :keyword="listQuery.keyword"
+        @search="submitKeyword"
+      />
+
+      <PerformanceFilters
+        class="mb-8"
+        :genre-list="genreList"
+        :local-list="localList"
+        :status-list="performanceStatusList"
+        :active-genre="listQuery.genre"
+        :active-region="listQuery.region"
+        :active-status="listQuery.status"
+        :show-sub-filters="isFilterExpanded"
+        @select-genre="setGenre"
+        @select-region="setRegion"
+        @select-status="setStatus"
+        @toggle-sub-filters="toggleFilterPanel"
+      >
+        <template #toolbar>
+          <PerformanceListToolbar v-model:view-mode="viewMode" v-model:sort="sortValue" />
+        </template>
+      </PerformanceFilters>
+
+      <div
+        v-if="isLoading && performances.length === 0"
+        :class="gridClass"
+        aria-busy="true"
+        aria-label="공연 목록 로딩 중"
+      >
+        <div
+          v-for="index in skeletonCount"
+          :key="index"
+          class="animate-pulse overflow-hidden rounded-3xl bg-[var(--card-background-color)]"
+          :class="viewMode === 'list' ? 'flex flex-row items-stretch gap-4 p-4 sm:gap-5 sm:p-5' : ''"
+        >
+          <div
+            class="shrink-0 bg-[var(--line-component-background-color)]"
+            :class="
+              viewMode === 'grid'
+                ? 'aspect-[4/3] w-full'
+                : 'h-[7.5rem] w-[7.5rem] rounded-[0.875rem]'
+            "
+          />
+          <div
+            class="flex flex-1 flex-col justify-evenly"
+            :class="viewMode === 'list' ? 'h-[7.5rem]' : 'gap-2 p-4'"
+          >
+            <div class="h-4 w-3/4 rounded bg-[var(--line-component-background-color)]" />
+            <div class="h-3 w-1/2 rounded bg-[var(--line-component-background-color)]" />
+            <div class="h-3 w-2/3 rounded bg-[var(--line-component-background-color)]" />
+          </div>
+        </div>
+      </div>
+
+      <p
+        v-else-if="errorMessage && performances.length === 0"
+        class="py-16 text-left text-[var(--red-tag-font-color)]"
+        role="alert"
+      >
+        {{ errorMessage }}
+      </p>
+
+      <template v-else-if="performances.length > 0">
+        <div :class="gridClass">
+          <RouterLink
+            v-for="item in performances"
+            :key="item.id"
+            v-slot="{ navigate }"
+            :to="SiteRouter.performances(String(item.id))"
+            custom
+          >
+            <div
+              role="link"
+              tabindex="0"
+              class="block cursor-pointer rounded-3xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hover-point-text)]"
+              @click="navigateUnlessFavoriteClick($event, navigate)"
+              @keydown.enter.prevent="navigateUnlessFavoriteClick($event, navigate)"
+            >
+              <EventCard
+                v-bind="item"
+                :variant="viewMode"
+                :is-hot="item.isHot ?? false"
+                :is-favorite="isFavorite(item.id)"
+                @toggle-favorite="toggleFavorite"
+              />
+            </div>
+          </RouterLink>
+        </div>
+
+        <PerformancePagination
+          v-if="showPagination"
+          :current-page="listQuery.page"
+          :total-pages="totalPages"
+          @change="goToPage"
+        />
+      </template>
+
+      <PerformanceEmpty v-else-if="!isLoading" />
+    </div>
+
+    <HeroFloatingButtons
+      @ai-recommend="onAiRecommend"
+      @profile="onProfile"
+      @support="onSupport"
+    />
+  </section>
+</template>

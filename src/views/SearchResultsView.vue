@@ -6,6 +6,7 @@ import EventCard from '@/components/card/EventCard.vue'
 import HeroFloatingButtons from '@/components/layout/HeroFloatingButtons.vue'
 import { useSearchResults } from '@/composables/useSearchResults'
 import { SiteRouter } from '@/constants/routes'
+import { navigateUnlessFavoriteClick } from '@/utils/event-card-navigation'
 import searchIcon from '@/assets/icons/search-icon.svg'
 
 const {
@@ -107,15 +108,24 @@ function onSupport() {
             <RouterLink
               v-for="item in results"
               :key="item.id"
+              v-slot="{ navigate }"
               :to="SiteRouter.performances(String(item.id))"
-              class="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hover-point-text)]"
+              custom
             >
-              <EventCard
-                v-bind="item"
-                :is-hot="item.isHot ?? false"
-                :is-favorite="isFavorite(item.id)"
-                @toggle-favorite="toggleFavorite"
-              />
+              <div
+                role="link"
+                tabindex="0"
+                class="block cursor-pointer rounded-3xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hover-point-text)]"
+                @click="navigateUnlessFavoriteClick($event, navigate)"
+                @keydown.enter.prevent="navigateUnlessFavoriteClick($event, navigate)"
+              >
+                <EventCard
+                  v-bind="item"
+                  :is-hot="item.isHot ?? false"
+                  :is-favorite="isFavorite(item.id)"
+                  @toggle-favorite="toggleFavorite"
+                />
+              </div>
             </RouterLink>
           </div>
 

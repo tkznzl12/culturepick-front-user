@@ -4,6 +4,7 @@ export const SiteRouter = {
   signUp: '/signup',
   signUpSuccess: '/signup/success',
   search: '/search',
+  performanceList: '/performances',
   mypage: '/mypage',
   mypageInfo: '/mypage/info',
   userEdit: '/mypage/info/edit',

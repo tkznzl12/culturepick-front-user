@@ -19,6 +19,11 @@ const router = createRouter({
           component: () => import('../views/SearchResultsView.vue'),
         },
         {
+          path: 'performances',
+          name: 'performances',
+          component: () => import('../pages/performances/PerformanceListPage.vue'),
+        },
+        {
           path: 'performances/:id',
           name: 'performance-detail',
           component: () => import('../views/PerformanceDetailView.vue'),
