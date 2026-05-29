@@ -35,6 +35,10 @@
   --caption-text-color: #6a7282;
   --caption-content-color: #4a5565;
 
+  --input-background-color: #ffffff0d;
+  --input-border-color: #ffffff1a;
+  --card-background-color: #12121a;
+
   /* card tag */
   --blue-tag-background-color: #2b7fff33;
   --blue-tag-border-color: #2b7fff4d;
@@ -61,6 +65,15 @@
   /* text */
   --font-size-body: 0.875rem;
   --font-size-caption: 0.75rem;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: transparent !important;
+  -webkit-text-fill-color: var(--line-component-font-color) !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 a {

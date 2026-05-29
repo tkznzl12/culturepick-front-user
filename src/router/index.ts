@@ -6,21 +6,42 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      component: () => import('../layouts/DefaultLayout.vue'),
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: HomeView,
+        },
+        {
+          path: 'performances/:id',
+          name: 'performance-detail',
+          component: () => import('../views/PerformanceDetailView.vue'),
+        },
+        {
+          path: 'about',
+          name: 'about',
+          component: () => import('../views/AboutView.vue'),
+        },
+      ],
     },
     {
-      path: '/performances/:id',
-      name: 'performance-detail',
-      component: () => import('../views/PerformanceDetailView.vue'),
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/auth/LoginView.vue'),
+      meta: { layout: 'auth' },
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/signup',
+      name: 'signup',
+      component: () => import('../views/auth/SignupView.vue'),
+      meta: { layout: 'auth' },
+    },
+    {
+      path: '/signup/success',
+      name: 'signup-success',
+      component: () => import('../views/auth/SignupSuccessView.vue'),
+      meta: { layout: 'auth' },
     },
   ],
 })

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { RouterLink, type RouteLocationRaw } from 'vue-router'
 import { genreList } from '@/constants'
+import { SiteRouter } from '@/constants/routes'
 import aiIcon from '@/assets/icons/ai-icon.svg'
 import searchIcon from '@/assets/icons/search-icon.svg'
 import userIcon from '@/assets/icons/user-icon.svg'
@@ -75,7 +76,9 @@ function onSearchSubmit() {
           <span>AI 추천</span>
         </button>
 
-        <button type="button" class="app-navbar__btn app-navbar__btn--line">로그인</button>
+        <RouterLink :to="SiteRouter.login" class="app-navbar__btn app-navbar__btn--line">
+          로그인
+        </RouterLink>
 
         <button type="button" class="app-navbar__btn app-navbar__btn--user" aria-label="마이페이지">
           <img :src="userIcon" alt="" width="16" height="16" />
@@ -263,6 +266,8 @@ function onSearchSubmit() {
   padding: 0.375rem 0.75rem;
   border: 1px solid var(--line-component-border-color);
   background: transparent;
+  text-decoration: none;
+  color: var(--dark-mode-main-font-color);
 }
 
 .app-navbar__btn--line:hover {
