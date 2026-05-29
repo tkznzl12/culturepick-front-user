@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import HeroFloatingButtons from '@/components/layout/HeroFloatingButtons.vue'
 import IconAi from '@/components/icons/IconAi.vue'
 import mainBg from '@/assets/mock/main-bg.png'
 import searchIcon from '@/assets/icons/search-icon.svg'
+import { buildSearchRoute } from '@/utils/search-route'
 
+const router = useRouter()
 const heroSearchQuery = ref('')
 
 function onHeroSearchSubmit() {
-  if (!heroSearchQuery.value.trim()) return
-  // TODO: 검색 API 연동
+  const keyword = heroSearchQuery.value.trim()
+  if (!keyword) return
+  router.push(buildSearchRoute(keyword))
 }
 
 function onAiRecommend() {

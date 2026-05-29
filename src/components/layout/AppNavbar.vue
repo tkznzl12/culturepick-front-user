@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { RouterLink, type RouteLocationRaw } from 'vue-router'
+import { RouterLink, useRouter, type RouteLocationRaw } from 'vue-router'
 import { genreList } from '@/constants'
 import { SiteRouter } from '@/constants/routes'
+import { buildSearchRoute } from '@/utils/search-route'
 import aiIcon from '@/assets/icons/ai-icon.svg'
 import searchIcon from '@/assets/icons/search-icon.svg'
 import userIcon from '@/assets/icons/user-icon.svg'
 import logoUrl from '@/assets/logo.svg'
 
+const router = useRouter()
 const searchQuery = ref('')
 
 type NavLink = {
@@ -33,8 +35,9 @@ const navLinks = computed<NavLink[]>(() => [
 ])
 
 function onSearchSubmit() {
-  if (!searchQuery.value.trim()) return
-  // TODO: 검색 API 연동
+  const keyword = searchQuery.value.trim()
+  if (!keyword) return
+  router.push(buildSearchRoute(keyword))
 }
 </script>
 
