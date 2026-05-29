@@ -23,7 +23,15 @@ const legalLinks = [
       <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
         <div class="flex flex-col gap-4">
           <RouterLink to="/" class="inline-flex w-fit" aria-label="컬처픽 홈">
-            <img :src="logo" alt="컬처픽" class="h-8 w-auto" width="120" height="32" />
+            <img
+              :src="logo"
+              alt="컬처픽"
+              class="h-8 w-auto"
+              width="243"
+              height="146"
+              loading="lazy"
+              decoding="async"
+            />
           </RouterLink>
           <p class="max-w-xs text-sm leading-relaxed text-[var(--caption-text-color)]">
             국내 모든 공연 정보를 한 곳에서.

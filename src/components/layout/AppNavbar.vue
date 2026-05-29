@@ -44,7 +44,14 @@ function onSearchSubmit() {
   <header class="app-navbar">
     <div class="app-navbar__inner">
       <RouterLink to="/" class="app-navbar__logo-link" aria-label="홈으로">
-        <img :src="logoUrl" alt="Culture Pick" class="app-navbar__logo" />
+        <img
+          :src="logoUrl"
+          alt="Culture Pick"
+          class="app-navbar__logo"
+          width="243"
+          height="146"
+          decoding="async"
+        />
       </RouterLink>
 
       <nav class="app-navbar__nav">

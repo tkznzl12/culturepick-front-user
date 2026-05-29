@@ -1,4 +1,3 @@
-import './assets/fonts/wanted-sans.css'
 import './assets/main.css'
 
 import { createApp } from 'vue'
@@ -13,3 +12,13 @@ app.use(createPinia())
 app.use(router)
 
 app.mount('#app')
+
+function loadFonts() {
+  void import('./assets/fonts/wanted-sans.css')
+}
+
+if ('requestIdleCallback' in globalThis) {
+  requestIdleCallback(() => loadFonts())
+} else {
+  setTimeout(loadFonts, 1)
+}

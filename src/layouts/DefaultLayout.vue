@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { defineAsyncComponent } from 'vue'
+import { RouterView } from 'vue-router'
 import AppNavbar from '@/components/layout/AppNavbar.vue'
-import AppFooter from '@/components/layout/AppFooter.vue'
+
+const AppFooter = defineAsyncComponent(() => import('@/components/layout/AppFooter.vue'))
 </script>
 
 <template>

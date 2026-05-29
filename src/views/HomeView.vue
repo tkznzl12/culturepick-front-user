@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { defineAsyncComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import HeroFloatingButtons from '@/components/layout/HeroFloatingButtons.vue'
 import IconAi from '@/components/icons/IconAi.vue'
-import mainBg from '@/assets/mock/main-bg.png'
+import { HERO_BG_HEIGHT, HERO_BG_WEBP, HERO_BG_WIDTH } from '@/constants/hero'
 import searchIcon from '@/assets/icons/search-icon.svg'
 import { buildSearchRoute } from '@/utils/search-route'
+
+const HeroFloatingButtons = defineAsyncComponent(
+  () => import('@/components/layout/HeroFloatingButtons.vue'),
+)
 
 const router = useRouter()
 const heroSearchQuery = ref('')
@@ -31,14 +34,20 @@ function onSupport() {
 
 <template>
   <section class="home-hero relative flex min-h-[calc(100dvh-4rem)] w-full flex-col overflow-hidden">
-    <div
-      class="home-hero__bg absolute inset-0 bg-cover bg-center bg-no-repeat"
-      :style="{ backgroundImage: `url(${mainBg})` }"
-      role="img"
-      aria-label="무대 공연 배경"
+    <img
+      :src="HERO_BG_WEBP"
+      alt=""
+      class="home-hero__bg absolute inset-0 h-full w-full object-cover object-center"
+      :width="HERO_BG_WIDTH"
+      :height="HERO_BG_HEIGHT"
+      fetchpriority="high"
+      decoding="async"
     />
+    <div class="home-hero__overlay absolute inset-0" aria-hidden="true" />
 
-    <div class="home-hero__content relative z-[1] mx-auto flex w-full max-w-[var(--max-width)] flex-1 flex-col items-center justify-center px-6 py-16 text-center">
+    <div
+      class="home-hero__content relative z-[1] mx-auto flex w-full max-w-[var(--max-width)] flex-1 flex-col items-center justify-center px-6 py-16 text-center"
+    >
       <div
         class="mb-8 inline-flex items-center gap-2 rounded-full border border-[var(--blue-tag-border-color)] bg-[var(--blue-tag-background-color)] px-4 py-2 text-sm font-medium text-[var(--blue-tag-font-color)]"
       >
