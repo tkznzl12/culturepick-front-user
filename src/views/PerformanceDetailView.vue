@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref } from 'vue'
 import CardTag from '@/components/card/CardTag.vue'
+import PerformanceDetailSkeleton from '@/components/skeleton/PerformanceDetailSkeleton.vue'
 import LocationIcon from '@/assets/icons/detail-location-icon.svg?component'
 import CalenderIcon from '@/assets/icons/detail-calender-icon.svg?component'
 import TimeIcon from '@/assets/icons/time-icon.svg?component'
@@ -10,43 +10,18 @@ import UpcommingIcon from '@/assets/icons/upcomming-icon.svg?component'
 import ShareIcon from '@/assets/icons/shared-icon.svg?component'
 import InfoIcon from '@/assets/icons/info-icon.svg?component'
 import UsersIcon from '@/assets/icons/users-Icon.svg?component'
-import { mockData } from '@/mocks/performanceDetail'
-import type { GenreTagType, StatusTagType } from '@/types/tag'
+import { usePerformanceDetail } from '@/composables/usePerformanceDetail'
 
-const route = useRoute()
-const id = computed(() => String(route.params.id ?? ''))
-
-const genreTag = computed(() => mockData.genre as GenreTagType)
-const statusTag = computed<StatusTagType>(() => {
-  const raw = String(mockData.status ?? '')
-  if (raw.includes('예정')) return 'upcomming'
-  if (raw.includes('중')) return 'performing'
-  if (raw.includes('완료') || raw.includes('종료')) return 'done'
-  return 'upcomming'
-})
-
-const formattedDateRange = computed(() => {
-  const start = mockData.start_date
-  const end = mockData.end_date
-  if (!start) return ''
-  if (!end || start === end) return start
-
-  const startYear = start.slice(0, 4)
-  const endYear = end.slice(0, 4)
-  if (startYear === endYear) return `${start} ~ ${end.slice(5)}`
-  return `${start} ~ ${end}`
-})
-
-const priceInfo = computed(() => mockData.price_info ?? mockData.pirce_info ?? '')
-
-const castList = computed(() => {
-  const cleaned = mockData.cast
-    .replace(/\s*등\s*$/, '')
-    .split(',')
-    .map((v) => v.trim())
-    .filter(Boolean)
-  return cleaned
-})
+const {
+  data,
+  isLoading,
+  errorMessage,
+  genreTag,
+  statusTag,
+  formattedDateRange,
+  priceInfo,
+  castList,
+} = usePerformanceDetail()
 
 const isFavorite = ref(false)
 const isPlanned = ref(false)
@@ -66,12 +41,22 @@ function onCopyLink() {
 </script>
 
 <template>
-  <section class="mx-auto w-full max-w-[var(--max-width)] px-6 py-10">
+  <PerformanceDetailSkeleton v-if="isLoading && !data" />
+
+  <p
+    v-else-if="errorMessage && !data"
+    class="mx-auto w-full max-w-[var(--max-width)] px-6 py-16 text-left text-[var(--red-tag-font-color)]"
+    role="alert"
+  >
+    {{ errorMessage }}
+  </p>
+
+  <section v-else-if="data" class="mx-auto w-full max-w-[var(--max-width)] px-6 py-10">
     <div class="grid grid-cols-1 gap-8 lg:grid-cols-[420px_1fr]">
       <div class="flex flex-col gap-4">
         <div class="overflow-hidden rounded-3xl bg-[#12121b] shadow-lg">
           <div class="relative aspect-[4/5] w-full">
-            <img :src="mockData.poster_url" :alt="mockData.title" class="h-full w-full object-cover" />
+            <img :src="data.poster_url" :alt="data.title" class="h-full w-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/20" />
 
             <div class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5">
@@ -145,11 +130,11 @@ function onCopyLink() {
       <div class="flex flex-col gap-5">
         <div class="flex flex-wrap items-center gap-2">
           <CardTag :tag="statusTag" />
-          <span class="text-sm text-[var(--line-component-font-color)]"> | {{ mockData.age_rating }}</span>
+          <span class="text-sm text-[var(--line-component-font-color)]"> | {{ data.age_rating }}</span>
         </div>
 
         <h1 class="text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">
-          {{ mockData.title }}
+          {{ data.title }}
         </h1>
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -160,7 +145,7 @@ function onCopyLink() {
               </span>
               공연장
             </div>
-            <div class="detail-info-card__value">{{ mockData.venues }}</div>
+            <div class="detail-info-card__value">{{ data.venues }}</div>
           </div>
 
           <div class="detail-info-card">
@@ -170,7 +155,7 @@ function onCopyLink() {
               </span>
               지역
             </div>
-            <div class="detail-info-card__value">{{ mockData.local }}</div>
+            <div class="detail-info-card__value">{{ data.local }}</div>
           </div>
 
           <div class="detail-info-card">
@@ -190,7 +175,7 @@ function onCopyLink() {
               </span>
               공연 시간
             </div>
-            <div class="detail-info-card__value">{{ mockData.runtime }}</div>
+            <div class="detail-info-card__value">{{ data.runtime }}</div>
           </div>
         </div>
 
@@ -204,7 +189,7 @@ function onCopyLink() {
 
           <a
             class="detail-price-bar__cta"
-            :href="mockData.bookingLink?.[0]?.url"
+            :href="data.bookingLink?.[0]?.url"
             target="_blank"
             rel="noreferrer"
           >
@@ -222,7 +207,7 @@ function onCopyLink() {
               공연 소개
             </h2>
             <p class="detail-section__content">
-              {{ mockData.story }}
+              {{ data.story }}
             </p>
           </section>
 
@@ -240,7 +225,7 @@ function onCopyLink() {
 
           <section class="detail-section">
             <h2 class="detail-section__title">제작진</h2>
-            <p class="detail-section__content">{{ mockData.crew }}</p>
+            <p class="detail-section__content">{{ data.crew }}</p>
           </section>
         </div>
       </div>
@@ -399,4 +384,3 @@ function onCopyLink() {
   background: var(--line-component-background-color);
 }
 </style>
-

@@ -8,6 +8,9 @@ import PerformanceFilters from '@/components/performances/PerformanceFilters.vue
 import PerformanceListToolbar from '@/components/performances/PerformanceListToolbar.vue'
 import PerformancePagination from '@/components/performances/PerformancePagination.vue'
 import PerformanceSearchBar from '@/components/performances/PerformanceSearchBar.vue'
+import CountSkeleton from '@/components/skeleton/CountSkeleton.vue'
+import EventCardGridSkeleton from '@/components/skeleton/EventCardGridSkeleton.vue'
+import { PERFORMANCE_PAGE_SIZE } from '@/constants/search'
 import { usePerformances } from '@/composables/usePerformances'
 import { SiteRouter } from '@/constants/routes'
 import { navigateUnlessFavoriteClick } from '@/utils/event-card-navigation'
@@ -46,7 +49,6 @@ const gridClass = computed(() =>
     : 'performance-list__list flex flex-col gap-4',
 )
 
-const skeletonCount = 12
 const isFilterExpanded = ref(false)
 
 function toggleFilterPanel() {
@@ -88,7 +90,8 @@ function onSupport() {
         </h1>
         <p class="mt-2 text-base text-[var(--dark-mode-content-font-color)]">
           총
-          <span class="font-semibold text-[var(--hover-point-text)]">{{ totalCount }}</span>
+          <CountSkeleton v-if="isLoading && performances.length === 0" />
+          <span v-else class="font-semibold text-[var(--hover-point-text)]">{{ totalCount }}</span>
           개의 공연이 있습니다
         </p>
       </header>
@@ -118,36 +121,12 @@ function onSupport() {
         </template>
       </PerformanceFilters>
 
-      <div
+      <EventCardGridSkeleton
         v-if="isLoading && performances.length === 0"
-        :class="gridClass"
-        aria-busy="true"
-        aria-label="공연 목록 로딩 중"
-      >
-        <div
-          v-for="index in skeletonCount"
-          :key="index"
-          class="animate-pulse overflow-hidden rounded-3xl bg-[var(--card-background-color)]"
-          :class="viewMode === 'list' ? 'flex flex-row items-stretch gap-4 p-4 sm:gap-5 sm:p-5' : ''"
-        >
-          <div
-            class="shrink-0 bg-[var(--line-component-background-color)]"
-            :class="
-              viewMode === 'grid'
-                ? 'aspect-[4/3] w-full'
-                : 'h-[7.5rem] w-[7.5rem] rounded-[0.875rem]'
-            "
-          />
-          <div
-            class="flex flex-1 flex-col justify-evenly"
-            :class="viewMode === 'list' ? 'h-[7.5rem]' : 'gap-2 p-4'"
-          >
-            <div class="h-4 w-3/4 rounded bg-[var(--line-component-background-color)]" />
-            <div class="h-3 w-1/2 rounded bg-[var(--line-component-background-color)]" />
-            <div class="h-3 w-2/3 rounded bg-[var(--line-component-background-color)]" />
-          </div>
-        </div>
-      </div>
+        :count="PERFORMANCE_PAGE_SIZE"
+        :variant="viewMode"
+        label="공연 목록 로딩 중"
+      />
 
       <p
         v-else-if="errorMessage && performances.length === 0"
