@@ -1,4 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import {
+  PAGE_TITLES,
+  getPerformanceListPageTitle,
+  setPageTitle,
+} from '@/utils/pageTitle'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,6 +58,28 @@ const router = createRouter({
       meta: { layout: 'auth' },
     },
   ],
+})
+
+router.afterEach((to) => {
+  switch (to.name) {
+    case 'home':
+      setPageTitle(PAGE_TITLES.home)
+      break
+    case 'search':
+      setPageTitle(PAGE_TITLES.search)
+      break
+    case 'performances':
+      setPageTitle(
+        getPerformanceListPageTitle(
+          to.query.genre ? String(to.query.genre) : undefined,
+        ),
+      )
+      break
+    case 'performance-detail':
+      break
+    default:
+      setPageTitle(PAGE_TITLES.default)
+  }
 })
 
 export default router
