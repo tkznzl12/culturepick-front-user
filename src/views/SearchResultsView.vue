@@ -3,6 +3,9 @@ import { ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppPagination from '@/components/common/AppPagination.vue'
 import EventCard from '@/components/card/EventCard.vue'
+import CountSkeleton from '@/components/skeleton/CountSkeleton.vue'
+import EventCardGridSkeleton from '@/components/skeleton/EventCardGridSkeleton.vue'
+import { SEARCH_PAGE_SIZE } from '@/constants/search'
 import HeroFloatingButtons from '@/components/layout/HeroFloatingButtons.vue'
 import { useSearchResults } from '@/composables/useSearchResults'
 import { SiteRouter } from '@/constants/routes'
@@ -85,15 +88,19 @@ function onSupport() {
         <p class="mb-8 text-left text-base text-[var(--dark-mode-main-font-color)] sm:text-lg">
           <span class="font-semibold text-[var(--hover-point-text)]">"{{ keyword }}"</span>
           검색 결과
-          <span class="text-[var(--caption-text-color)]">({{ totalCount }}개)</span>
+          <span class="text-[var(--caption-text-color)]">
+            (
+            <CountSkeleton v-if="isLoading && results.length === 0" />
+            <template v-else>{{ totalCount }}</template>
+            개)
+          </span>
         </p>
 
-        <p
+        <EventCardGridSkeleton
           v-if="isLoading && results.length === 0"
-          class="py-16 text-left text-[var(--dark-mode-content-font-color)]"
-        >
-          검색 중...
-        </p>
+          :count="SEARCH_PAGE_SIZE"
+          label="검색 결과 로딩 중"
+        />
 
         <p
           v-else-if="errorMessage && results.length === 0"
