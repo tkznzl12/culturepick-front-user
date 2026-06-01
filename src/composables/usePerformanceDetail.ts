@@ -3,6 +3,11 @@ import { useRoute } from 'vue-router'
 import { fetchPerformanceDetail } from '@/api/performanceDetail'
 import type { PerformanceDetailData } from '@/types/performanceDetail'
 import type { GenreTagType, StatusTagType } from '@/types/tag'
+import {
+  PAGE_TITLES,
+  getPerformanceDetailPageTitle,
+  setPageTitle,
+} from '@/utils/pageTitle'
 
 export function usePerformanceDetail() {
   const route = useRoute()
@@ -71,6 +76,18 @@ export function usePerformanceDetail() {
   }
 
   watch(id, loadDetail, { immediate: true })
+
+  watch(
+    [() => data.value?.title, isLoading],
+    ([title, loading]) => {
+      if (route.name !== 'performance-detail') return
+      if (title) {
+        setPageTitle(getPerformanceDetailPageTitle(title))
+      } else if (!loading) {
+        setPageTitle(PAGE_TITLES.default)
+      }
+    },
+  )
 
   return {
     id,
