@@ -5,6 +5,7 @@ export const PAGE_TITLES = {
   home: '컬처픽',
   search: '컬처픽 검색',
   performanceListAll: '컬처픽 | 전체 공연',
+  notFound: '페이지를 찾을 수 없음 | 컬처픽',
   default: '컬처픽',
 } as const
 

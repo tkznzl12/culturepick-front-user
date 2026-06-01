@@ -37,6 +37,11 @@ const router = createRouter({
           name: 'about',
           component: () => import('../views/AboutView.vue'),
         },
+        {
+          path: ':pathMatch(.*)*',
+          name: 'not-found',
+          component: () => import('../views/NotFoundView.vue'),
+        },
       ],
     },
     {
@@ -76,6 +81,9 @@ router.afterEach((to) => {
       )
       break
     case 'performance-detail':
+      break
+    case 'not-found':
+      setPageTitle(PAGE_TITLES.notFound)
       break
     default:
       setPageTitle(PAGE_TITLES.default)
