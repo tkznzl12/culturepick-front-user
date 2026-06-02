@@ -202,7 +202,7 @@ function isStatusActive(code: string | undefined, activeStatus?: string) {
 
 .performance-filters__group {
   display: flex;
-  flex: 1 1 16rem;
+  flex: 1 1;
   flex-direction: column;
   gap: 0.75rem;
   min-width: min(100%, 16rem);
