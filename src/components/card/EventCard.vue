@@ -244,6 +244,7 @@ function onToggleFavorite(event: MouseEvent) {
   }
 
   .event-card__tags {
+    order: -1;
     flex: 1 1 100%;
     flex-direction: row;
     flex-wrap: wrap;
@@ -253,7 +254,6 @@ function onToggleFavorite(event: MouseEvent) {
     height: auto;
     min-height: 0;
     padding: 0;
-    padding-left: calc(var(--event-card-list-thumb) + 1rem);
   }
 }
 
@@ -262,10 +262,6 @@ function onToggleFavorite(event: MouseEvent) {
     --event-card-list-thumb: 5.5rem;
     gap: 0.75rem;
     padding: 0.75rem;
-  }
-
-  .event-card__tags {
-    padding-left: calc(var(--event-card-list-thumb) + 0.75rem);
   }
 
   .event-card__favorite--list {

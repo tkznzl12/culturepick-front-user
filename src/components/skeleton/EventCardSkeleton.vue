@@ -81,4 +81,37 @@ withDefaults(
   flex-shrink: 0;
   padding-right: 0.25rem;
 }
+
+@media (max-width: 767px) {
+  .event-card-skeleton--list {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .event-card-skeleton__body {
+    flex: 1 1 calc(100% - var(--event-card-list-thumb) - 1rem);
+    height: auto;
+    min-height: var(--event-card-list-thumb);
+  }
+
+  .event-card-skeleton__tags {
+    order: -1;
+    flex: 1 1 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+  }
+}
+
+@media (max-width: 479px) {
+  .event-card-skeleton--list {
+    --event-card-list-thumb: 5.5rem;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+}
 </style>
