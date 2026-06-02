@@ -170,4 +170,32 @@ function goNext() {
   color: var(--caption-text-color);
   user-select: none;
 }
+
+@media (max-width: 767px) {
+  .app-pagination {
+    gap: 0.375rem;
+    margin-top: 2rem;
+  }
+
+  .app-pagination__arrow,
+  .app-pagination__page,
+  .app-pagination__ellipsis {
+    min-width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .app-pagination__list {
+    gap: 0.25rem;
+  }
+
+  .app-pagination__arrow,
+  .app-pagination__page {
+    min-width: 2.5rem;
+    height: 2.75rem;
+    padding: 0 0.375rem;
+    font-size: 0.8125rem;
+  }
+}
 </style>

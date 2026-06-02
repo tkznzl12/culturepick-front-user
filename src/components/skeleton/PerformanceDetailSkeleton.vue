@@ -4,7 +4,7 @@ import SkeletonBlock from '@/components/skeleton/SkeletonBlock.vue'
 
 <template>
   <section
-    class="mx-auto w-full max-w-[var(--max-width)] px-6 py-10"
+    class="mx-auto w-full max-w-[var(--max-width)] px-4 py-8 sm:px-6 sm:py-10"
     aria-busy="true"
     aria-label="공연 상세 정보 로딩 중"
   >

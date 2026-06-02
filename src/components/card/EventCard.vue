@@ -230,4 +230,47 @@ function onToggleFavorite(event: MouseEvent) {
 .event-card__price {
   margin: 0;
 }
+
+@media (max-width: 767px) {
+  .event-card--list {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .event-card__body {
+    flex: 1 1 calc(100% - var(--event-card-list-thumb) - 1rem);
+    height: auto;
+    min-height: var(--event-card-list-thumb);
+  }
+
+  .event-card__tags {
+    flex: 1 1 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    padding-left: calc(var(--event-card-list-thumb) + 1rem);
+  }
+}
+
+@media (max-width: 479px) {
+  .event-card--list {
+    --event-card-list-thumb: 5.5rem;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .event-card__tags {
+    padding-left: calc(var(--event-card-list-thumb) + 0.75rem);
+  }
+
+  .event-card__favorite--list {
+    width: 2rem;
+    height: 2rem;
+  }
+}
 </style>

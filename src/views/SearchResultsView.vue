@@ -55,8 +55,8 @@ function onSupport() {
 </script>
 
 <template>
-  <section class="search-results relative w-full py-10 sm:py-14">
-    <div class="mx-auto w-full max-w-[var(--max-width)] px-6">
+  <section class="search-results relative w-full py-8 sm:py-14">
+    <div class="mx-auto w-full max-w-[var(--max-width)] px-4 sm:px-6">
       <form
         class="search-results__form mb-8 w-full max-w-3xl"
         role="search"
@@ -173,5 +173,11 @@ function onSupport() {
 <style scoped>
 .search-results__submit {
   background: var(--gradient-button);
+}
+
+@media (max-width: 767px) {
+  .search-results__submit {
+    min-height: 2.75rem;
+  }
 }
 </style>

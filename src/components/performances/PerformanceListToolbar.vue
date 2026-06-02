@@ -118,4 +118,21 @@ const sort = defineModel<string>('sort', { required: true })
   background: var(--gradient-button);
   color: var(--dark-mode-main-font-color);
 }
+
+@media (max-width: 767px) {
+  .performance-list-toolbar {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .performance-list-toolbar__sort-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .performance-list-toolbar__sort {
+    width: 100%;
+    min-height: 2.75rem;
+  }
+}
 </style>

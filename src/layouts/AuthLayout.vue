@@ -92,4 +92,34 @@ function goBack() {
   justify-content: center;
   padding: 4.5rem 1rem 2rem;
 }
+
+@media (max-width: 767px) {
+  .auth-layout__back {
+    top: 1rem;
+    left: 1rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0;
+  }
+
+  .auth-layout__main {
+    padding: 4rem 1rem 1.5rem;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 479px) {
+  .auth-layout__gradient--bottom {
+    width: 20rem;
+    height: 20rem;
+    right: -6rem;
+    bottom: -4rem;
+  }
+
+  .auth-layout__gradient--top {
+    width: 16rem;
+    height: 16rem;
+    left: -6rem;
+    top: -8rem;
+  }
+}
 </style>

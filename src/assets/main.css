@@ -100,6 +100,7 @@ input:focus {
   html {
     font-family: var(--font-wanted-sans);
     font-synthesis: none;
+    overflow-x: clip;
   }
 
   body {

@@ -46,16 +46,16 @@ function onSupport() {
     <div class="home-hero__overlay absolute inset-0" aria-hidden="true" />
 
     <div
-      class="home-hero__content relative z-[1] mx-auto flex w-full max-w-[var(--max-width)] flex-1 flex-col items-center justify-center px-6 py-16 text-center"
+      class="home-hero__content relative z-[1] mx-auto flex w-full max-w-[var(--max-width)] flex-1 flex-col items-center justify-center px-4 py-10 text-center sm:px-6 sm:py-16"
     >
       <div
-        class="mb-8 inline-flex items-center gap-2 rounded-full border border-[var(--blue-tag-border-color)] bg-[var(--blue-tag-background-color)] px-4 py-2 text-sm font-medium text-[var(--blue-tag-font-color)]"
+        class="mb-8 inline-flex items-center gap-2 rounded-full border border-[var(--blue-tag-border-color)] bg-[var(--blue-tag-background-color)] px-3 py-2 text-xs font-medium text-[var(--blue-tag-font-color)] sm:px-4 sm:text-sm"
       >
         <IconAi class="block shrink-0 text-[14px]" />
         <span>AI가 나에게 맞는 공연을 추천해드려요</span>
       </div>
 
-      <h1 class="mb-6 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+      <h1 class="mb-6 max-w-3xl text-3xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
         <span class="block text-[var(--dark-mode-main-font-color)]">오늘, 어떤 공연을</span>
         <span
           class="block bg-[linear-gradient(90deg,_#51A2FF_0%,_#74D4FF_100%)] bg-clip-text text-transparent"
@@ -65,7 +65,7 @@ function onSupport() {
       </h1>
 
       <p
-        class="mb-10 max-w-2xl text-base leading-relaxed text-[var(--dark-mode-content-font-color)] sm:text-lg"
+        class="mb-10 max-w-2xl text-sm leading-relaxed text-[var(--dark-mode-content-font-color)] sm:text-lg"
       >
         국내 모든 공연 정보를 한 곳에서.
         <br />
@@ -124,5 +124,11 @@ function onSupport() {
 
 .home-hero__search-btn {
   background: var(--gradient-button);
+}
+
+@media (max-width: 767px) {
+  .home-hero__search-btn {
+    min-height: 2.75rem;
+  }
 }
 </style>

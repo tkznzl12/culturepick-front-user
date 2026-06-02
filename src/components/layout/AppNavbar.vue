@@ -309,6 +309,7 @@ function onSearchSubmit() {
     flex-wrap: wrap;
     height: auto;
     min-height: 4rem;
+    gap: 0.75rem;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
   }
@@ -320,6 +321,13 @@ function onSearchSubmit() {
   .app-navbar__nav {
     flex: 1 1 100%;
     order: 2;
+    margin: 0 -0.25rem;
+    padding: 0 0.25rem;
+  }
+
+  .app-navbar__link {
+    min-height: 2.75rem;
+    padding: 0.625rem 0.75rem;
   }
 
   .app-navbar__actions {
@@ -327,6 +335,40 @@ function onSearchSubmit() {
     order: 1;
     justify-content: flex-end;
     min-width: 0;
+    gap: 0.375rem;
+  }
+
+  .app-navbar__btn {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+
+  .app-navbar__btn--gradient {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .app-navbar__btn--line {
+    padding: 0.5rem 0.875rem;
+  }
+
+  .app-navbar__btn--user {
+    padding: 0.625rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .app-navbar__inner {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .app-navbar__logo {
+    height: 2rem;
+  }
+
+  .app-navbar__link {
+    padding: 0.625rem 0.625rem;
+    font-size: 0.8125rem;
   }
 }
 </style>

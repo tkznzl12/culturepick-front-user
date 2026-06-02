@@ -87,4 +87,15 @@ defineProps<{
 .auth-card__footer :deep(a:hover) {
   color: var(--hover-point-text);
 }
+
+@media (max-width: 767px) {
+  .auth-card {
+    padding: 1.5rem 1.25rem;
+    border-radius: 1rem;
+  }
+
+  .auth-card__title {
+    font-size: 1.375rem;
+  }
+}
 </style>

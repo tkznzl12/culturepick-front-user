@@ -252,4 +252,34 @@ function isStatusActive(code: string | undefined, activeStatus?: string) {
 .performance-filters__pill-icon {
   line-height: 1;
 }
+
+@media (max-width: 767px) {
+  .performance-filters__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .performance-filters__toggle {
+    width: 100%;
+    justify-content: center;
+    min-height: 2.75rem;
+  }
+
+  .performance-filters__pill {
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+  }
+
+  .performance-filters__panel {
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .performance-filters__panel {
+    padding: 0.875rem;
+  }
+}
 </style>

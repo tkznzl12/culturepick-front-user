@@ -79,8 +79,8 @@ function onSupport() {
 </script>
 
 <template>
-  <section class="performance-list relative w-full py-10 sm:py-14">
-    <div class="mx-auto w-full max-w-[var(--max-width)] px-6">
+  <section class="performance-list relative w-full py-8 sm:py-14">
+    <div class="mx-auto w-full max-w-[var(--max-width)] px-4 sm:px-6">
       <header class="mb-6">
         <h1
           class="flex items-center gap-2 text-2xl font-bold text-[var(--dark-mode-main-font-color)] sm:text-3xl"

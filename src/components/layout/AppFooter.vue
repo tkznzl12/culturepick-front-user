@@ -19,7 +19,7 @@ const legalLinks = [
 
 <template>
   <footer class="app-footer mt-auto border-t border-[var(--line-component-border-color)] bg-[var(--dark-mode-background-color)]">
-    <div class="mx-auto w-full max-w-[var(--max-width)] px-6 py-12">
+    <div class="mx-auto w-full max-w-[var(--max-width)] px-4 py-10 sm:px-6 sm:py-12">
       <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
         <div class="flex flex-col gap-4">
           <RouterLink to="/" class="inline-flex w-fit" aria-label="컬처픽 홈">

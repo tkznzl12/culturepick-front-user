@@ -5,7 +5,7 @@ import { SiteRouter } from '@/constants/routes'
 
 <template>
   <section
-    class="not-found mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-[var(--max-width)] flex-col items-center justify-center px-6 py-16 text-center"
+    class="not-found mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-[var(--max-width)] flex-col items-center justify-center px-4 py-12 text-center sm:px-6 sm:py-16"
     aria-labelledby="not-found-heading"
   >
     <img
@@ -30,16 +30,18 @@ import { SiteRouter } from '@/constants/routes'
       홈으로 돌아가 다시 둘러보시겠어요?
     </p>
 
-    <div class="flex flex-wrap items-center justify-center gap-3">
+    <div class="flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center">
       <CommonButton
         :href="SiteRouter.index"
         text="홈으로 가기"
         variant="gradient-shadow"
+        class="w-full sm:w-auto"
       />
       <CommonButton
         :href="SiteRouter.performanceList"
         text="공연 둘러보기"
         variant="line"
+        class="w-full sm:w-auto"
       />
     </div>
   </section>

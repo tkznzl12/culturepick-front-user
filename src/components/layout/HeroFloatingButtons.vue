@@ -78,4 +78,24 @@ const emit = defineEmits<{
 .hero-fab__btn--primary:hover {
   opacity: 0.92;
 }
+
+@media (max-width: 767px) {
+  .hero-fab {
+    bottom: 1.25rem;
+    right: 1rem;
+  }
+
+  .hero-fab__btn {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .hero-fab {
+    bottom: 1rem;
+    right: 0.75rem;
+    gap: 0.625rem;
+  }
+}
 </style>

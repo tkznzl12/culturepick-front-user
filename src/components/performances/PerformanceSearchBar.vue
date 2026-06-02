@@ -56,4 +56,12 @@ function onSubmit() {
 .performance-search__submit {
   background: var(--gradient-button);
 }
+
+@media (max-width: 767px) {
+  .performance-search__submit {
+    min-height: 2.75rem;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+}
 </style>

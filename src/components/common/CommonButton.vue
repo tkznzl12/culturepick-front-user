@@ -112,4 +112,11 @@ const variantClassMap: Record<ButtonVariant, string> = {
   width: 0.875rem;
   height: 0.875rem;
 }
+
+@media (max-width: 767px) {
+  .common-button--line {
+    min-height: 2.75rem;
+    padding: 0.625rem 1rem;
+  }
+}
 </style>

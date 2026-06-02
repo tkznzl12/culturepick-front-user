@@ -45,14 +45,14 @@ function onCopyLink() {
 
   <p
     v-else-if="errorMessage && !data"
-    class="mx-auto w-full max-w-[var(--max-width)] px-6 py-16 text-left text-[var(--red-tag-font-color)]"
+    class="mx-auto w-full max-w-[var(--max-width)] px-4 py-12 text-left text-[var(--red-tag-font-color)] sm:px-6 sm:py-16"
     role="alert"
   >
     {{ errorMessage }}
   </p>
 
-  <section v-else-if="data" class="mx-auto w-full max-w-[var(--max-width)] px-6 py-10">
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-[420px_1fr]">
+  <section v-else-if="data" class="performance-detail mx-auto w-full max-w-[var(--max-width)] px-4 py-8 sm:px-6 sm:py-10">
+    <div class="performance-detail__layout grid grid-cols-1 gap-8 lg:grid-cols-[420px_1fr]">
       <div class="flex flex-col gap-4">
         <div class="overflow-hidden rounded-3xl bg-[#12121b] shadow-lg">
           <div class="relative aspect-[4/5] w-full">
@@ -382,5 +382,30 @@ function onCopyLink() {
   color: var(--dark-mode-main-font-color);
   border: 1px solid var(--line-component-border-color);
   background: var(--line-component-background-color);
+}
+
+@media (max-width: 767px) {
+  .detail-price-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .detail-price-bar__cta {
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .detail-section__content {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .performance-detail__layout {
+    gap: 1.5rem;
+  }
 }
 </style>
