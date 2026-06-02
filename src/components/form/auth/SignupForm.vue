@@ -199,8 +199,10 @@ const passwordsMatch = computed(
 
 .auth-form__check-list {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   gap: 0.25rem;
+  width: 100%;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -208,6 +210,8 @@ const passwordsMatch = computed(
 
 .auth-form__check-item {
   display: inline-flex;
+  flex: 1 1 0;
+  min-width: 0;
   align-items: center;
   gap: 0.25rem;
   font-size: var(--font-size-caption);
@@ -236,9 +240,10 @@ const passwordsMatch = computed(
 }
 
 .auth-form__match {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.25rem;
+  width: 100%;
   font-size: var(--font-size-caption);
 }
 

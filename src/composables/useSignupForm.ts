@@ -33,6 +33,10 @@ export function useSignupForm() {
 
   const updateField = (field: keyof typeof signupData, value: string) => {
     signupData[field] = value
+
+    if (field === 'password' || field === 'password_confirm') {
+      signupError.password_confirm = ''
+    }
   }
 
   const togglePasswordVisibility = () => {

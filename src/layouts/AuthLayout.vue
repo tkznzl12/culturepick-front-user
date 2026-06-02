@@ -34,7 +34,9 @@ function goBack() {
 .auth-layout {
   position: relative;
   display: flex;
+  width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   background-color: var(--dark-mode-background-color);
 }
@@ -87,23 +89,23 @@ function goBack() {
   position: relative;
   z-index: 1;
   display: flex;
+  flex-direction: column;
   flex: 1;
   align-items: center;
-  justify-content: center;
-  padding: 4.5rem 1rem 2rem;
+  width: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: max(1rem, env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px))
+    max(1rem, env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px));
 }
 
 @media (max-width: 767px) {
   .auth-layout__back {
-    top: 1rem;
-    left: 1rem;
+    top: max(1rem, env(safe-area-inset-top, 0px));
+    left: max(1rem, env(safe-area-inset-left, 0px));
     min-height: 2.75rem;
     padding: 0.5rem 0;
-  }
-
-  .auth-layout__main {
-    padding: 4rem 1rem 1.5rem;
-    align-items: flex-start;
   }
 }
 

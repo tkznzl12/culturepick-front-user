@@ -89,7 +89,7 @@ const variantClassMap: Record<ButtonVariant, string> = {
 .common-button--gradient-shadow {
   display: flex;
   width: 100%;
-  max-width: 23.875rem;
+  max-width: 100%;
   height: 2.75rem;
   padding: 0.75rem 0;
   align-items: center;

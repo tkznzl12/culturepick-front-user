@@ -28,8 +28,12 @@ defineProps<{
 
 <style scoped>
 .auth-card {
-  width: min(100%, 28rem);
-  padding: 2rem 2.06rem 2.06rem;
+  width: 100%;
+  max-width: 28rem;
+  margin-inline: auto;
+  margin-block: auto;
+  box-sizing: border-box;
+  padding: 2rem;
   color: var(--line-component-font-color);
   background-color: var(--card-background-color);
   border: 1px solid var(--input-border-color);
