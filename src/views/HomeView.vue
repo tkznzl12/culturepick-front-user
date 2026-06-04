@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import IconAi from '@/components/icons/IconAi.vue'
 import { HERO_BG_HEIGHT, HERO_BG_WEBP, HERO_BG_WIDTH } from '@/constants/hero'
 import searchIcon from '@/assets/icons/search-icon.svg'
+import { SiteRouter } from '@/constants/routes'
 import { buildSearchRoute } from '@/utils/search-route'
 
 const HeroFloatingButtons = defineAsyncComponent(
@@ -20,7 +21,7 @@ function onHeroSearchSubmit() {
 }
 
 function onAiRecommend() {
-  // TODO: AI 추천 페이지 이동
+  router.push(SiteRouter.aiChat)
 }
 
 function onProfile() {

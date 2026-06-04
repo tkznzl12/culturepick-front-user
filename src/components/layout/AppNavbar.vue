@@ -80,10 +80,10 @@ function onSearchSubmit() {
           </button>
         </form>
 
-        <button type="button" class="app-navbar__btn app-navbar__btn--gradient">
+        <RouterLink :to="SiteRouter.aiChat" class="app-navbar__btn app-navbar__btn--gradient">
           <img :src="aiIcon" alt="" width="14" height="14" />
           <span>AI 추천</span>
-        </button>
+        </RouterLink>
 
         <RouterLink :to="SiteRouter.login" class="app-navbar__btn app-navbar__btn--line">
           로그인

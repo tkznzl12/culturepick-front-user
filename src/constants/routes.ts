@@ -11,4 +11,5 @@ export const SiteRouter = {
   changePassword: '/mypage/password',
   findAccount: '/find-account',
   performances: (id: string | number) => `/performances/${id}`,
+  aiChat: '/ai-chat',
 } as const

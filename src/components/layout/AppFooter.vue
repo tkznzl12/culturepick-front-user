@@ -61,7 +61,7 @@ const legalLinks = [
           <ul class="flex flex-col gap-2.5">
             <li>
               <RouterLink
-                to="/"
+                :to="SiteRouter.aiChat"
                 class="text-sm text-[var(--caption-text-color)] transition-colors hover:text-[var(--hover-point-text)]"
               >
                 AI 추천

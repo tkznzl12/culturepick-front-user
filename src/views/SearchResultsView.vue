@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import AppPagination from '@/components/common/AppPagination.vue'
 import EventCard from '@/components/card/EventCard.vue'
 import CountSkeleton from '@/components/skeleton/CountSkeleton.vue'
@@ -12,6 +12,7 @@ import { SiteRouter } from '@/constants/routes'
 import { navigateUnlessFavoriteClick } from '@/utils/event-card-navigation'
 import searchIcon from '@/assets/icons/search-icon.svg'
 
+const router = useRouter()
 const {
   keyword,
   pageNum,
@@ -42,7 +43,7 @@ function onSearchSubmit() {
 }
 
 function onAiRecommend() {
-  // TODO: AI 추천 페이지 이동
+  router.push(SiteRouter.aiChat)
 }
 
 function onProfile() {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import EventCard from '@/components/card/EventCard.vue'
 import HeroFloatingButtons from '@/components/layout/HeroFloatingButtons.vue'
 import PerformanceEmpty from '@/components/performances/PerformanceEmpty.vue'
@@ -15,6 +15,7 @@ import { usePerformances } from '@/composables/usePerformances'
 import { SiteRouter } from '@/constants/routes'
 import { navigateUnlessFavoriteClick } from '@/utils/event-card-navigation'
 
+const router = useRouter()
 const {
   listQuery,
   performances,
@@ -66,7 +67,7 @@ watch(
 )
 
 function onAiRecommend() {
-  // TODO: AI 추천 페이지 이동
+  router.push(SiteRouter.aiChat)
 }
 
 function onProfile() {

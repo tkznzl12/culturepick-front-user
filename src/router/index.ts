@@ -38,6 +38,11 @@ const router = createRouter({
           component: () => import('../views/AboutView.vue'),
         },
         {
+          path: 'ai-chat',
+          name: 'ai-chat',
+          component: () => import('../views/AiChatView.vue'),
+        },
+        {
           path: ':pathMatch(.*)*',
           name: 'not-found',
           component: () => import('../views/NotFoundView.vue'),
@@ -84,6 +89,9 @@ router.afterEach((to) => {
       break
     case 'not-found':
       setPageTitle(PAGE_TITLES.notFound)
+      break
+    case 'ai-chat':
+      setPageTitle(PAGE_TITLES.aiChat)
       break
     default:
       setPageTitle(PAGE_TITLES.default)
