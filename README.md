@@ -17,7 +17,18 @@ npm i or npm install
 npm run dev
 ```
 
+## 사용 기술스택
+```
+Vue + TypeScript 프로젝트
+
+상태관리 : Pinia
+라우팅 : Vue Router
+스타일 : TailwindCSS, CSS3
+빌드/개발 서버 : Vite
+```
+
 ## 사이트 Route  
 <img width="5880" height="1920" alt="userFlow (3)" src="https://github.com/user-attachments/assets/371afafb-aee5-46c3-b428-7a74d3d5dc66" />
 
-
+## 사이트맵
+<img width="3040" height="1664" alt="userFlow (4)" src="https://github.com/user-attachments/assets/d8a348c4-f66e-4506-8082-3b5ee7a3b0d5" />
