@@ -1,26 +1,27 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { fetchPerformances } from '@/api/performances'
 import { genreList, GENRE_ALL_ICON, findGenreByCode } from '@/constants/genreList'
 import { localList } from '@/constants/localList'
 import { performanceStatusList } from '@/constants/performanceStatus'
 import { PERFORMANCE_PAGE_SIZE } from '@/constants/search'
 import { getTagLabel } from '@/constants/cardTag'
-import type { PerformanceListItem, PerformanceViewMode } from '@/types/performance'
+import { usePerformanceStore } from '@/stores/performance'
+import type { PerformanceViewMode } from '@/types/performance'
 import { buildPerformanceListRoute, parsePerformanceListQuery } from '@/utils/performance-route'
 
 export function usePerformances() {
   const route = useRoute()
   const router = useRouter()
+  const performanceStore = usePerformanceStore()
 
   const listQuery = computed(() => parsePerformanceListQuery(route.query))
 
-  const performances = ref<PerformanceListItem[]>([])
-  const totalCount = ref(0)
-  const pageSize = ref(PERFORMANCE_PAGE_SIZE)
-  const isLoading = ref(false)
-  const errorMessage = ref<string | null>(null)
-  const favoriteIds = ref<Set<number>>(new Set())
+  const performances = computed(() => performanceStore.performances)
+  const totalCount = computed(() => performanceStore.total)
+  const pageSize = computed(() => performanceStore.pageSize)
+  const isLoading = computed(() => performanceStore.loading)
+  const errorMessage = computed(() => performanceStore.error)
+  const favoriteIds = ref<Set<string | number>>(new Set())
   const viewMode = ref<PerformanceViewMode>('grid')
 
   const totalPages = computed(() =>
@@ -47,24 +48,23 @@ export function usePerformances() {
   })
 
   async function loadPerformances() {
-    isLoading.value = true
-    errorMessage.value = null
+    const { genre, region, status, keyword, page, sort } = listQuery.value
 
     try {
-      const { genre, region, status, keyword, page, sort } = listQuery.value
-
-      const response = await fetchPerformances({
+      await performanceStore.fetchPerformanceList({
         genre,
         region,
         status,
         keyword,
         page,
-        size: PERFORMANCE_PAGE_SIZE,
+        pageSize: PERFORMANCE_PAGE_SIZE,
         sort,
       })
 
       const maxPage =
-        response.totalCount > 0 ? Math.ceil(response.totalCount / response.size) : 1
+        performanceStore.total > 0
+          ? Math.ceil(performanceStore.total / performanceStore.pageSize)
+          : 1
 
       if (page > maxPage) {
         await router.replace(
@@ -72,18 +72,9 @@ export function usePerformances() {
             page: maxPage === 1 ? undefined : maxPage,
           }),
         )
-        return
       }
-
-      performances.value = response.items
-      totalCount.value = response.totalCount
-      pageSize.value = response.size
     } catch {
-      errorMessage.value = '공연 목록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'
-      performances.value = []
-      totalCount.value = 0
-    } finally {
-      isLoading.value = false
+      // 에러 메시지는 store에서 관리
     }
   }
 
@@ -126,7 +117,7 @@ export function usePerformances() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  function toggleFavorite(id: number) {
+  function toggleFavorite(id: string | number) {
     const next = new Set(favoriteIds.value)
     if (next.has(id)) {
       next.delete(id)
@@ -136,7 +127,7 @@ export function usePerformances() {
     favoriteIds.value = next
   }
 
-  function isFavorite(id: number) {
+  function isFavorite(id: string | number) {
     return favoriteIds.value.has(id)
   }
 

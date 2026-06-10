@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import CardTag from '@/components/card/CardTag.vue'
 import PerformanceDetailSkeleton from '@/components/skeleton/PerformanceDetailSkeleton.vue'
 import LocationIcon from '@/assets/icons/detail-location-icon.svg?component'
@@ -38,6 +38,15 @@ function onCopyLink() {
   const url = window.location.href
   navigator.clipboard?.writeText(url)
 }
+
+watch(
+  () => data.value,
+  (detail) => {
+    isFavorite.value = Boolean(detail?.is_interested)
+    isPlanned.value = Boolean(detail?.is_watchlisted)
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

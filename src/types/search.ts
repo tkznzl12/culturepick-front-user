@@ -1,4 +1,5 @@
 import type { EventCardData } from '@/types/eventCard'
+import type { PerformanceApiItem } from '@/types/performance'
 
 export interface SearchPerformancesParams {
   keyword: string
@@ -7,7 +8,18 @@ export interface SearchPerformancesParams {
 }
 
 export interface SearchResultItem extends EventCardData {
+  performance_id: string
   isHot?: boolean
+}
+
+export interface SearchPerformancesApiResponse {
+  pageNum: number
+  pageSize: number
+  total: number
+  searchData: PerformanceApiItem[]
+  page: number
+  page_size: number
+  results: PerformanceApiItem[]
 }
 
 export interface SearchPerformancesResponse {

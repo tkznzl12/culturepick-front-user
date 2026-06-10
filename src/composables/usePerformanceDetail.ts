@@ -13,14 +13,16 @@ export function usePerformanceDetail() {
   const route = useRoute()
 
   const id = computed(() => String(route.params.id ?? ''))
-  const data = ref<PerformanceDetailData | null>(null)
-  const isLoading = ref(false)
-  const errorMessage = ref<string | null>(null)
+  const performanceDetail = ref<PerformanceDetailData | null>(null)
+  const loading = ref(false)
+  const error = ref<string | null>(null)
 
-  const genreTag = computed(() => (data.value?.genre ?? 'musical') as GenreTagType)
+  const genreTag = computed(
+    () => (performanceDetail.value?.genre ?? 'musical') as GenreTagType,
+  )
 
   const statusTag = computed<StatusTagType>(() => {
-    const raw = String(data.value?.status ?? '')
+    const raw = String(performanceDetail.value?.status ?? '')
     if (raw.includes('예정')) return 'upcomming'
     if (raw.includes('중')) return 'performing'
     if (raw.includes('완료') || raw.includes('종료')) return 'done'
@@ -28,7 +30,7 @@ export function usePerformanceDetail() {
   })
 
   const formattedDateRange = computed(() => {
-    const detail = data.value
+    const detail = performanceDetail.value
     if (!detail) return ''
     const start = detail.start_date
     const end = detail.end_date
@@ -42,11 +44,11 @@ export function usePerformanceDetail() {
   })
 
   const priceInfo = computed(
-    () => data.value?.price_info ?? data.value?.pirce_info ?? '',
+    () => performanceDetail.value?.price_info ?? performanceDetail.value?.pirce_info ?? '',
   )
 
   const castList = computed(() => {
-    const cast = data.value?.cast ?? ''
+    const cast = performanceDetail.value?.cast ?? ''
     return cast
       .replace(/\s*등\s*$/, '')
       .split(',')
@@ -56,29 +58,34 @@ export function usePerformanceDetail() {
 
   async function loadDetail() {
     if (!id.value) {
-      data.value = null
-      errorMessage.value = '공연 정보를 찾을 수 없습니다.'
-      isLoading.value = false
+      performanceDetail.value = null
+      error.value = '공연 정보를 찾을 수 없습니다.'
+      loading.value = false
       return
     }
 
-    isLoading.value = true
-    errorMessage.value = null
+    loading.value = true
+    error.value = null
 
     try {
-      data.value = await fetchPerformanceDetail(id.value)
-    } catch {
-      errorMessage.value = '공연 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'
-      data.value = null
+      const detail = await fetchPerformanceDetail(id.value)
+      if (!detail) {
+        throw new Error('empty performance detail')
+      }
+      performanceDetail.value = detail
+    } catch (err) {
+      console.error('[performance-detail] loadDetail failed:', err)
+      error.value = '공연 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'
+      performanceDetail.value = null
     } finally {
-      isLoading.value = false
+      loading.value = false
     }
   }
 
   watch(id, loadDetail, { immediate: true })
 
   watch(
-    [() => data.value?.title, isLoading],
+    [() => performanceDetail.value?.title, loading],
     ([title, loading]) => {
       if (route.name !== 'performance-detail') return
       if (title) {
@@ -91,9 +98,12 @@ export function usePerformanceDetail() {
 
   return {
     id,
-    data,
-    isLoading,
-    errorMessage,
+    performanceDetail,
+    loading,
+    error,
+    data: performanceDetail,
+    isLoading: loading,
+    errorMessage: error,
     genreTag,
     statusTag,
     formattedDateRange,

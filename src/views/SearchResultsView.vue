@@ -115,9 +115,9 @@ function onSupport() {
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <RouterLink
               v-for="item in results"
-              :key="item.id"
+              :key="item.performance_id"
               v-slot="{ navigate }"
-              :to="SiteRouter.performances(String(item.id))"
+              :to="SiteRouter.performances(String(item.performance_id))"
               custom
             >
               <div
@@ -130,7 +130,7 @@ function onSupport() {
                 <EventCard
                   v-bind="item"
                   :is-hot="item.isHot ?? false"
-                  :is-favorite="isFavorite(item.id)"
+                  :is-favorite="isFavorite(item.performance_id)"
                   @toggle-favorite="toggleFavorite"
                 />
               </div>

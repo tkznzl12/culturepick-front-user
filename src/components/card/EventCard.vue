@@ -22,7 +22,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  toggleFavorite: [id: number]
+  toggleFavorite: [id: string | number]
 }>()
 
 const genreTag = computed(() => props.genre as GenreTagType)

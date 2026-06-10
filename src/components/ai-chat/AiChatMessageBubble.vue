@@ -10,12 +10,12 @@ import type { ChatMessage } from '@/types/aiChat'
 
 const props = defineProps<{
   message: ChatMessage
-  favoriteIds?: Set<number>
+  favoriteIds?: Set<string | number>
 }>()
 
 const emit = defineEmits<{
   selectSuggestion: [text: string]
-  toggleFavorite: [id: number]
+  toggleFavorite: [id: string | number]
 }>()
 
 const isUser = computed(() => props.message.role === 'user')

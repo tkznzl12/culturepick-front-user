@@ -10,7 +10,7 @@ import { SiteRouter } from '@/constants/routes'
 
 const router = useRouter()
 const messagesContainer = ref<HTMLElement | null>(null)
-const favoriteIds = ref<Set<number>>(new Set())
+const favoriteIds = ref<Set<string | number>>(new Set())
 
 const { messages, inputText, isResponding, sendMessage, resetChat, scrollToBottom } =
   useAiChat()
@@ -40,7 +40,7 @@ function handleReset() {
   favoriteIds.value = new Set()
 }
 
-function toggleFavorite(id: number) {
+function toggleFavorite(id: string | number) {
   const next = new Set(favoriteIds.value)
   if (next.has(id)) {
     next.delete(id)
@@ -133,31 +133,11 @@ function onSupport() {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: var(--caption-text-color) var(--dark-mode-background-color);
   background-color: var(--dark-mode-background-color);
-}
-
-.ai-chat-panel__messages::-webkit-scrollbar {
-  width: 0.375rem;
 }
 
 .ai-chat-panel__messages::-webkit-scrollbar-track {
   margin: 0.75rem 0;
-  background-color: var(--dark-mode-background-color);
-}
-
-.ai-chat-panel__messages::-webkit-scrollbar-thumb {
-  background-color: var(--line-component-border-color);
-  border-radius: 9999px;
-}
-
-.ai-chat-panel__messages::-webkit-scrollbar-thumb:hover {
-  background-color: var(--caption-text-color);
-}
-
-.ai-chat-panel__messages::-webkit-scrollbar-thumb:active {
-  background-color: var(--color-primary);
 }
 
 .ai-chat-panel__messages-inner {

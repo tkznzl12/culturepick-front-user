@@ -15,12 +15,12 @@ export function useSearchResults() {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
   })
 
-  const results = ref<SearchResultItem[]>([])
+  const searchResults = ref<SearchResultItem[]>([])
   const totalCount = ref(0)
   const pageSize = ref(SEARCH_PAGE_SIZE)
   const isLoading = ref(false)
   const errorMessage = ref<string | null>(null)
-  const favoriteIds = ref<Set<number>>(new Set())
+  const favoriteIds = ref<Set<string | number>>(new Set())
   const loadedKeyword = ref('')
 
   const totalPages = computed(() =>
@@ -37,7 +37,7 @@ export function useSearchResults() {
 
   async function loadResults() {
     if (!keyword.value) {
-      results.value = []
+      searchResults.value = []
       totalCount.value = 0
       errorMessage.value = null
       loadedKeyword.value = ''
@@ -48,7 +48,7 @@ export function useSearchResults() {
     const isKeywordChange = loadedKeyword.value !== keyword.value
     if (isKeywordChange) {
       isLoading.value = true
-      results.value = []
+      searchResults.value = []
       totalCount.value = 0
       errorMessage.value = null
     }
@@ -69,15 +69,16 @@ export function useSearchResults() {
         return
       }
 
-      results.value = response.items
+      searchResults.value = response.items
       totalCount.value = response.totalCount
       pageSize.value = response.pageSize
       loadedKeyword.value = keyword.value
       errorMessage.value = null
-    } catch {
+    } catch (error) {
+      console.error('공연 검색 API 호출 실패:', error)
       errorMessage.value = '검색 결과를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'
       if (isKeywordChange) {
-        results.value = []
+        searchResults.value = []
         totalCount.value = 0
       }
     } finally {
@@ -100,7 +101,7 @@ export function useSearchResults() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  function toggleFavorite(id: number) {
+  function toggleFavorite(id: string | number) {
     const next = new Set(favoriteIds.value)
     if (next.has(id)) {
       next.delete(id)
@@ -110,7 +111,7 @@ export function useSearchResults() {
     favoriteIds.value = next
   }
 
-  function isFavorite(id: number) {
+  function isFavorite(id: string | number) {
     return favoriteIds.value.has(id)
   }
 
@@ -119,7 +120,8 @@ export function useSearchResults() {
     pageNum,
     totalPages,
     showPagination,
-    results,
+    results: searchResults,
+    searchResults,
     totalCount,
     isLoading,
     errorMessage,

@@ -73,6 +73,13 @@
   /* text */
   --font-size-body: 0.875rem;
   --font-size-caption: 0.75rem;
+
+  /* scrollbar */
+  --scrollbar-size: 0.375rem;
+  --scrollbar-track-color: var(--dark-mode-background-color);
+  --scrollbar-thumb-color: var(--line-component-border-color);
+  --scrollbar-thumb-hover-color: var(--caption-text-color);
+  --scrollbar-thumb-active-color: var(--color-primary);
 }
 
 input:-webkit-autofill,
@@ -101,6 +108,46 @@ input:focus {
     font-family: var(--font-wanted-sans);
     font-synthesis: none;
     overflow-x: clip;
+    color-scheme: dark;
+  }
+
+  html,
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+  }
+
+  html::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+  }
+
+  html::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-track-color);
+  }
+
+  html::-webkit-scrollbar-thumb,
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-color);
+    border: 2px solid var(--scrollbar-track-color);
+    border-radius: 9999px;
+  }
+
+  html::-webkit-scrollbar-thumb:hover,
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover-color);
+  }
+
+  html::-webkit-scrollbar-thumb:active,
+  *::-webkit-scrollbar-thumb:active {
+    background-color: var(--scrollbar-thumb-active-color);
+  }
+
+  html::-webkit-scrollbar-corner,
+  *::-webkit-scrollbar-corner {
+    background-color: var(--scrollbar-track-color);
   }
 
   body {

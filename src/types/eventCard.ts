@@ -4,7 +4,7 @@ export type EventGenre = GenreTagType | string
 export type EventStatus = StatusTagType | string
 
 export interface EventCardData {
-  id: number
+  id: string | number
   title: string
   genre: EventGenre
   start_date: string
