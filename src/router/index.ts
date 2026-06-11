@@ -67,6 +67,27 @@ const router = createRouter({
       component: () => import('../views/auth/SignupSuccessView.vue'),
       meta: { layout: 'auth' },
     },
+    {
+      path: '/auth/callback/google',
+      name: 'oauth-callback-google',
+      component: () => import('../views/auth/OAuthCallbackView.vue'),
+      props: { provider: 'google' },
+      meta: { layout: 'auth' },
+    },
+    {
+      path: '/auth/callback/naver',
+      name: 'oauth-callback-naver',
+      component: () => import('../views/auth/OAuthCallbackView.vue'),
+      props: { provider: 'naver' },
+      meta: { layout: 'auth' },
+    },
+    {
+      path: '/auth/callback/kakao',
+      name: 'oauth-callback-kakao',
+      component: () => import('../views/auth/OAuthCallbackView.vue'),
+      props: { provider: 'kakao' },
+      meta: { layout: 'auth' },
+    },
   ],
 })
 

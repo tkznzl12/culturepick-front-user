@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { RouterLink, useRouter, type RouteLocationRaw } from 'vue-router'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter, type RouteLocationRaw } from 'vue-router'
+import { logout } from '@/api/auth'
 import { genreList } from '@/constants'
 import { SiteRouter } from '@/constants/routes'
+import type { LogoutErrorResponse } from '@/types/auth'
+import { AUTH_CHANGED_EVENT, clearAuthCookies, getAccessToken } from '@/utils/auth-cookie'
 import { buildSearchRoute } from '@/utils/search-route'
 import aiIcon from '@/assets/icons/ai-icon.svg'
 import searchIcon from '@/assets/icons/search-icon.svg'
@@ -10,7 +13,9 @@ import userIcon from '@/assets/icons/user-icon.svg'
 import logoUrl from '@/assets/logo.svg'
 
 const router = useRouter()
+const route = useRoute()
 const searchQuery = ref('')
+const isAuthenticated = ref(false)
 
 type NavLink = {
   key: string
@@ -38,6 +43,52 @@ function onSearchSubmit() {
   if (!keyword) return
   router.push(buildSearchRoute(keyword))
 }
+
+function syncAuthState() {
+  isAuthenticated.value = Boolean(getAccessToken())
+}
+
+const handleAuthChanged = () => {
+  syncAuthState()
+}
+
+async function handleLogout() {
+  try {
+    await logout()
+    clearAuthCookies()
+    isAuthenticated.value = false
+    await router.push(SiteRouter.index)
+  } catch (error) {
+    console.error('로그아웃 중 오류 발생:', error)
+    const apiError = error as LogoutErrorResponse
+    const isAuthError =
+      apiError?.code === 'authentication_failed' ||
+      apiError?.message === '유효하지 않은 토큰입니다.' ||
+      apiError?.message === '리프레시 토큰이 필요합니다.'
+
+    if (isAuthError) {
+      clearAuthCookies()
+      isAuthenticated.value = false
+      await router.push(SiteRouter.login)
+    }
+  }
+}
+
+watch(
+  () => route.fullPath,
+  () => {
+    syncAuthState()
+  },
+  { immediate: true },
+)
+
+onMounted(() => {
+  window.addEventListener(AUTH_CHANGED_EVENT, handleAuthChanged)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener(AUTH_CHANGED_EVENT, handleAuthChanged)
+})
 </script>
 
 <template>
@@ -85,11 +136,25 @@ function onSearchSubmit() {
           <span>AI 추천</span>
         </RouterLink>
 
-        <RouterLink :to="SiteRouter.login" class="app-navbar__btn app-navbar__btn--line">
+        <button
+          v-if="isAuthenticated"
+          type="button"
+          class="app-navbar__btn app-navbar__btn--line"
+          @click="handleLogout"
+        >
+          로그아웃
+        </button>
+
+        <RouterLink v-else :to="SiteRouter.login" class="app-navbar__btn app-navbar__btn--line">
           로그인
         </RouterLink>
 
-        <button type="button" class="app-navbar__btn app-navbar__btn--user" aria-label="마이페이지">
+        <button
+          v-if="isAuthenticated"
+          type="button"
+          class="app-navbar__btn app-navbar__btn--user"
+          aria-label="마이페이지"
+        >
           <img :src="userIcon" alt="" width="16" height="16" />
         </button>
       </div>
