@@ -102,6 +102,7 @@ function onSupport() {
     </div>
 
     <HeroFloatingButtons
+      v-if="false"
       @ai-recommend="onAiRecommend"
       @profile="onProfile"
       @support="onSupport"
