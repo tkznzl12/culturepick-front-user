@@ -2,11 +2,11 @@ export type SignupRequest = {
   email: string
   password: string
   password_confirm: string
-  nickname: string
+  nickname?: string
 }
 
 export type SignupResponse = {
-  massage: string
+  message: string
 }
 
 export type LoginRequest = {
