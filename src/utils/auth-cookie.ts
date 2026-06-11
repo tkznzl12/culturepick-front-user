@@ -20,3 +20,8 @@ export const getAccessToken = () => {
   const match = document.cookie.match(new RegExp(`(^| )${ACCESS_TOKEN_KEY}=([^;]+)`))
   return match?.[2] ? decodeURIComponent(match[2]) : null
 }
+
+export const getRefreshToken = () => {
+  const match = document.cookie.match(new RegExp(`(^| )${REFRESH_TOKEN_KEY}=([^;]+)`))
+  return match?.[2] ? decodeURIComponent(match[2]) : null
+}

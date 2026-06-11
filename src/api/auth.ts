@@ -9,7 +9,7 @@ export const signup = (data: SignupRequest) => {
 }
 
 export const login = (data: LoginRequest) => {
-  return fetcher<LoginResponse>('/auth/login/', {
+  return fetcher<LoginResponse>('/api/v1/auth/login/', {
     method: 'POST',
     body: JSON.stringify(data),
   })

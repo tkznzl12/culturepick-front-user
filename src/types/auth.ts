@@ -19,6 +19,14 @@ export type LoginResponse = {
   refresh: string
 }
 
+export type LoginErrorResponse = {
+  code?: string
+  message?: string
+  detail?: {
+    detail?: string
+  }
+}
+
 export type PasswordRuleType = 'length' | 'english' | 'number' | 'special'
 
 export type SignupFormErrors = {

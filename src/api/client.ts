@@ -1,19 +1,41 @@
-import { getAccessToken } from '@/utils/auth-cookie'
+import {
+  clearAuthCookies,
+  getAccessToken,
+  getRefreshToken,
+  setAuthCookies,
+} from '@/utils/auth-cookie'
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 const refreshAccessToken = async () => {
-  const response = await fetch('/api/auth/refresh', {
-    method: 'POST',
-  })
-
-  const data = await response.json()
-
-  if (!response.ok) {
-    throw data
+  const refreshToken = getRefreshToken()
+  if (!refreshToken) {
+    throw new Error('Refresh token이 없습니다.')
   }
 
-  return data as { accessToken: string }
+  try {
+    const response = await fetch(`${BASE_URL}/api/v1/auth/token/refresh/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        refresh: refreshToken,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw data
+    }
+
+    setAuthCookies(data.access, data.refresh)
+    return data as { access: string; refresh: string }
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
 export async function fetcher<T>(endpoint: string, options?: RequestInit): Promise<T> {
@@ -31,7 +53,7 @@ export async function fetcher<T>(endpoint: string, options?: RequestInit): Promi
   if (response.status === 401) {
     try {
       const refreshData = await refreshAccessToken()
-      token = refreshData.accessToken
+      token = refreshData.access
 
       response = await fetch(`${BASE_URL}${endpoint}`, {
         ...options,
@@ -42,6 +64,8 @@ export async function fetcher<T>(endpoint: string, options?: RequestInit): Promi
         },
       })
     } catch (error) {
+      console.error(error)
+      clearAuthCookies()
       window.location.href = '/login'
       throw error
     }
