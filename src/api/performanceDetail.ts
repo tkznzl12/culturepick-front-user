@@ -4,6 +4,8 @@ import { TAG_LABELS } from '@/constants/cardTag'
 import { genreList } from '@/constants/genreList'
 import type {
   BookingLink,
+  PerformanceActionRequest,
+  PerformanceActionResponse,
   PerformanceDetailApiResponse,
   PerformanceDetailData,
   PerformanceDetailVenue,
@@ -83,4 +85,14 @@ export async function fetchPerformanceDetail(id: string): Promise<PerformanceDet
   )
 
   return mapPerformanceDetail(response)
+}
+
+export async function postPerformanceAction(
+  performanceId: string,
+  payload: PerformanceActionRequest,
+): Promise<PerformanceActionResponse> {
+  return fetcher<PerformanceActionResponse>(ApiEndpoints.performanceActions(performanceId), {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref } from 'vue'
+import { postPerformanceAction } from '@/api/performanceDetail'
 import CardTag from '@/components/card/CardTag.vue'
 import PerformanceDetailSkeleton from '@/components/skeleton/PerformanceDetailSkeleton.vue'
 import LocationIcon from '@/assets/icons/detail-location-icon.svg?component'
@@ -11,6 +12,7 @@ import ShareIcon from '@/assets/icons/shared-icon.svg?component'
 import InfoIcon from '@/assets/icons/info-icon.svg?component'
 import UsersIcon from '@/assets/icons/users-Icon.svg?component'
 import { usePerformanceDetail } from '@/composables/usePerformanceDetail'
+import type { PerformanceActionType } from '@/types/performanceDetail'
 
 const {
   data,
@@ -23,30 +25,55 @@ const {
   castList,
 } = usePerformanceDetail()
 
-const isFavorite = ref(false)
-const isPlanned = ref(false)
+const isFavorite = computed(() => Boolean(data.value?.is_interested))
+const isPlanned = computed(() => Boolean(data.value?.is_watchlisted))
+const isFavoriteActionLoading = ref(false)
+const isPlannedActionLoading = ref(false)
 
-function onToggleFavorite() {
-  isFavorite.value = !isFavorite.value
+function mapActionTypeByLabel(label: '관심' | '찜하기' | '볼 예정'): PerformanceActionType {
+  return label === '볼 예정' ? 'watchlist' : 'interest'
 }
 
-function onTogglePlanned() {
-  isPlanned.value = !isPlanned.value
+async function onToggleAction(label: '관심' | '찜하기' | '볼 예정') {
+  const detail = data.value
+  if (!detail?.performance_id) return
+
+  const actionType = mapActionTypeByLabel(label)
+  const isInterestAction = actionType === 'interest'
+  const loadingRef = isInterestAction ? isFavoriteActionLoading : isPlannedActionLoading
+
+  if (loadingRef.value) return
+
+  const nextActive = isInterestAction
+    ? !Boolean(detail.is_interested)
+    : !Boolean(detail.is_watchlisted)
+
+  loadingRef.value = true
+
+  try {
+    const response = await postPerformanceAction(detail.performance_id, {
+      action_type: actionType,
+      is_active: nextActive,
+    })
+
+    detail.is_interested = response.is_interested
+    detail.is_watchlisted = response.is_watchlisted
+
+    if (typeof response.zzim_count === 'number') {
+      detail.zzim_count = response.zzim_count
+    }
+  } catch (error) {
+    console.error('[performance-detail] toggle action failed:', error)
+    window.alert('요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.')
+  } finally {
+    loadingRef.value = false
+  }
 }
 
 function onCopyLink() {
   const url = window.location.href
   navigator.clipboard?.writeText(url)
 }
-
-watch(
-  () => data.value,
-  (detail) => {
-    isFavorite.value = Boolean(detail?.is_interested)
-    isPlanned.value = Boolean(detail?.is_watchlisted)
-  },
-  { immediate: true },
-)
 </script>
 
 <template>
@@ -85,7 +112,8 @@ watch(
             "
             :aria-label="isFavorite ? '관심 해제' : '관심'"
             :aria-pressed="isFavorite"
-            @click="onToggleFavorite"
+            :aria-busy="isFavoriteActionLoading"
+            @click="onToggleAction('관심')"
           >
             <HeartIcon
               class="detail-inline-icon"
@@ -107,7 +135,8 @@ watch(
             "
             :aria-label="isPlanned ? '볼 예정 해제' : '볼 예정'"
             :aria-pressed="isPlanned"
-            @click="onTogglePlanned"
+            :aria-busy="isPlannedActionLoading"
+            @click="onToggleAction('볼 예정')"
           >
             <UpcommingIcon
               class="detail-inline-icon"

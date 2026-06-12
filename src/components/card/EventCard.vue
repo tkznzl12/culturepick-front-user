@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { postPerformanceAction } from '@/api/performanceDetail'
 import CardTag from '@/components/card/CardTag.vue'
 import locationIcon from '@/assets/icons/location-icon.svg'
 import calenderIcon from '@/assets/icons/calender-icon.svg'
@@ -28,6 +29,7 @@ const emit = defineEmits<{
 const genreTag = computed(() => props.genre as GenreTagType)
 const statusTag = computed(() => props.status as StatusTagType)
 const isList = computed(() => props.variant === 'list')
+const isFavoriteActionLoading = ref(false)
 
 const formattedDateRange = computed(() => {
   const start = props.start_date
@@ -45,10 +47,26 @@ const formattedDateRange = computed(() => {
   return `${start} ~ ${end}`
 })
 
-function onToggleFavorite(event: MouseEvent) {
+async function onToggleFavorite(event: MouseEvent) {
   event.preventDefault()
   event.stopPropagation()
-  emit('toggleFavorite', props.id)
+
+  if (isFavoriteActionLoading.value) return
+
+  isFavoriteActionLoading.value = true
+
+  try {
+    await postPerformanceAction(String(props.id), {
+      action_type: 'interest',
+      is_active: !props.isFavorite,
+    })
+    emit('toggleFavorite', props.id)
+  } catch (error) {
+    console.error('[event-card] favorite action failed:', error)
+    window.alert('요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.')
+  } finally {
+    isFavoriteActionLoading.value = false
+  }
 }
 </script>
 
@@ -90,6 +108,7 @@ function onToggleFavorite(event: MouseEvent) {
         :class="isList ? 'event-card__favorite--list' : 'top-3 right-3 h-9 w-9'"
         :aria-label="isFavorite ? '찜 해제' : '찜하기'"
         :aria-pressed="isFavorite"
+        :aria-busy="isFavoriteActionLoading"
         @click="onToggleFavorite"
       >
         <svg

@@ -7,4 +7,6 @@ export const ApiEndpoints = {
   performances: '/api/v1/performances/',
   performanceDetail: (performanceId: string) =>
     `/api/v1/performances/${encodeURIComponent(performanceId)}/`,
+  performanceActions: (performanceId: string) =>
+    `/api/v1/performances/${encodeURIComponent(performanceId)}/actions/`,
 } as const

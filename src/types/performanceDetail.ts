@@ -79,3 +79,19 @@ export interface PerformanceDetailData {
   is_watchlisted?: boolean
 }
 
+export type PerformanceActionType = 'interest' | 'watchlist'
+
+export interface PerformanceActionRequest {
+  action_type: PerformanceActionType
+  is_active: boolean
+}
+
+export interface PerformanceActionResponse {
+  performance_id: string
+  action_type: PerformanceActionType
+  is_active: boolean
+  is_interested: boolean
+  is_watchlisted: boolean
+  zzim_count?: number
+}
+
