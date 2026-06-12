@@ -10,6 +10,7 @@ export interface SearchPerformancesParams {
 export interface SearchResultItem extends EventCardData {
   performance_id: string
   isHot?: boolean
+  is_interested?: boolean
 }
 
 export interface SearchPerformancesApiResponse {

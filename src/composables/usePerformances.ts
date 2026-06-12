@@ -61,6 +61,12 @@ export function usePerformances() {
         sort,
       })
 
+      favoriteIds.value = new Set(
+        performanceStore.performances
+          .filter((item) => Boolean(item.is_interested))
+          .map((item) => item.id),
+      )
+
       const maxPage =
         performanceStore.total > 0
           ? Math.ceil(performanceStore.total / performanceStore.pageSize)

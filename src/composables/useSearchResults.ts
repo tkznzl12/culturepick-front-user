@@ -74,6 +74,11 @@ export function useSearchResults() {
       pageSize.value = response.pageSize
       loadedKeyword.value = keyword.value
       errorMessage.value = null
+      favoriteIds.value = new Set(
+        response.items
+          .filter((item) => Boolean(item.is_interested))
+          .map((item) => item.performance_id),
+      )
     } catch (error) {
       console.error('공연 검색 API 호출 실패:', error)
       errorMessage.value = '검색 결과를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'

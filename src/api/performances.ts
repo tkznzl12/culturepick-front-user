@@ -73,6 +73,7 @@ function mapPerformanceApiItem(item: PerformanceApiItem): PerformanceListItem {
     view_count: item.view_count,
     zzim_count: item.zzim_count,
     reviewCount: item.zzim_count,
+    is_interested: Boolean(item.is_interested),
   }
 }
 

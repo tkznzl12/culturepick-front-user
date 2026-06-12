@@ -12,6 +12,7 @@ const props = withDefaults(
     EventCardData & {
       isHot?: boolean
       isFavorite?: boolean
+      is_interested?: boolean
       variant?: 'grid' | 'list'
     }
   >(),
@@ -29,6 +30,7 @@ const emit = defineEmits<{
 const genreTag = computed(() => props.genre as GenreTagType)
 const statusTag = computed(() => props.status as StatusTagType)
 const isList = computed(() => props.variant === 'list')
+const effectiveIsFavorite = computed(() => props.isFavorite || Boolean(props.is_interested))
 const isFavoriteActionLoading = ref(false)
 
 const formattedDateRange = computed(() => {
@@ -58,7 +60,7 @@ async function onToggleFavorite(event: MouseEvent) {
   try {
     await postPerformanceAction(String(props.id), {
       action_type: 'interest',
-      is_active: !props.isFavorite,
+      is_active: !effectiveIsFavorite.value,
     })
     emit('toggleFavorite', props.id)
   } catch (error) {
@@ -106,8 +108,8 @@ async function onToggleFavorite(event: MouseEvent) {
         type="button"
         class="event-card__favorite absolute flex items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50"
         :class="isList ? 'event-card__favorite--list' : 'top-3 right-3 h-9 w-9'"
-        :aria-label="isFavorite ? '찜 해제' : '찜하기'"
-        :aria-pressed="isFavorite"
+        :aria-label="effectiveIsFavorite ? '찜 해제' : '찜하기'"
+        :aria-pressed="effectiveIsFavorite"
         :aria-busy="isFavoriteActionLoading"
         @click="onToggleFavorite"
       >
@@ -116,7 +118,7 @@ async function onToggleFavorite(event: MouseEvent) {
           viewBox="0 0 24 24"
           class="event-card__favorite-icon"
           :class="isList ? 'event-card__favorite-icon--list' : 'h-5 w-5'"
-          :fill="isFavorite ? 'currentColor' : 'none'"
+          :fill="effectiveIsFavorite ? 'currentColor' : 'none'"
           stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"

@@ -12,6 +12,7 @@ export interface PerformanceListItem extends EventCardData {
   rating?: number
   reviewCount?: number
   isHot?: boolean
+  is_interested?: boolean
 }
 
 export interface PerformanceVenueApi {
@@ -35,6 +36,7 @@ export interface PerformanceApiItem {
   venue: PerformanceVenueApi
   view_count: number
   zzim_count: number
+  is_interested?: boolean
   search_score?: number
 }
 

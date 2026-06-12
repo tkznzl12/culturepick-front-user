@@ -59,6 +59,7 @@ function mapSearchItem(item: SearchPerformancesApiResponse['searchData'][number]
     status: mapStatusToCode(item.status),
     venue: item.venue?.name ?? '',
     img: item.poster_url,
+    is_interested: Boolean(item.is_interested),
   }
 }
 
