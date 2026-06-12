@@ -18,6 +18,7 @@ const handleKakaoLogin = () => {
 
 const handleNaverLogin = () => {
   window.location.href = buildNaverOAuthUrl()
+
 }
 
 const handleGoogleLogin = () => {
@@ -30,7 +31,6 @@ const handleGoogleLogin = () => {
     <AuthCard title="로그인" subtitle="컬처픽에 오신 걸 환영합니다 🥳">
       <template #prepend>
         <SocialLoginButtons
-          @kakao="handleKakaoLogin"
           @naver="handleNaverLogin"
           @google="handleGoogleLogin"
         />
