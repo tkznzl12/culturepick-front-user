@@ -62,7 +62,7 @@ const variantClassMap: Record<ButtonVariant, string> = {
   justify-content: center;
   gap: 0.375em;
   height: fit-content;
-  padding: 0.375em 0.75rem;
+  padding: 0.75rem;
   border: none;
   border-radius: 50rem;
   font-weight: var(--font-weight-medium);
@@ -70,6 +70,7 @@ const variantClassMap: Record<ButtonVariant, string> = {
   text-decoration: none;
   cursor: pointer;
   transition: opacity 0.2s ease;
+  white-space: nowrap;
 }
 
 .common-button:disabled {
@@ -91,7 +92,7 @@ const variantClassMap: Record<ButtonVariant, string> = {
   width: 100%;
   max-width: 100%;
   height: 2.75rem;
-  padding: 0.75rem 0;
+  padding: 0.75rem;
   align-items: center;
   justify-content: center;
   border-radius: 0.875rem;
