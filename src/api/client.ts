@@ -1,11 +1,10 @@
+import { API_BASE_URL } from '@/api/index'
 import {
   clearAuthCookies,
   getAccessToken,
   getRefreshToken,
   setAuthCookies,
 } from '@/utils/auth-cookie'
-
-const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 const refreshAccessToken = async () => {
   const refreshToken = getRefreshToken()
@@ -14,7 +13,7 @@ const refreshAccessToken = async () => {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/api/v1/auth/token/refresh/`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/token/refresh/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +40,7 @@ const refreshAccessToken = async () => {
 export async function fetcher<T>(endpoint: string, options?: RequestInit): Promise<T> {
   let token = getAccessToken()
 
-  let response = await fetch(`${BASE_URL}${endpoint}`, {
+  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -55,7 +54,7 @@ export async function fetcher<T>(endpoint: string, options?: RequestInit): Promi
       const refreshData = await refreshAccessToken()
       token = refreshData.access
 
-      response = await fetch(`${BASE_URL}${endpoint}`, {
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
         headers: {
           'Content-Type': 'application/json',

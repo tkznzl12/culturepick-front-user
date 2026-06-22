@@ -7,6 +7,7 @@ import type {
   PerformanceActionRequest,
   PerformanceActionResponse,
   PerformanceDetailApiResponse,
+  PerformanceDetailImage,
   PerformanceDetailData,
   PerformanceDetailVenue,
 } from '@/types/performanceDetail'
@@ -45,6 +46,18 @@ function normalizeBookingLinks(links: BookingLink[] | undefined): BookingLink[] 
     }))
 }
 
+function normalizeDetailImageUrls(
+  imageUrls: string[] | undefined,
+  images: PerformanceDetailImage[] | undefined,
+): string[] {
+  const normalizedFromImageUrl = (imageUrls ?? []).filter((url): url is string => Boolean(url))
+  if (normalizedFromImageUrl.length > 0) return normalizedFromImageUrl
+
+  return (images ?? [])
+    .map((image) => image?.image_url ?? image?.url ?? '')
+    .filter((url): url is string => Boolean(url))
+}
+
 function mapPerformanceDetail(item: PerformanceDetailApiResponse): PerformanceDetailData {
   const venue = normalizeVenue(item.venue)
   const bookingLinks = normalizeBookingLinks(item.booking_links)
@@ -61,7 +74,6 @@ function mapPerformanceDetail(item: PerformanceDetailApiResponse): PerformanceDe
     runtime: item.runtime ?? '',
     age_rating: item.age_rating ?? '',
     synopsis: item.synopsis ?? '',
-    story: item.synopsis ?? '',
     price_info: item.price_info ?? '',
     pirce_info: item.price_info ?? '',
     schedule_info: item.schedule_info ?? '',
@@ -71,7 +83,7 @@ function mapPerformanceDetail(item: PerformanceDetailApiResponse): PerformanceDe
     venue,
     venues: venue.name ?? '',
     local: venue.sido ?? '',
-    images: item.images ?? [],
+    image_url: normalizeDetailImageUrls(item.image_url, item.images),
     booking_links: bookingLinks,
     bookingLink: bookingLinks,
     is_interested: Boolean(item.is_interested),

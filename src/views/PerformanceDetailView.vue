@@ -244,9 +244,16 @@ function onCopyLink() {
               </span>
               공연 소개
             </h2>
-            <p class="detail-section__content">
-              {{ data.story }}
-            </p>
+            <div class="detail-section__content">
+              <pre class="detail-section__synopsis">{{ data.synopsis }}</pre>
+              <img
+                v-for="(image, index) in data.image_url"
+                :key="index"
+                :src="image"
+                :alt="`${data.title} 상세 이미지 ${index + 1}`"
+                class="detail-section__image"
+              />
+            </div>
           </section>
 
           <section class="detail-section">
@@ -405,9 +412,25 @@ function onCopyLink() {
 }
 
 .detail-section__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
   color: var(--dark-mode-content-font-color);
   line-height: 1.7;
   font-size: 0.95rem;
+}
+
+.detail-section__synopsis {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.detail-section__image {
+  display: block;
+  width: 100%;
+  border-radius: 0.75rem;
+  object-fit: cover;
 }
 
 .detail-chip {

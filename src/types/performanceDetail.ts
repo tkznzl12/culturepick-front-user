@@ -38,7 +38,8 @@ export interface PerformanceDetailApiResponse {
   view_count: number
   zzim_count: number
   venue: PerformanceDetailVenue
-  images: PerformanceDetailImage[]
+  image_url?: string[]
+  images?: PerformanceDetailImage[]
   booking_links: BookingLink[]
   is_interested: boolean
   is_watchlisted: boolean
@@ -57,7 +58,7 @@ export interface PerformanceDetailData {
   crew: string
   runtime: string
   age_rating: string
-  synopsis?: string
+  synopsis: string
   schedule_info?: string
 
   /** 서버/기획에서 `pirce_info`로 내려오는 케이스도 방어 */
@@ -70,9 +71,8 @@ export interface PerformanceDetailData {
 
   local: string
   venues: string
-  story: string
+  image_url: string[]
   venue?: PerformanceDetailVenue
-  images?: PerformanceDetailImage[]
   view_count?: number
   zzim_count?: number
   is_interested?: boolean
