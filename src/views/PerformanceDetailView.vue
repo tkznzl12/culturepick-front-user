@@ -11,7 +11,7 @@ import UpcommingIcon from '@/assets/icons/upcomming-icon.svg?component'
 import ShareIcon from '@/assets/icons/shared-icon.svg?component'
 import InfoIcon from '@/assets/icons/info-icon.svg?component'
 import UsersIcon from '@/assets/icons/users-Icon.svg?component'
-import KakaoMap from '@/components/common/KakaoMap.vue'
+import NaverMap from '@/components/common/NaverMap.vue'
 import { usePerformanceDetail } from '@/composables/usePerformanceDetail'
 import type { PerformanceActionType } from '@/types/performanceDetail'
 
@@ -34,11 +34,6 @@ const shouldShowVenueMap = computed(() => {
   const venue = data.value?.venue
   if (!venue?.latitude || !venue?.longitude) return false
   return Number.isFinite(venueLatitude.value) && Number.isFinite(venueLongitude.value)
-})
-const kakaoMapLink = computed(() => {
-  const venue = data.value?.venue
-  if (!venue?.name || !venue?.latitude || !venue?.longitude) return ''
-  return `https://map.kakao.com/link/map/${venue.name},${venue.latitude},${venue.longitude}`
 })
 
 const isFavoriteActionLoading = ref(false)
@@ -89,9 +84,13 @@ function onCopyLink() {
   navigator.clipboard?.writeText(url)
 }
 
-function onOpenKakaoMapDirections() {
-  if (!kakaoMapLink.value) return
-  window.open(kakaoMapLink.value, '_blank')
+function openNaverMap() {
+  const venue = data.value?.venue
+  const query = venue?.address || venue?.name
+  if (!query) return
+
+  const url = `https://map.naver.com/v5/search/${encodeURIComponent(query)}`
+  window.open(url, '_blank')
 }
 </script>
 
@@ -196,18 +195,18 @@ function onOpenKakaoMapDirections() {
             </p>
           </div>
 
-          <KakaoMap
-            class="performance-location__map"
+          <NaverMap
             :latitude="venueLatitude"
             :longitude="venueLongitude"
+            :venue-name="data.venue?.name"
           />
 
           <button
             type="button"
-            class="performance-location__directions-button"
-            @click="onOpenKakaoMapDirections"
+            class="map-link-button"
+            @click="openNaverMap"
           >
-            카카오맵에서 길찾기
+            네이버 지도에서 보기
           </button>
         </section>
       </div>
@@ -502,7 +501,7 @@ function onOpenKakaoMapDirections() {
 }
 
 .venue-info {
-  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 .venue-name {
@@ -516,29 +515,42 @@ function onOpenKakaoMapDirections() {
   color: var(--text-secondary);
 }
 
-.performance-location__map {
-  margin-top: 12px;
-}
-
-.performance-location__directions-button {
-  margin-top: 12px;
+.map-link-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 2.75rem;
-  border-radius: 0.85rem;
-  border: 1px solid rgb(81 162 255 / 0.35);
-  background: rgb(81 162 255 / 0.18);
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgb(81 162 255 / 0.38);
+  background: linear-gradient(90deg, rgb(81 162 255 / 0.22) 0%, rgb(81 162 255 / 0.12) 100%);
   color: var(--dark-mode-main-font-color);
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 700;
-  transition: opacity 0.15s ease;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.performance-location__directions-button:hover {
-  opacity: 0.92;
+.map-link-button:hover {
+  opacity: 0.95;
+  box-shadow: 0 8px 20px rgb(81 162 255 / 0.22);
 }
+
+.map-link-button:active {
+  transform: translateY(1px);
+}
+
+.map-link-button:focus-visible {
+  outline: 2px solid rgb(81 162 255 / 0.6);
+  outline-offset: 2px;
+}
+
 
 @media (max-width: 767px) {
   .detail-price-bar {
