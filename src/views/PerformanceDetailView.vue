@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import { postPerformanceAction } from '@/api/performanceDetail'
 import CardTag from '@/components/card/CardTag.vue'
 import PerformanceDetailSkeleton from '@/components/skeleton/PerformanceDetailSkeleton.vue'
@@ -38,6 +38,8 @@ const shouldShowVenueMap = computed(() => {
 
 const isFavoriteActionLoading = ref(false)
 const isPlannedActionLoading = ref(false)
+const isCopyToastVisible = ref(false)
+let copyToastTimer: ReturnType<typeof setTimeout> | null = null
 
 function mapActionTypeByLabel(label: '관심' | '찜하기' | '볼 예정'): PerformanceActionType {
   return label === '볼 예정' ? 'watchlist' : 'interest'
@@ -79,9 +81,42 @@ async function onToggleAction(label: '관심' | '찜하기' | '볼 예정') {
   }
 }
 
-function onCopyLink() {
+function showCopyToast() {
+  isCopyToastVisible.value = true
+
+  if (copyToastTimer) {
+    clearTimeout(copyToastTimer)
+  }
+
+  copyToastTimer = setTimeout(() => {
+    isCopyToastVisible.value = false
+    copyToastTimer = null
+  }, 2000)
+}
+
+async function onCopyLink() {
   const url = window.location.href
-  navigator.clipboard?.writeText(url)
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url)
+    } else {
+      const textarea = document.createElement('textarea')
+      textarea.value = url
+      textarea.setAttribute('readonly', '')
+      textarea.style.position = 'absolute'
+      textarea.style.left = '-9999px'
+      document.body.appendChild(textarea)
+      textarea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textarea)
+    }
+
+    showCopyToast()
+  } catch (error) {
+    console.error('[performance-detail] copy link failed:', error)
+    window.alert('링크 복사에 실패했습니다. 잠시 후 다시 시도해 주세요.')
+  }
 }
 
 function openNaverMap() {
@@ -92,9 +127,34 @@ function openNaverMap() {
   const url = `https://map.naver.com/v5/search/${encodeURIComponent(query)}`
   window.open(url, '_blank')
 }
+
+onBeforeUnmount(() => {
+  if (copyToastTimer) {
+    clearTimeout(copyToastTimer)
+    copyToastTimer = null
+  }
+})
 </script>
 
 <template>
+  <Transition
+    enter-active-class="transition duration-200 ease-out"
+    enter-from-class="-translate-y-2 opacity-0"
+    enter-to-class="translate-y-0 opacity-100"
+    leave-active-class="transition duration-150 ease-in"
+    leave-from-class="translate-y-0 opacity-100"
+    leave-to-class="-translate-y-2 opacity-0"
+  >
+    <div
+      v-if="isCopyToastVisible"
+      class="fixed top-4 left-1/2 z-[70] -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur"
+      role="status"
+      aria-live="polite"
+    >
+      클립보드에 복사가 되었습니다!
+    </div>
+  </Transition>
+
   <PerformanceDetailSkeleton v-if="isLoading && !data" />
 
   <p

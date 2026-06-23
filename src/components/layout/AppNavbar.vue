@@ -31,12 +31,12 @@ function toGenreRoute(code: string): RouteLocationRaw {
 
 const navLinks = computed<NavLink[]>(() => [
   { key: 'home', label: '공연', to: SiteRouter.performanceList },
-  { key: 'community', label: '커뮤니티', to: SiteRouter.community },
   ...genreList.map((genre) => ({
     key: `genre-${genre.code || genre.name}`,
     label: genre.name,
     to: toGenreRoute(genre.code),
   })),
+  { key: 'community', label: '자유게시판', to: SiteRouter.community },
 ])
 
 function onSearchSubmit() {

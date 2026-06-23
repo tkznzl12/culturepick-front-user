@@ -67,6 +67,14 @@ const legalLinks = [
                 AI 추천
               </RouterLink>
             </li>
+            <li>
+              <RouterLink
+                to="/community"
+                class="text-sm text-[var(--caption-text-color)] transition-colors hover:text-[var(--hover-point-text)]"
+              >
+                자유게시판
+              </RouterLink>
+            </li>
           </ul>
         </div>
 

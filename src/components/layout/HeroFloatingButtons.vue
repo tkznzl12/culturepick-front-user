@@ -33,14 +33,7 @@ const emit = defineEmits<{
       <img :src="userIcon" alt="" width="20" height="20" class="block" />
     </button>
 
-    <button
-      type="button"
-      class="hero-fab__btn pointer-events-auto"
-      aria-label="고객지원"
-      @click="emit('support')"
-    >
-      <img :src="qnaIcon" alt="" width="20" height="20" class="block" />
-    </button>
+
   </div>
 </template>
 
