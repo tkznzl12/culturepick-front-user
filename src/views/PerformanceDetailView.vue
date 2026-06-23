@@ -183,7 +183,7 @@ function openNaverMap() {
         </div>
 
         <section v-if="shouldShowVenueMap" class="performance-location">
-          <h3>📍 공연 위치</h3>
+          <h3>공연장 위치</h3>
 
           <div class="venue-info">
             <p class="venue-name">
