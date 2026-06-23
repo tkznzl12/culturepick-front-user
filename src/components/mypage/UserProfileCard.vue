@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { MyPageTab, UserProfile } from '@/mocks/mypage.mock'
+import { computed } from 'vue'
+import type { MyPageTab, UserProfile } from '@/types/mypage'
 
 interface StatItem {
   key: MyPageTab
@@ -7,7 +8,7 @@ interface StatItem {
   count: number
 }
 
-defineProps<{
+const props = defineProps<{
   profile: UserProfile
   stats: StatItem[]
   activeTab: MyPageTab
@@ -16,6 +17,8 @@ defineProps<{
 const emit = defineEmits<{
   changeTab: [tab: MyPageTab]
 }>()
+
+const avatarText = computed(() => props.profile.nickname.trim().charAt(0) || '?')
 </script>
 
 <template>
@@ -28,7 +31,7 @@ const emit = defineEmits<{
           class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--blue-tag-background-color)] text-sm font-semibold text-[var(--blue-tag-font-color)]"
           aria-hidden="true"
         >
-          정
+          {{ avatarText }}
         </div>
         <div class="min-w-0">
           <h1 class="truncate text-xl font-bold text-[var(--dark-mode-main-font-color)]">

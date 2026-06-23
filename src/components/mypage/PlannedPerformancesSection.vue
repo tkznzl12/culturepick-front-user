@@ -3,12 +3,14 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import CommonButton from '@/components/common/CommonButton.vue'
 import { SiteRouter } from '@/constants/routes'
-import type { PlannedPerformance } from '@/mocks/mypage.mock'
+import type { PlannedPerformance } from '@/types/mypage'
 
 const props = defineProps<{
   items: PlannedPerformance[]
+  totalCount: number
 }>()
 
+const scheduledItems = computed(() => props.items.filter((item) => item.status === 'scheduled'))
 const ongoingItems = computed(() => props.items.filter((item) => item.status === 'ongoing'))
 const endedItems = computed(() => props.items.filter((item) => item.status === 'ended'))
 </script>
@@ -17,14 +19,46 @@ const endedItems = computed(() => props.items.filter((item) => item.status === '
   <section>
     <header class="mb-4 flex items-center justify-between gap-3">
       <h2 class="text-xl font-bold text-[var(--dark-mode-main-font-color)]">
-        볼 예정 공연 {{ items.length }}
+        볼 예정 공연 {{ totalCount }}
       </h2>
-      <CommonButton variant="line" text="공연 추가" :href="SiteRouter.performanceList" />
+
     </header>
 
     <div class="space-y-6">
       <section>
-        <h3 class="mb-3 text-sm font-semibold text-[var(--dark-mode-main-font-color)]">진행중 공연</h3>
+        <h3 class="mb-3 text-sm font-semibold text-[var(--dark-mode-main-font-color)]">
+          공연예정 {{ scheduledItems.length }}
+        </h3>
+        <div v-if="scheduledItems.length > 0" class="space-y-3">
+          <RouterLink
+            v-for="item in scheduledItems"
+            :key="item.id"
+            :to="SiteRouter.performances(item.id)"
+            class="mypage-planned-item"
+          >
+            <div class="min-w-0">
+              <p class="truncate text-base font-semibold text-[var(--dark-mode-main-font-color)]">
+                {{ item.title }}
+              </p>
+              <p class="mt-1 text-sm text-[var(--caption-text-color)]">
+                {{ item.venue || '공연장 정보 확인' }} · {{ item.startDate }} ~ {{ item.endDate }}
+              </p>
+            </div>
+            <span class="mypage-planned-badge mypage-planned-badge--scheduled">예정</span>
+          </RouterLink>
+        </div>
+        <p
+          v-else
+          class="p-1 text-sm text-[var(--caption-text-color)]"
+        >
+          예정된 공연이 없습니다.
+        </p>
+      </section>
+
+      <section>
+        <h3 class="mb-3 text-sm font-semibold text-[var(--dark-mode-main-font-color)]">
+          진행중 {{ ongoingItems.length }}
+        </h3>
         <div v-if="ongoingItems.length > 0" class="space-y-3">
           <RouterLink
             v-for="item in ongoingItems"
@@ -37,7 +71,7 @@ const endedItems = computed(() => props.items.filter((item) => item.status === '
                 {{ item.title }}
               </p>
               <p class="mt-1 text-sm text-[var(--caption-text-color)]">
-                {{ item.startDate }} ~ {{ item.endDate }}
+                {{ item.venue || '공연장 정보 확인' }} · {{ item.startDate }} ~ {{ item.endDate }}
               </p>
             </div>
             <span class="mypage-planned-badge mypage-planned-badge--ongoing">진행중</span>
@@ -45,14 +79,16 @@ const endedItems = computed(() => props.items.filter((item) => item.status === '
         </div>
         <p
           v-else
-          class="rounded-xl border border-[var(--line-component-border-color)] bg-[var(--line-component-background-color)] p-4 text-sm text-[var(--caption-text-color)]"
+          class="p-1 text-sm text-[var(--caption-text-color)]"
         >
           진행중인 공연이 없습니다.
         </p>
       </section>
 
       <section>
-        <h3 class="mb-3 text-sm font-semibold text-[var(--dark-mode-main-font-color)]">공연종료</h3>
+        <h3 class="mb-3 text-sm font-semibold text-[var(--dark-mode-main-font-color)]">
+          공연종료 {{ endedItems.length }}
+        </h3>
         <div v-if="endedItems.length > 0" class="space-y-3">
           <RouterLink
             v-for="item in endedItems"
@@ -65,7 +101,7 @@ const endedItems = computed(() => props.items.filter((item) => item.status === '
                 {{ item.title }}
               </p>
               <p class="mt-1 text-sm text-[var(--caption-text-color)]">
-                {{ item.startDate }} ~ {{ item.endDate }}
+                {{ item.venue || '공연장 정보 확인' }} · {{ item.startDate }} ~ {{ item.endDate }}
               </p>
             </div>
             <span class="mypage-planned-badge mypage-planned-badge--ended">종료</span>
@@ -73,7 +109,7 @@ const endedItems = computed(() => props.items.filter((item) => item.status === '
         </div>
         <p
           v-else
-          class="rounded-xl border border-[var(--line-component-border-color)] bg-[var(--line-component-background-color)] p-4 text-sm text-[var(--caption-text-color)]"
+          class="p-1 text-sm text-[var(--caption-text-color)]"
         >
           종료된 공연이 없습니다.
         </p>
@@ -118,6 +154,12 @@ const endedItems = computed(() => props.items.filter((item) => item.status === '
   color: var(--green-tag-font-color);
   border-color: var(--green-tag-border-color);
   background-color: var(--green-tag-background-color);
+}
+
+.mypage-planned-badge--scheduled {
+  color: var(--blue-tag-font-color);
+  border-color: var(--blue-tag-border-color);
+  background-color: var(--blue-tag-background-color);
 }
 
 .mypage-planned-badge--ended {

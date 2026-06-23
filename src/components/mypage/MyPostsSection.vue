@@ -3,18 +3,12 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import CommonButton from '@/components/common/CommonButton.vue'
 import { SiteRouter } from '@/constants/routes'
-import type { MyPost } from '@/mocks/mypage.mock'
+import type { MyPost } from '@/types/mypage'
 
 const props = defineProps<{
   items: MyPost[]
+  totalCount: number
 }>()
-
-const categoryLabelMap: Record<MyPost['category'], string> = {
-  review: '공연후기',
-  recommend: '공연추천',
-  info: '정보공유',
-  free: '자유토론',
-}
 
 const badgeClassMap: Record<MyPost['category'], string> = {
   review: 'mypage-post-badge--blue',
@@ -26,7 +20,6 @@ const badgeClassMap: Record<MyPost['category'], string> = {
 const postRows = computed(() =>
   props.items.map((item) => ({
     ...item,
-    categoryLabel: categoryLabelMap[item.category],
     badgeClass: badgeClassMap[item.category],
   })),
 )
@@ -36,7 +29,7 @@ const postRows = computed(() =>
   <section>
     <header class="mb-4 flex items-center justify-between gap-3">
       <h2 class="text-xl font-bold text-[var(--dark-mode-main-font-color)]">
-        내가 작성한 글 {{ items.length }}
+        내가 작성한 글 {{ totalCount }}
       </h2>
       <CommonButton variant="line" text="글쓰기" :href="SiteRouter.communityCreate" />
     </header>

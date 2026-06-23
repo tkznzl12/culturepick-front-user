@@ -4,11 +4,12 @@ import { RouterLink } from 'vue-router'
 import EventCard from '@/components/card/EventCard.vue'
 import CommonButton from '@/components/common/CommonButton.vue'
 import { SiteRouter } from '@/constants/routes'
-import type { FavoritePerformance } from '@/mocks/mypage.mock'
+import type { FavoritePerformance } from '@/types/mypage'
 import type { EventCardData } from '@/types/eventCard'
 
 const props = defineProps<{
   items: FavoritePerformance[]
+  totalCount: number
 }>()
 
 const cardItems = computed<EventCardData[]>(() =>
@@ -20,8 +21,8 @@ const cardItems = computed<EventCardData[]>(() =>
     end_date: item.endDate,
     genre: item.category,
     status: 'performing',
-    venue: '공연장 정보 확인',
-    price_info: '상세 보기',
+    venue: item.venue || '공연장 정보 확인',
+    price_info: '',
   })),
 )
 </script>
@@ -30,12 +31,12 @@ const cardItems = computed<EventCardData[]>(() =>
   <section>
     <header class="mb-4 flex items-center justify-between gap-3">
       <h2 class="text-xl font-bold text-[var(--dark-mode-main-font-color)]">
-        좋아요 한 공연 {{ items.length }}
+        좋아요 한 공연 {{ totalCount }}
       </h2>
-      <CommonButton variant="line" text="공연 탐색" :href="SiteRouter.performanceList" />
+    
     </header>
 
-    <div v-if="cardItems.length > 0" class="mypage-favorite-grid grid grid-cols-3 gap-4">
+    <div v-if="cardItems.length > 0" class="mypage-favorite-grid grid grid-cols-5 gap-4">
       <RouterLink
         v-for="item in cardItems"
         :key="item.id"
@@ -48,7 +49,7 @@ const cardItems = computed<EventCardData[]>(() =>
 
     <div
       v-else
-      class="rounded-2xl border border-[var(--line-component-border-color)] bg-[var(--card-background-color)] p-10 text-center text-[var(--caption-text-color)]"
+      class="p-2 text-center text-[var(--caption-text-color)]"
     >
       아직 좋아요 한 공연이 없습니다.
     </div>
