@@ -31,6 +31,7 @@ function toGenreRoute(code: string): RouteLocationRaw {
 
 const navLinks = computed<NavLink[]>(() => [
   { key: 'home', label: '공연', to: SiteRouter.performanceList },
+  { key: 'community', label: '커뮤니티', to: SiteRouter.community },
   ...genreList.map((genre) => ({
     key: `genre-${genre.code || genre.name}`,
     label: genre.name,
@@ -149,14 +150,14 @@ onBeforeUnmount(() => {
           로그인
         </RouterLink>
 
-        <button
+        <RouterLink
           v-if="isAuthenticated"
-          type="button"
+          :to="SiteRouter.mypage"
           class="app-navbar__btn app-navbar__btn--user"
           aria-label="마이페이지"
         >
           <img :src="userIcon" alt="" width="16" height="16" />
-        </button>
+        </RouterLink>
       </div>
     </div>
   </header>

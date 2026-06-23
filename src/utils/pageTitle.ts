@@ -7,6 +7,8 @@ export const PAGE_TITLES = {
   performanceListAll: '컬처픽 | 전체 공연',
   notFound: '페이지를 찾을 수 없음 | 컬처픽',
   aiChat: 'AI 공연 추천 | 컬처픽',
+  community: '자유게시판 | 컬처픽',
+  mypage: '마이페이지 | 컬처픽',
   default: '컬처픽',
 } as const
 

@@ -43,6 +43,31 @@ const router = createRouter({
           component: () => import('../views/AiChatView.vue'),
         },
         {
+          path: 'community',
+          name: 'community',
+          component: () => import('../views/community/CommunityView.vue'),
+        },
+        {
+          path: 'community/edit',
+          name: 'community-create',
+          component: () => import('../views/community/CommunityFormView.vue'),
+        },
+        {
+          path: 'community/edit/:id',
+          name: 'community-edit',
+          component: () => import('../views/community/CommunityFormView.vue'),
+        },
+        {
+          path: 'community/:id',
+          name: 'community-detail',
+          component: () => import('../views/community/CommunityDetailView.vue'),
+        },
+        {
+          path: 'mypage',
+          name: 'mypage',
+          component: () => import('../views/mypage/MyPageView.vue'),
+        },
+        {
           path: ':pathMatch(.*)*',
           name: 'not-found',
           component: () => import('../views/NotFoundView.vue'),
@@ -113,6 +138,15 @@ router.afterEach((to) => {
       break
     case 'ai-chat':
       setPageTitle(PAGE_TITLES.aiChat)
+      break
+    case 'community':
+    case 'community-create':
+    case 'community-edit':
+    case 'community-detail':
+      setPageTitle(PAGE_TITLES.community)
+      break
+    case 'mypage':
+      setPageTitle(PAGE_TITLES.mypage)
       break
     default:
       setPageTitle(PAGE_TITLES.default)
