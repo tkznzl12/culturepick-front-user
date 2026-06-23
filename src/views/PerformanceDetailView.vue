@@ -11,6 +11,7 @@ import UpcommingIcon from '@/assets/icons/upcomming-icon.svg?component'
 import ShareIcon from '@/assets/icons/shared-icon.svg?component'
 import InfoIcon from '@/assets/icons/info-icon.svg?component'
 import UsersIcon from '@/assets/icons/users-Icon.svg?component'
+import KakaoMap from '@/components/common/KakaoMap.vue'
 import { usePerformanceDetail } from '@/composables/usePerformanceDetail'
 import type { PerformanceActionType } from '@/types/performanceDetail'
 
@@ -27,6 +28,19 @@ const {
 
 const isFavorite = computed(() => Boolean(data.value?.is_interested))
 const isPlanned = computed(() => Boolean(data.value?.is_watchlisted))
+const venueLatitude = computed(() => Number(data.value?.venue?.latitude ?? NaN))
+const venueLongitude = computed(() => Number(data.value?.venue?.longitude ?? NaN))
+const shouldShowVenueMap = computed(() => {
+  const venue = data.value?.venue
+  if (!venue?.latitude || !venue?.longitude) return false
+  return Number.isFinite(venueLatitude.value) && Number.isFinite(venueLongitude.value)
+})
+const kakaoMapLink = computed(() => {
+  const venue = data.value?.venue
+  if (!venue?.name || !venue?.latitude || !venue?.longitude) return ''
+  return `https://map.kakao.com/link/map/${venue.name},${venue.latitude},${venue.longitude}`
+})
+
 const isFavoriteActionLoading = ref(false)
 const isPlannedActionLoading = ref(false)
 
@@ -73,6 +87,11 @@ async function onToggleAction(label: '관심' | '찜하기' | '볼 예정') {
 function onCopyLink() {
   const url = window.location.href
   navigator.clipboard?.writeText(url)
+}
+
+function onOpenKakaoMapDirections() {
+  if (!kakaoMapLink.value) return
+  window.open(kakaoMapLink.value, '_blank')
 }
 </script>
 
@@ -163,6 +182,34 @@ function onCopyLink() {
             />
           </button>
         </div>
+
+        <section v-if="shouldShowVenueMap" class="performance-location">
+          <h3>📍 공연 위치</h3>
+
+          <div class="venue-info">
+            <p class="venue-name">
+              {{ data.venue?.name }}
+            </p>
+
+            <p class="venue-address">
+              {{ data.venue?.address }}
+            </p>
+          </div>
+
+          <KakaoMap
+            class="performance-location__map"
+            :latitude="venueLatitude"
+            :longitude="venueLongitude"
+          />
+
+          <button
+            type="button"
+            class="performance-location__directions-button"
+            @click="onOpenKakaoMapDirections"
+          >
+            카카오맵에서 길찾기
+          </button>
+        </section>
       </div>
 
       <div class="flex flex-col gap-5">
@@ -443,6 +490,54 @@ function onCopyLink() {
   color: var(--dark-mode-main-font-color);
   border: 1px solid var(--line-component-border-color);
   background: var(--line-component-background-color);
+}
+
+.performance-location {
+  margin-top: 32px;
+}
+
+.performance-location h3 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.venue-info {
+  margin-top: 16px;
+}
+
+.venue-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.venue-address {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.performance-location__map {
+  margin-top: 12px;
+}
+
+.performance-location__directions-button {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgb(81 162 255 / 0.35);
+  background: rgb(81 162 255 / 0.18);
+  color: var(--dark-mode-main-font-color);
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: opacity 0.15s ease;
+}
+
+.performance-location__directions-button:hover {
+  opacity: 0.92;
 }
 
 @media (max-width: 767px) {

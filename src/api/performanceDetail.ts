@@ -33,6 +33,8 @@ function normalizeVenue(venue: PerformanceDetailVenue | undefined): PerformanceD
     sido: venue?.sido ?? '',
     gugun: venue?.gugun ?? '',
     address: venue?.address ?? '',
+    latitude: venue?.latitude ?? '',
+    longitude: venue?.longitude ?? '',
   }
 }
 

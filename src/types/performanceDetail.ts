@@ -12,6 +12,8 @@ export interface PerformanceDetailVenue {
   sido?: string
   gugun?: string
   address?: string
+  latitude?: string
+  longitude?: string
 }
 
 export interface PerformanceDetailImage {
