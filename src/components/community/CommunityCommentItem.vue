@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Comment } from '@/mocks/community-detail.mock'
+import type { CommunityCommentItem as CommunityCommentItemType } from '@/types/community'
 
 const props = defineProps<{
-  comment: Comment
+  comment: CommunityCommentItemType
   currentUserId: number
 }>()
 
@@ -11,8 +11,8 @@ const emit = defineEmits<{
   deleteComment: [commentId: number]
 }>()
 
-const isMyComment = computed(() => props.comment.userId === props.currentUserId)
-const avatarText = computed(() => props.comment.author.trim().charAt(0) || '?')
+const isMyComment = computed(() => props.comment.authorId === props.currentUserId)
+const avatarText = computed(() => props.comment.authorDisplayName.trim().charAt(0) || '?')
 </script>
 
 <template>
@@ -23,11 +23,10 @@ const avatarText = computed(() => props.comment.author.trim().charAt(0) || '?')
       <div class="flex min-w-0 items-center gap-2.5">
         <span class="community-comment-item__avatar" aria-hidden="true">{{ avatarText }}</span>
         <div class="min-w-0">
-          <p class="truncate text-sm font-medium text-[var(--dark-mode-main-font-color)]">
-            {{ comment.author }}
-          </p>
-          <div class="flex items-center gap-2 text-xs text-[var(--caption-text-color)]">
-            <time :datetime="comment.createdAt">{{ comment.createdAt }}</time>
+          <div class="flex items-center gap-2">
+            <p class="truncate text-sm font-medium text-[var(--dark-mode-main-font-color)]">
+              {{ comment.authorDisplayName }}
+            </p>
             <button
               v-if="isMyComment"
               type="button"
@@ -37,6 +36,9 @@ const avatarText = computed(() => props.comment.author.trim().charAt(0) || '?')
             >
               X
             </button>
+          </div>
+          <div class="mt-1 flex items-center gap-3 text-xs text-[var(--caption-text-color)]">
+            <time :datetime="comment.createdAt">{{ comment.createdAt }}</time>
           </div>
         </div>
       </div>

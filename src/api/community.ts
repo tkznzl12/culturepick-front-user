@@ -86,13 +86,25 @@ function normalizeCommunityPostsResponse(
   fallbackPageSize: number,
 ): CommunityPostsResponse {
   const items = Array.isArray(response) ? response : response.results ?? []
-  const totalCount = Array.isArray(response)
-    ? response.length
-    : response.count ?? response.total ?? items.length
-  const page = Array.isArray(response) ? fallbackPage : response.page ?? fallbackPage
+  const page = Array.isArray(response)
+    ? fallbackPage
+    : response.page ?? response.pageNum ?? response.page_num ?? fallbackPage
   const pageSize = Array.isArray(response)
     ? fallbackPageSize
-    : response.page_size ?? fallbackPageSize
+    : response.page_size ?? response.pageSize ?? fallbackPageSize
+
+  let totalCount = Array.isArray(response)
+    ? response.length
+    : response.count ?? response.total ?? response.total_count ?? response.totalCount ?? items.length
+
+  if (!Array.isArray(response) && totalCount <= items.length) {
+    const hasNext = Boolean(response.next)
+    const hasPrevious = Boolean(response.previous)
+    if ((hasNext || hasPrevious) && pageSize > 0) {
+      const minimumCountByCursor = (Math.max(page, 1) - 1) * pageSize + items.length + (hasNext ? 1 : 0)
+      totalCount = Math.max(totalCount, minimumCountByCursor)
+    }
+  }
 
   return {
     items: items.map(mapCommunityPost),

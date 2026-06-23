@@ -73,6 +73,13 @@ export interface CreateCommunityPostRequest {
 
 export interface CreateCommunityPostResponse extends CommunityPostApiItem {}
 
+export interface UpdateCommunityPostRequest {
+  category?: CommunityApiCategory
+  title?: string
+  content?: string
+  content_format?: 'html'
+}
+
 export interface CommunityImageUploadResponse {
   id: number
   image_url: string
@@ -85,7 +92,42 @@ export interface CommunityImageUploadResponse {
 export interface CommunityPostsApiResponse {
   count?: number
   total?: number
+  total_count?: number
+  totalCount?: number
   page?: number
+  pageNum?: number
+  page_num?: number
+  pageSize?: number
   page_size?: number
+  next?: string | null
+  previous?: string | null
   results?: CommunityPostApiItem[]
+}
+
+export interface CommunityCommentApiItem {
+  id: number
+  post: number
+  author: number
+  author_email: string
+  author_nickname: string
+  author_display_name: string
+  content: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CommunityCommentItem {
+  id: number
+  postId: number
+  authorId: number
+  authorDisplayName: string
+  content: string
+  createdAt: string
+}
+
+export interface CommunityCommentsApiResponse {
+  total: number
+  next: string | null
+  previous: string | null
+  results: CommunityCommentApiItem[]
 }

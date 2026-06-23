@@ -7,6 +7,7 @@ import CommunityFilter from '@/components/community/CommunityFilter.vue'
 import CommunityPostCard from '@/components/community/CommunityPostCard.vue'
 import CommunitySearch from '@/components/community/CommunitySearch.vue'
 import PerformancePagination from '@/components/performances/PerformancePagination.vue'
+import SkeletonBlock from '@/components/skeleton/SkeletonBlock.vue'
 import { SiteRouter } from '@/constants/routes'
 import type { CommunityPostListItem } from '@/types/community'
 import { getAccessToken } from '@/utils/auth-cookie'
@@ -34,9 +35,12 @@ const errorMessage = ref<string | null>(null)
 let currentAbortController: AbortController | null = null
 const router = useRouter()
 const isAuthToastVisible = ref(false)
+const toastMessage = ref('로그인한 유저만 작성 가능합니다.')
 let authToastTimer: ReturnType<typeof setTimeout> | null = null
 
 const COMMUNITY_AUTH_TOAST_KEY = 'community-auth-required-toast'
+const COMMUNITY_NOT_FOUND_TOAST_KEY = 'community-not-found-toast'
+const COMMUNITY_DELETE_SUCCESS_TOAST_KEY = 'community-delete-success-toast'
 
 onBeforeUnmount(() => {
   currentAbortController?.abort()
@@ -49,12 +53,25 @@ onBeforeUnmount(() => {
 onMounted(() => {
   if (window.sessionStorage.getItem(COMMUNITY_AUTH_TOAST_KEY) === '1') {
     window.sessionStorage.removeItem(COMMUNITY_AUTH_TOAST_KEY)
-    showAuthToast()
+    showAuthToast('로그인한 유저만 작성 가능합니다.')
+  }
+
+  if (window.sessionStorage.getItem(COMMUNITY_NOT_FOUND_TOAST_KEY) === '1') {
+    window.sessionStorage.removeItem(COMMUNITY_NOT_FOUND_TOAST_KEY)
+    showAuthToast('게시글을 찾을 수 없습니다.')
+  }
+
+  if (window.sessionStorage.getItem(COMMUNITY_DELETE_SUCCESS_TOAST_KEY) === '1') {
+    window.sessionStorage.removeItem(COMMUNITY_DELETE_SUCCESS_TOAST_KEY)
+    showAuthToast('게시글이 삭제되었습니다.')
   }
 })
 
 const totalPages = computed(() =>
   pageSize.value > 0 ? Math.max(1, Math.ceil(totalCount.value / pageSize.value)) : 1,
+)
+const shouldShowInitialSkeleton = computed(
+  () => isLoading.value && !errorMessage.value && posts.value.length === 0,
 )
 
 watch(
@@ -117,7 +134,8 @@ function onChangePage(page: number) {
   currentPage.value = page
 }
 
-function showAuthToast() {
+function showAuthToast(message: string) {
+  toastMessage.value = message
   isAuthToastVisible.value = true
 
   if (authToastTimer) {
@@ -136,7 +154,7 @@ function onClickCreatePost() {
     return
   }
 
-  showAuthToast()
+  showAuthToast('로그인한 유저만 작성 가능합니다.')
 }
 </script>
 
@@ -155,7 +173,7 @@ function onClickCreatePost() {
       role="status"
       aria-live="polite"
     >
-      로그인한 유저만 작성 가능합니다.
+      {{ toastMessage }}
     </div>
   </Transition>
 
@@ -201,12 +219,33 @@ function onClickCreatePost() {
 
         <CommunitySearch v-model="keyword" class="mb-6" />
 
-        <div v-if="!errorMessage && posts.length > 0" class="flex flex-col gap-4">
+        <div v-if="shouldShowInitialSkeleton" class="flex flex-col gap-4">
+          <article
+            v-for="index in PAGE_SIZE"
+            :key="`community-skeleton-${index}`"
+            class="rounded-2xl border border-[var(--line-component-border-color)] bg-[var(--card-background-color)] p-5"
+            aria-hidden="true"
+          >
+            <SkeletonBlock rounded="rounded-full" block-class="h-7 w-20" />
+            <SkeletonBlock rounded="rounded-md" block-class="mt-4 h-7 w-3/4" />
+            <SkeletonBlock rounded="rounded-md" block-class="mt-3 h-4 w-full" />
+            <SkeletonBlock rounded="rounded-md" block-class="mt-2 h-4 w-11/12" />
+            <div class="mt-5 flex items-center gap-2">
+              <SkeletonBlock rounded="rounded-md" block-class="h-4 w-20" />
+              <SkeletonBlock rounded="rounded-md" block-class="h-4 w-2" />
+              <SkeletonBlock rounded="rounded-md" block-class="h-4 w-24" />
+              <SkeletonBlock rounded="rounded-md" block-class="h-4 w-2" />
+              <SkeletonBlock rounded="rounded-md" block-class="h-4 w-16" />
+            </div>
+          </article>
+        </div>
+
+        <div v-else-if="!errorMessage && posts.length > 0" class="flex flex-col gap-4">
           <CommunityPostCard v-for="post in posts" :key="post.id" :post="post" />
         </div>
 
         <div
-          v-else-if="errorMessage || (!isLoading && posts.length === 0)"
+          v-else-if="errorMessage || posts.length === 0"
           class="flex flex-col items-center justify-center gap-3 rounded-2xl border border-[var(--line-component-border-color)] bg-[var(--card-background-color)] py-16"
           role="status"
           aria-live="polite"
@@ -228,7 +267,7 @@ function onClickCreatePost() {
         </div>
 
         <PerformancePagination
-          v-if="!errorMessage && totalCount > 0 && totalPages > 1"
+          v-if="!errorMessage && !shouldShowInitialSkeleton && totalCount > 0"
           :current-page="currentPage"
           :total-pages="totalPages"
           @change="onChangePage"

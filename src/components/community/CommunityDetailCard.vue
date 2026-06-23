@@ -15,9 +15,13 @@ const emit = defineEmits<{
 
 const categoryClassMap: Record<string, string> = {
   review: 'community-detail-card__badge--blue',
+  performance_review: 'community-detail-card__badge--blue',
   recommend: 'community-detail-card__badge--mint',
+  performance_recommendation: 'community-detail-card__badge--mint',
   info: 'community-detail-card__badge--yellow',
+  information: 'community-detail-card__badge--yellow',
   free: 'community-detail-card__badge--pink',
+  free_discussion: 'community-detail-card__badge--pink',
 }
 
 const isAuthor = computed(() => props.post.authorId === props.currentUserId)

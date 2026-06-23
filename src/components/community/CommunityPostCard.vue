@@ -10,9 +10,13 @@ const props = defineProps<{
 
 const badgeClassMap: Record<string, string> = {
   review: 'community-post-card__badge--blue',
+  performance_review: 'community-post-card__badge--blue',
   recommend: 'community-post-card__badge--mint',
+  performance_recommendation: 'community-post-card__badge--mint',
   info: 'community-post-card__badge--yellow',
+  information: 'community-post-card__badge--yellow',
   free: 'community-post-card__badge--pink',
+  free_discussion: 'community-post-card__badge--pink',
 }
 
 const categoryClass = computed(

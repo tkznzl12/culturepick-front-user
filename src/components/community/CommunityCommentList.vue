@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import CommunityCommentItem from '@/components/community/CommunityCommentItem.vue'
-import type { Comment } from '@/mocks/community-detail.mock'
+import type { CommunityCommentItem as CommunityCommentItemType } from '@/types/community'
 
 defineProps<{
-  comments: Comment[]
+  comments: CommunityCommentItemType[]
   currentUserId: number
 }>()
 
