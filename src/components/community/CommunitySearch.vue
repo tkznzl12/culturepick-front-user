@@ -12,6 +12,7 @@ const emit = defineEmits<{
 
 const localValue = ref(props.modelValue)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
+const SEARCH_DEBOUNCE_MS = 180
 
 watch(
   () => props.modelValue,
@@ -27,7 +28,7 @@ watch(localValue, (value) => {
 
   debounceTimer = setTimeout(() => {
     emit('update:modelValue', value)
-  }, 300)
+  }, SEARCH_DEBOUNCE_MS)
 })
 
 onBeforeUnmount(() => {

@@ -10,10 +10,10 @@ export const GENRE_ALL_ICON = '🎭'
 export const genreList: GenreItem[] = [
   { name: '뮤지컬', code: 'musical', icon: '🎵' },
   { name: '연극', code: 'play', icon: '🎬' },
-  { name: '클래식', code: 'classic', icon: '🎻' },
-  { name: '국악', code: 'koreanMusic', icon: '🪈' },
-  { name: '콘서트', code: 'concert', icon: '🎤' },
-  { name: '무용/기타', code: 'dancing', icon: '💃' },
+  { name: '서양음악(클래식)', code: 'classic', icon: '🎻' },
+  { name: '한국음악', code: 'koreanMusic', icon: '🪈' },
+  { name: '대중음악', code: 'concert', icon: '🎤' },
+  { name: '무용(서양/한국무용)', code: 'dancing', icon: '💃' },
 ]
 
 export function findGenreByCode(code: string): GenreItem | undefined {

@@ -2,10 +2,10 @@
 import { computed } from 'vue'
 import CommonButton from '@/components/common/CommonButton.vue'
 import { SiteRouter } from '@/constants/routes'
-import type { CommunityPost } from '@/mocks/community-detail.mock'
+import type { CommunityPostDetailItem } from '@/types/community'
 
 const props = defineProps<{
-  post: CommunityPost
+  post: CommunityPostDetailItem
   currentUserId: number
 }>()
 
@@ -13,22 +13,18 @@ const emit = defineEmits<{
   deletePost: []
 }>()
 
-const categoryLabelMap: Record<CommunityPost['category'], string> = {
-  review: '공연후기',
-  recommend: '공연추천',
-  info: '정보공유',
-  free: '자유토론',
-}
-
-const categoryClassMap: Record<CommunityPost['category'], string> = {
+const categoryClassMap: Record<string, string> = {
   review: 'community-detail-card__badge--blue',
   recommend: 'community-detail-card__badge--mint',
   info: 'community-detail-card__badge--yellow',
   free: 'community-detail-card__badge--pink',
 }
 
-const isAuthor = computed(() => props.post.userId === props.currentUserId)
-const authorAvatar = computed(() => props.post.author.trim().charAt(0) || '?')
+const isAuthor = computed(() => props.post.authorId === props.currentUserId)
+const authorAvatar = computed(() => props.post.authorDisplayName.trim().charAt(0) || '?')
+const categoryClass = computed(
+  () => categoryClassMap[props.post.category] ?? 'community-detail-card__badge--blue',
+)
 </script>
 
 <template>
@@ -37,8 +33,8 @@ const authorAvatar = computed(() => props.post.author.trim().charAt(0) || '?')
   >
     <header class="mb-5 flex flex-col gap-4">
       <div class="flex flex-wrap items-center gap-2">
-        <span class="community-detail-card__badge" :class="categoryClassMap[post.category]">
-          {{ categoryLabelMap[post.category] }}
+        <span class="community-detail-card__badge" :class="categoryClass">
+          {{ post.categoryLabel }}
         </span>
       </div>
 
@@ -50,11 +46,13 @@ const authorAvatar = computed(() => props.post.author.trim().charAt(0) || '?')
 
           <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[var(--caption-text-color)]">
             <span class="community-detail-card__avatar" aria-hidden="true">{{ authorAvatar }}</span>
-            <span>{{ post.author }}</span>
+            <span>{{ post.authorDisplayName }}</span>
             <span aria-hidden="true">·</span>
             <time :datetime="post.createdAt">{{ post.createdAt }}</time>
             <span aria-hidden="true">·</span>
             <span>댓글 {{ post.commentCount }}</span>
+            <span aria-hidden="true">·</span>
+            <span>조회 {{ post.viewCount }}</span>
           </div>
         </div>
 
@@ -71,7 +69,12 @@ const authorAvatar = computed(() => props.post.author.trim().charAt(0) || '?')
 
     <hr class="mb-5 border-0 border-t border-[var(--line-component-border-color)]" />
 
-    <p class="whitespace-pre-wrap text-base leading-7 text-[var(--dark-mode-content-font-color)]">
+    <div
+      v-if="post.contentFormat === 'html'"
+      class="community-detail-card__content text-base leading-7 text-[var(--dark-mode-content-font-color)]"
+      v-html="post.content"
+    />
+    <p v-else class="community-detail-card__content whitespace-pre-wrap text-base leading-7 text-[var(--dark-mode-content-font-color)]">
       {{ post.content }}
     </p>
   </article>
@@ -131,6 +134,14 @@ const authorAvatar = computed(() => props.post.author.trim().charAt(0) || '?')
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.community-detail-card__content :deep(p) {
+  margin: 0 0 1rem;
+}
+
+.community-detail-card__content :deep(p:last-child) {
+  margin-bottom: 0;
 }
 
 @media (max-width: 767px) {

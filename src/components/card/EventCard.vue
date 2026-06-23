@@ -136,7 +136,7 @@ async function onToggleFavorite(event: MouseEvent) {
 
     <template v-if="isList">
       <div class="event-card__body">
-        <h3 class="event-card__title line-clamp-2 text-base leading-snug font-bold text-[var(--dark-mode-main-font-color)]">
+        <h3 class="event-card__title truncate text-base leading-snug font-bold text-[var(--dark-mode-main-font-color)]">
           {{ title }}
         </h3>
 
@@ -168,7 +168,7 @@ async function onToggleFavorite(event: MouseEvent) {
     </template>
 
     <div v-else class="flex flex-col gap-2 p-4">
-      <h3 class="line-clamp-2 text-base leading-snug font-bold text-white">
+      <h3 class="truncate text-base leading-snug font-bold text-white">
         {{ title }}
       </h3>
 

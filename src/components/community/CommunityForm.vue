@@ -20,10 +20,16 @@ const props = withDefaults(
     isEditMode: boolean
     imageUploadEnabled?: boolean
     onImageUpload?: CommunityEditorImageUploadHandler
+    isSubmitting?: boolean
+    submitErrorMessage?: string
+    serverFieldErrors?: Partial<Record<'title' | 'content', string>>
   }>(),
   {
     initialValues: () => ({}),
     imageUploadEnabled: false,
+    isSubmitting: false,
+    submitErrorMessage: '',
+    serverFieldErrors: () => ({}),
   },
 )
 
@@ -54,6 +60,8 @@ const errors = reactive({
 const titleLength = computed(() => form.title.length)
 const contentText = computed(() => extractPlainText(form.content))
 const contentLength = computed(() => contentText.value.length)
+const titleErrorMessage = computed(() => errors.title || props.serverFieldErrors.title || '')
+const contentErrorMessage = computed(() => errors.content || props.serverFieldErrors.content || '')
 
 watch(
   () => props.initialValues,
@@ -153,8 +161,8 @@ function onSubmit() {
           placeholder="게시글 제목을 입력해주세요."
           class="w-full rounded-xl border border-[var(--line-component-border-color)] bg-[var(--line-component-background-color)] px-4 py-3 text-sm text-[var(--dark-mode-main-font-color)] placeholder:text-[var(--line-component-font-color)]"
         />
-        <p v-if="errors.title" class="mt-2 text-xs text-[var(--red-tag-font-color)]">
-          {{ errors.title }}
+        <p v-if="titleErrorMessage" class="mt-2 text-xs text-[var(--red-tag-font-color)]">
+          {{ titleErrorMessage }}
         </p>
       </div>
 
@@ -172,18 +180,22 @@ function onSubmit() {
           :image-upload-enabled="imageUploadEnabled"
           :on-image-upload="onImageUpload"
         />
-        <p v-if="errors.content" class="mt-2 text-xs text-[var(--red-tag-font-color)]">
-          {{ errors.content }}
+        <p v-if="contentErrorMessage" class="mt-2 text-xs text-[var(--red-tag-font-color)]">
+          {{ contentErrorMessage }}
+        </p>
+        <p v-if="submitErrorMessage" class="mt-2 text-xs text-[var(--red-tag-font-color)]">
+          {{ submitErrorMessage }}
         </p>
       </div>
     </div>
 
     <div class="community-form__actions mt-8 flex justify-end gap-2">
-      <CommonButton variant="line" text="취소" @click="emit('cancel')" />
+      <CommonButton variant="line" text="취소" :disabled="isSubmitting" @click="emit('cancel')" />
       <CommonButton
         :variant="isEditMode ? 'line' : 'gradient'"
-        :text="isEditMode ? '게시글 수정' : '게시글 등록'"
+        :text="isSubmitting ? '처리 중...' : isEditMode ? '게시글 수정' : '게시글 등록'"
         type="submit"
+        :disabled="isSubmitting"
       />
     </div>
   </form>

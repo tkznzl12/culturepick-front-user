@@ -2,28 +2,22 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { SiteRouter } from '@/constants/routes'
-import type { CommunityPost } from '@/mocks/community.mock'
+import type { CommunityPostListItem } from '@/types/community'
 
 const props = defineProps<{
-  post: CommunityPost
+  post: CommunityPostListItem
 }>()
 
-const categoryLabelMap: Record<CommunityPost['category'], string> = {
-  review: '공연후기',
-  recommend: '공연추천',
-  info: '정보공유',
-  free: '자유토론',
-}
-
-const badgeClassMap: Record<CommunityPost['category'], string> = {
+const badgeClassMap: Record<string, string> = {
   review: 'community-post-card__badge--blue',
   recommend: 'community-post-card__badge--mint',
   info: 'community-post-card__badge--yellow',
   free: 'community-post-card__badge--pink',
 }
 
-const categoryLabel = computed(() => categoryLabelMap[props.post.category])
-const categoryClass = computed(() => badgeClassMap[props.post.category])
+const categoryClass = computed(
+  () => badgeClassMap[props.post.category] ?? 'community-post-card__badge--blue',
+)
 </script>
 
 <template>
@@ -34,7 +28,7 @@ const categoryClass = computed(() => badgeClassMap[props.post.category])
     <article>
       <div class="mb-3 flex items-center gap-2">
         <span class="community-post-card__badge" :class="categoryClass">
-          {{ categoryLabel }}
+          {{ post.categoryLabel }}
         </span>
       </div>
 
@@ -45,11 +39,11 @@ const categoryClass = computed(() => badgeClassMap[props.post.category])
       </h3>
 
       <p class="community-post-card__content mb-4 text-sm text-[var(--dark-mode-content-font-color)]">
-        {{ post.content }}
+        {{ post.contentPreview }}
       </p>
 
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--caption-text-color)]">
-        <span>{{ post.author }}</span>
+        <span>{{ post.authorDisplayName }}</span>
         <span aria-hidden="true">·</span>
         <time :datetime="post.createdAt">{{ post.createdAt }}</time>
         <span aria-hidden="true">·</span>

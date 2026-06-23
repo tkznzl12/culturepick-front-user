@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { EditorContent, useEditor } from '@tiptap/vue-3'
+import Image from '@tiptap/extension-image'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 
@@ -23,6 +24,17 @@ const emit = defineEmits<{
 }>()
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
+const isUploadingImage = ref(false)
+const imageUploadError = ref('')
+
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024
+const ALLOWED_IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp'])
+const ALLOWED_IMAGE_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+])
 
 const editor = useEditor({
   extensions: [
@@ -33,7 +45,7 @@ const editor = useEditor({
       placeholder:
         '공연 후기, 추천, 정보 등을 자유롭게 작성해주세요.\n\n최소 10자 이상 입력해주세요.',
     }),
-    // 향후 이미지 업로드를 도입할 때 Image extension을 여기에 추가하면 된다.
+    Image,
   ],
   content: props.modelValue,
   editorProps: {
@@ -129,21 +141,45 @@ const toolbarItems = computed(() => [
 ])
 
 const canUseImageUpload = computed(
-  () => props.imageUploadEnabled && typeof props.onImageUpload === 'function',
+  () =>
+    props.imageUploadEnabled &&
+    typeof props.onImageUpload === 'function' &&
+    !isUploadingImage.value,
 )
 
 function triggerImagePicker() {
   if (!canUseImageUpload.value) return
+  imageUploadError.value = ''
   fileInputRef.value?.click()
 }
 
-function insertImagePlaceholder(url: string) {
+function insertImage(url: string) {
   const currentEditor = editor.value
   if (!currentEditor) return
 
-  // TODO: Image extension 연결 시 아래 로직으로 교체 가능
-  // currentEditor.chain().focus().setImage({ src: url }).run()
-  currentEditor.chain().focus().insertContent(`<p>${url}</p>`).run()
+  currentEditor.chain().focus().setImage({ src: url }).run()
+}
+
+function getFileExtension(fileName: string): string {
+  const lastDotIndex = fileName.lastIndexOf('.')
+  if (lastDotIndex < 0) return ''
+  return fileName.slice(lastDotIndex + 1).toLowerCase()
+}
+
+function validateImageFile(file: File): string | null {
+  const extension = getFileExtension(file.name)
+  const hasValidExtension = ALLOWED_IMAGE_EXTENSIONS.has(extension)
+  const hasValidMimeType = !file.type || ALLOWED_IMAGE_MIME_TYPES.has(file.type)
+
+  if (!hasValidExtension || !hasValidMimeType) {
+    return 'jpg, jpeg, png, gif, webp 파일만 업로드할 수 있습니다.'
+  }
+
+  if (file.size > MAX_IMAGE_SIZE_BYTES) {
+    return '이미지는 최대 5MB까지 업로드할 수 있습니다.'
+  }
+
+  return null
 }
 
 async function onImageFileChange(event: Event) {
@@ -154,14 +190,29 @@ async function onImageFileChange(event: Event) {
     return
   }
 
+  const validationMessage = validateImageFile(file)
+  if (validationMessage) {
+    imageUploadError.value = validationMessage
+    input.value = ''
+    return
+  }
+
+  isUploadingImage.value = true
+  imageUploadError.value = ''
+
   try {
     const uploadedUrl = await props.onImageUpload(file)
     if (uploadedUrl) {
-      insertImagePlaceholder(uploadedUrl)
+      insertImage(uploadedUrl)
     }
   } catch (error) {
     console.error('[community-editor] image upload failed:', error)
+    imageUploadError.value =
+      error instanceof Error && error.message
+        ? error.message
+        : '이미지 업로드에 실패했습니다. 잠시 후 다시 시도해 주세요.'
   } finally {
+    isUploadingImage.value = false
     input.value = ''
   }
 }
@@ -188,7 +239,7 @@ async function onImageFileChange(event: Event) {
           :disabled="!canUseImageUpload"
           @click="triggerImagePicker"
         >
-          이미지
+          {{ isUploadingImage ? '업로드중...' : '이미지' }}
         </button>
       </div>
       <input
@@ -198,6 +249,9 @@ async function onImageFileChange(event: Event) {
         class="hidden"
         @change="onImageFileChange"
       />
+      <p v-if="imageUploadError" class="mt-2 px-1 text-xs text-[var(--red-tag-font-color)]">
+        {{ imageUploadError }}
+      </p>
     </div>
 
     <EditorContent :editor="editor" class="community-editor__content" />
@@ -284,5 +338,12 @@ async function onImageFileChange(event: Event) {
   margin: 0.875rem 0;
   border: 0;
   border-top: 1px solid var(--line-component-border-color);
+}
+
+.community-editor__content :deep(.community-editor__prosemirror img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.625rem;
+  margin: 0.75rem 0;
 }
 </style>
