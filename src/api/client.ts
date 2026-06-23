@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/api/index'
+import { buildApiUrl } from '@/api/index'
 import {
   clearAuthCookies,
   getAccessToken,
@@ -13,7 +13,7 @@ const refreshAccessToken = async () => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/auth/token/refresh/`, {
+    const response = await fetch(buildApiUrl('/api/v1/auth/token/refresh/'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const refreshAccessToken = async () => {
 export async function fetcher<T>(endpoint: string, options?: RequestInit): Promise<T> {
   let token = getAccessToken()
 
-  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
+  let response = await fetch(buildApiUrl(endpoint), {
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export async function fetcher<T>(endpoint: string, options?: RequestInit): Promi
       const refreshData = await refreshAccessToken()
       token = refreshData.access
 
-      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      response = await fetch(buildApiUrl(endpoint), {
         ...options,
         headers: {
           'Content-Type': 'application/json',
