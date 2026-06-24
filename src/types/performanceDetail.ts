@@ -22,6 +22,18 @@ export interface PerformanceDetailImage {
   [key: string]: unknown
 }
 
+export interface PerformancePriceOption {
+  name?: string
+  label?: string
+  grade?: string
+  seat?: string
+  type?: string
+  price?: number | string
+  amount?: number | string
+  sort_order?: number | string
+  [key: string]: unknown
+}
+
 export interface PerformanceDetailApiResponse {
   performance_id: string
   title: string
@@ -35,6 +47,7 @@ export interface PerformanceDetailApiResponse {
   age_rating: string
   synopsis: string
   price_info: string
+  price_options?: PerformancePriceOption[]
   schedule_info: string
   poster_url: string
   view_count: number
@@ -66,6 +79,7 @@ export interface PerformanceDetailData {
   /** 서버/기획에서 `pirce_info`로 내려오는 케이스도 방어 */
   price_info?: string
   pirce_info?: string
+  price_options?: PerformancePriceOption[]
 
   poster_url: string
   bookingLink: BookingLink[]

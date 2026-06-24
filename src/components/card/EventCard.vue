@@ -4,6 +4,7 @@ import { postPerformanceAction } from '@/api/performanceDetail'
 import CardTag from '@/components/card/CardTag.vue'
 import locationIcon from '@/assets/icons/location-icon.svg'
 import calenderIcon from '@/assets/icons/calender-icon.svg'
+import { getAccessToken } from '@/utils/auth-cookie'
 import type { EventCardData } from '@/types/eventCard'
 import type { GenreTagType, StatusTagType } from '@/types/tag'
 
@@ -25,6 +26,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   toggleFavorite: [id: string | number]
+  authRequired: []
 }>()
 
 const genreTag = computed(() => props.genre as GenreTagType)
@@ -53,6 +55,11 @@ async function onToggleFavorite(event: MouseEvent) {
   event.preventDefault()
   event.stopPropagation()
 
+  if (!getAccessToken()) {
+    emit('authRequired')
+    return
+  }
+
   if (isFavoriteActionLoading.value) return
 
   isFavoriteActionLoading.value = true
@@ -65,10 +72,28 @@ async function onToggleFavorite(event: MouseEvent) {
     emit('toggleFavorite', props.id)
   } catch (error) {
     console.error('[event-card] favorite action failed:', error)
+
+    if (isAuthError(error)) {
+      emit('authRequired')
+      return
+    }
+
     window.alert('요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.')
   } finally {
     isFavoriteActionLoading.value = false
   }
+}
+
+function isAuthError(error: unknown) {
+  if (error instanceof Error) {
+    return error.message.includes('Refresh token')
+  }
+
+  if (typeof error === 'object' && error !== null && 'status' in error) {
+    return Number(error.status) === 401
+  }
+
+  return false
 }
 </script>
 

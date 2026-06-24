@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import EventCard from '@/components/card/EventCard.vue'
 import HeroFloatingButtons from '@/components/layout/HeroFloatingButtons.vue'
@@ -51,6 +51,9 @@ const gridClass = computed(() =>
 )
 
 const isFilterExpanded = ref(false)
+const isAuthToastVisible = ref(false)
+const authToastMessage = ref('')
+let authToastTimer: ReturnType<typeof setTimeout> | null = null
 
 function toggleFilterPanel() {
   isFilterExpanded.value = !isFilterExpanded.value
@@ -77,10 +80,54 @@ function onProfile() {
 function onSupport() {
   // TODO: 고객지원 이동
 }
+
+function showAuthToast(message: string) {
+  authToastMessage.value = message
+  isAuthToastVisible.value = true
+
+  if (authToastTimer) {
+    clearTimeout(authToastTimer)
+  }
+
+  authToastTimer = setTimeout(() => {
+    isAuthToastVisible.value = false
+    authToastTimer = null
+  }, 1800)
+}
+
+function onFavoriteAuthRequired() {
+  showAuthToast('로그인이 필요한 서비스 입니다')
+}
+
+onBeforeUnmount(() => {
+  if (authToastTimer) {
+    clearTimeout(authToastTimer)
+    authToastTimer = null
+  }
+})
 </script>
 
 <template>
   <section class="performance-list relative w-full py-8 sm:py-14">
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="-translate-y-2 opacity-0"
+      enter-to-class="translate-y-0 opacity-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="translate-y-0 opacity-100"
+      leave-to-class="-translate-y-2 opacity-0"
+    >
+      <div
+        v-if="isAuthToastVisible"
+        class="fixed top-24 left-1/2 -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur md:top-20"
+        style="z-index: var(--z-toast)"
+        role="status"
+        aria-live="polite"
+      >
+        {{ authToastMessage }}
+      </div>
+    </Transition>
+
     <div class="mx-auto w-full max-w-[var(--max-width)] px-4 sm:px-6">
       <header class="mb-6">
         <h1
@@ -159,6 +206,7 @@ function onSupport() {
                 :is-hot="item.isHot ?? false"
                 :is-favorite="isFavorite(item.id)"
                 @toggle-favorite="toggleFavorite"
+                @auth-required="onFavoriteAuthRequired"
               />
             </div>
           </RouterLink>

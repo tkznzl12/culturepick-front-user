@@ -78,6 +78,7 @@ function mapPerformanceDetail(item: PerformanceDetailApiResponse): PerformanceDe
     synopsis: item.synopsis ?? '',
     price_info: item.price_info ?? '',
     pirce_info: item.price_info ?? '',
+    price_options: Array.isArray(item.price_options) ? item.price_options : [],
     schedule_info: item.schedule_info ?? '',
     poster_url: item.poster_url ?? '',
     view_count: item.view_count ?? 0,

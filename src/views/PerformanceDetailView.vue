@@ -13,6 +13,7 @@ import InfoIcon from '@/assets/icons/info-icon.svg?component'
 import UsersIcon from '@/assets/icons/users-Icon.svg?component'
 import NaverMap from '@/components/common/NaverMap.vue'
 import { usePerformanceDetail } from '@/composables/usePerformanceDetail'
+import { getAccessToken } from '@/utils/auth-cookie'
 import type { PerformanceActionType } from '@/types/performanceDetail'
 
 const {
@@ -29,6 +30,71 @@ const {
 const isFavorite = computed(() => Boolean(data.value?.is_interested))
 const isPlanned = computed(() => Boolean(data.value?.is_watchlisted))
 const hasCastList = computed(() => castList.value.length > 0)
+const ticketPriceRows = computed(() => {
+  const options = Array.isArray(data.value?.price_options) ? data.value.price_options : []
+
+  const rows = options
+    .map((option, index) => {
+      const label =
+        String(
+          option?.name ?? option?.label ?? option?.grade ?? option?.seat ?? option?.type ?? '',
+        ).trim()
+      const rawAmount = option?.price ?? option?.amount
+      const sortOrder = Number(option?.sort_order)
+      const normalizedSortOrder = Number.isFinite(sortOrder) ? sortOrder : Number.MAX_SAFE_INTEGER
+
+      const formattedAmount = formatTicketPrice(rawAmount)
+      if (!label && !formattedAmount) return null
+
+      return {
+        key: `${label || 'price'}-${index}`,
+        label: label || '기타',
+        formattedAmount: formattedAmount || '-',
+        sortOrder: normalizedSortOrder,
+        index,
+      }
+    })
+    .filter((row): row is NonNullable<typeof row> => row !== null)
+    .sort((a, b) => {
+      if (a.sortOrder === b.sortOrder) return a.index - b.index
+      return a.sortOrder - b.sortOrder
+    })
+
+  if (rows.length > 0) return rows
+
+  const fallback = String(priceInfo.value ?? '').trim()
+  if (!fallback) return []
+
+  return [
+    {
+      key: 'fallback-price',
+      label: '티켓 가격',
+      formattedAmount: fallback,
+      sortOrder: 0,
+      index: 0,
+    },
+  ]
+})
+
+function formatTicketPrice(amount: unknown) {
+  if (typeof amount === 'number' && Number.isFinite(amount)) {
+    return `${new Intl.NumberFormat('ko-KR').format(amount)}원`
+  }
+
+  if (typeof amount === 'string') {
+    const trimmed = amount.trim()
+    if (!trimmed) return ''
+
+    const numeric = Number(trimmed.replace(/[^\d.-]/g, ''))
+    if (Number.isFinite(numeric)) {
+      return `${new Intl.NumberFormat('ko-KR').format(numeric)}원`
+    }
+
+    return trimmed
+  }
+
+  return ''
+}
 const hasCrew = computed(() => {
   const crew = data.value?.crew
   if (typeof crew === 'string') return crew.trim().length > 0
@@ -56,6 +122,7 @@ const shouldShowVenueMap = computed(() => {
 const isFavoriteActionLoading = ref(false)
 const isPlannedActionLoading = ref(false)
 const isCopyToastVisible = ref(false)
+const toastMessage = ref('클립보드에 복사가 되었습니다!')
 let copyToastTimer: ReturnType<typeof setTimeout> | null = null
 
 function mapActionTypeByLabel(label: '관심' | '찜하기' | '볼 예정'): PerformanceActionType {
@@ -65,6 +132,11 @@ function mapActionTypeByLabel(label: '관심' | '찜하기' | '볼 예정'): Per
 async function onToggleAction(label: '관심' | '찜하기' | '볼 예정') {
   const detail = data.value
   if (!detail?.performance_id) return
+
+  if (!getAccessToken()) {
+    notifyAuthRequired()
+    return
+  }
 
   const actionType = mapActionTypeByLabel(label)
   const isInterestAction = actionType === 'interest'
@@ -92,13 +164,20 @@ async function onToggleAction(label: '관심' | '찜하기' | '볼 예정') {
     }
   } catch (error) {
     console.error('[performance-detail] toggle action failed:', error)
-    window.alert('요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.')
+
+    if (isAuthError(error)) {
+      notifyAuthRequired()
+      return
+    }
+
+    showToast('요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.')
   } finally {
     loadingRef.value = false
   }
 }
 
-function showCopyToast() {
+function showToast(message: string, duration = 2000) {
+  toastMessage.value = message
   isCopyToastVisible.value = true
 
   if (copyToastTimer) {
@@ -108,7 +187,23 @@ function showCopyToast() {
   copyToastTimer = setTimeout(() => {
     isCopyToastVisible.value = false
     copyToastTimer = null
-  }, 2000)
+  }, duration)
+}
+
+function notifyAuthRequired() {
+  showToast('로그인이 필요한 서비스 입니다', 1800)
+}
+
+function isAuthError(error: unknown) {
+  if (error instanceof Error) {
+    return error.message.includes('Refresh token')
+  }
+
+  if (typeof error === 'object' && error !== null && 'status' in error) {
+    return Number(error.status) === 401
+  }
+
+  return false
 }
 
 async function onCopyLink() {
@@ -129,10 +224,10 @@ async function onCopyLink() {
       document.body.removeChild(textarea)
     }
 
-    showCopyToast()
+    showToast('클립보드에 복사가 되었습니다!')
   } catch (error) {
     console.error('[performance-detail] copy link failed:', error)
-    window.alert('링크 복사에 실패했습니다. 잠시 후 다시 시도해 주세요.')
+    showToast('링크 복사에 실패했습니다. 잠시 후 다시 시도해 주세요.')
   }
 }
 
@@ -164,12 +259,12 @@ onBeforeUnmount(() => {
   >
     <div
       v-if="isCopyToastVisible"
-      class="fixed top-4 left-1/2 -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur"
+      class="fixed top-24 left-1/2 -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur md:top-20"
       style="z-index: var(--z-toast)"
       role="status"
       aria-live="polite"
     >
-      클립보드에 복사가 되었습니다!
+      {{ toastMessage }}
     </div>
   </Transition>
 
@@ -342,21 +437,31 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="detail-price-bar">
-          <div class="flex min-w-0 flex-col gap-1">
+          <div class="detail-price-bar__prices">
             <span class="text-xs text-[var(--line-component-font-color)]">티켓 가격</span>
-            <p class="truncate text-xl font-extrabold text-[var(--hover-point-text)]">
-              {{ priceInfo }}
-            </p>
+            <div class="detail-price-bar__list">
+              <div
+                v-for="row in ticketPriceRows"
+                :key="row.key"
+                class="detail-price-row"
+              >
+                <span class="detail-price-row__label">{{ row.label }}</span>
+                <span class="detail-price-row__dot" aria-hidden="true">·</span>
+                <span class="detail-price-row__value">{{ row.formattedAmount }}</span>
+              </div>
+            </div>
           </div>
 
-          <a
-            class="detail-price-bar__cta"
-            :href="data.bookingLink?.[0]?.url"
-            target="_blank"
-            rel="noreferrer"
-          >
-            예매하기
-          </a>
+          <div class="detail-price-bar__cta-wrap">
+            <a
+              class="detail-price-bar__cta"
+              :href="data.bookingLink?.[0]?.url"
+              target="_blank"
+              rel="noreferrer"
+            >
+              예매하기
+            </a>
+          </div>
         </div>
 
 
@@ -494,10 +599,10 @@ onBeforeUnmount(() => {
 }
 
 .detail-price-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: 0.9rem;
   padding: 1rem 1.2rem;
   border-radius: 1.25rem;
   border: 1px solid rgb(81 162 255 / 0.35);
@@ -505,9 +610,64 @@ onBeforeUnmount(() => {
   box-shadow: 0 18px 45px rgb(0 0 0 / 0.28);
 }
 
+.detail-price-bar__prices {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-price-bar__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.3rem 0.9rem;
+  max-height: 15rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.detail-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.5rem;
+  background: rgb(81 162 255 / 0.06);
+}
+
+.detail-price-row__label {
+  min-width: 3rem;
+  flex-shrink: 0;
+  color: var(--dark-mode-main-font-color);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.detail-price-row__dot {
+  color: rgb(209 213 220 / 0.9);
+  line-height: 1;
+}
+
+.detail-price-row__value {
+  color: var(--hover-point-text);
+  font-size: 0.875rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.detail-price-bar__cta-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 1rem;
+  border-left: 1px solid rgb(81 162 255 / 0.28);
+}
+
 .detail-price-bar__cta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   border-radius: 0.85rem;
   padding: 0.65rem 0.95rem;
@@ -634,14 +794,29 @@ onBeforeUnmount(() => {
 
 @media (max-width: 767px) {
   .detail-price-bar {
-    flex-direction: column;
-    align-items: stretch;
+    grid-template-columns: 1fr;
     gap: 0.75rem;
     padding: 1rem;
   }
 
+  .detail-price-bar__list {
+    grid-template-columns: 1fr;
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  .detail-price-bar__cta-wrap {
+    border-left: 0;
+    border-top: 1px solid rgb(81 162 255 / 0.28);
+    padding-left: 0;
+    padding-top: 0.75rem;
+    justify-content: center;
+  }
+
   .detail-price-bar__cta {
     justify-content: center;
+    width: 100%;
     min-height: 2.75rem;
     padding: 0.75rem 1rem;
   }
