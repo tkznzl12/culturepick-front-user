@@ -14,9 +14,15 @@ export const useUserStore = defineStore('user', () => {
     error.value = null
   }
 
+  function resetUserState(): void {
+    loading.value = false
+    error.value = null
+  }
+
   return {
     loading,
     error,
     clearError,
+    resetUserState,
   }
 })

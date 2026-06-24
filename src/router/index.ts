@@ -5,6 +5,7 @@ import {
   createLoginLocationWithRedirect,
   resolveRedirectPath,
 } from '@/utils/auth-redirect'
+import { showAuthRequiredToast } from '@/utils/auth-toast'
 import {
   PAGE_TITLES,
   getPerformanceListPageTitle,
@@ -135,6 +136,22 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
   const isAuthenticated = Boolean(getAccessToken())
+
+  if (to.name === 'ai-chat' && !isAuthenticated) {
+    showAuthRequiredToast('AI 추천은 로그인 후 이용할 수 있어요.')
+
+    const isFromAuthPage = from.meta.layout === 'auth'
+    const isInitialNavigation = !from.name
+
+    if (isFromAuthPage || isInitialNavigation) {
+      return {
+        path: SiteRouter.index,
+        replace: true,
+      }
+    }
+
+    return false
+  }
 
   if (to.meta.requiresAuth && !isAuthenticated) {
     return {

@@ -11,6 +11,8 @@ import type {
   CommunityPostsResponse,
 } from '@/types/community'
 import { getAccessToken } from '@/utils/auth-cookie'
+import { getCurrentPathWithQueryAndHash } from '@/utils/auth-redirect'
+import { handleUnauthorizedAccess } from '@/utils/auth-session'
 import { stripHtml } from '@/utils/stripHtml'
 
 export class CommunityApiError extends Error {
@@ -149,6 +151,10 @@ export async function getCommunityPostDetail(id: number): Promise<CommunityPostD
   const data = await response.json().catch(() => null)
 
   if (!response.ok) {
+    if (response.status === 401) {
+      handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
+    }
+
     const message =
       (data && typeof data === 'object' && 'detail' in data && String(data.detail)) ||
       '게시글 상세를 불러오지 못했습니다.'

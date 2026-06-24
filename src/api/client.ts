@@ -1,14 +1,13 @@
 import { buildApiUrl } from '@/api/index'
 import {
-  clearAuthCookies,
   getAccessToken,
   getRefreshToken,
   setAuthCookies,
 } from '@/utils/auth-cookie'
 import {
-  buildLoginPathWithRedirect,
   getCurrentPathWithQueryAndHash,
 } from '@/utils/auth-redirect'
+import { handleUnauthorizedAccess } from '@/utils/auth-session'
 
 const refreshAccessToken = async () => {
   const refreshToken = getRefreshToken()
@@ -68,10 +67,12 @@ export async function fetcher<T>(endpoint: string, options?: RequestInit): Promi
       })
     } catch (error) {
       console.error(error)
-      clearAuthCookies()
-      window.location.href = buildLoginPathWithRedirect(getCurrentPathWithQueryAndHash())
-      throw error
+      handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
     }
+  }
+
+  if (response.status === 401) {
+    handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
   }
 
   const data = await response.json()

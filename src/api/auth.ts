@@ -36,10 +36,20 @@ export const login = (data: LoginRequest) => {
 }
 
 export const socialLogin = (data: SocialLoginRequest) => {
-  return fetcher<SocialLoginResponse>('/api/v1/auth/social/', {
+  return fetch(buildApiUrl('/api/v1/auth/social/'), {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(data),
   })
+    .then(async (response) => {
+      const payload = await response.json().catch(() => null)
+      if (!response.ok) {
+        throw payload
+      }
+      return payload as SocialLoginResponse
+    })
 }
 
 export const logout = () => {

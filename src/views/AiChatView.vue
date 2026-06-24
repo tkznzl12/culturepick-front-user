@@ -1,22 +1,27 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import AiChatHeader from '@/components/ai-chat/AiChatHeader.vue'
 import AiChatInput from '@/components/ai-chat/AiChatInput.vue'
 import AiChatMessageBubble from '@/components/ai-chat/AiChatMessageBubble.vue'
 import HeroFloatingButtons from '@/components/layout/HeroFloatingButtons.vue'
 import { useAiChat } from '@/composables/useAiChat'
 import { SiteRouter } from '@/constants/routes'
-import { getAccessToken } from '@/utils/auth-cookie'
-import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
+import { AUTH_CHANGED_EVENT, getAccessToken } from '@/utils/auth-cookie'
+import { showAuthRequiredToast } from '@/utils/auth-toast'
 
 const router = useRouter()
-const route = useRoute()
 const messagesContainer = ref<HTMLElement | null>(null)
 const favoriteIds = ref<Set<string | number>>(new Set())
 
 const { messages, inputText, isResponding, sendMessage, resetChat, scrollToBottom } =
   useAiChat()
+
+async function ensureAuthenticated() {
+  if (getAccessToken()) return
+  showAuthRequiredToast('AI 추천은 로그인 후 이용할 수 있어요.')
+  await router.replace(SiteRouter.index)
+}
 
 watch(
   messages,
@@ -32,7 +37,8 @@ watch(isResponding, () => {
 
 function handleSend() {
   if (!getAccessToken()) {
-    void router.replace(createLoginLocationWithRedirect(route.fullPath))
+    showAuthRequiredToast('AI 추천은 로그인 후 이용할 수 있어요.')
+    void router.replace(SiteRouter.index)
     return
   }
   sendMessage(inputText.value)
@@ -40,7 +46,8 @@ function handleSend() {
 
 function handleSuggestion(text: string) {
   if (!getAccessToken()) {
-    void router.replace(createLoginLocationWithRedirect(route.fullPath))
+    showAuthRequiredToast('AI 추천은 로그인 후 이용할 수 있어요.')
+    void router.replace(SiteRouter.index)
     return
   }
   sendMessage(text)
@@ -72,6 +79,15 @@ function onProfile() {
 function onSupport() {
   // TODO: 고객지원 이동
 }
+
+onMounted(() => {
+  void ensureAuthenticated()
+  window.addEventListener(AUTH_CHANGED_EVENT, ensureAuthenticated)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener(AUTH_CHANGED_EVENT, ensureAuthenticated)
+})
 </script>
 
 <template>

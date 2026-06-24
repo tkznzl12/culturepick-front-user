@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   MyPageServiceError,
@@ -15,8 +15,9 @@ import SkeletonBlock from '@/components/skeleton/SkeletonBlock.vue'
 import UserProfileCard from '@/components/mypage/UserProfileCard.vue'
 import { SiteRouter } from '@/constants/routes'
 import type { FavoritePerformance, MyPageTab, MyPost, PlannedPerformance, UserProfile } from '@/types/mypage'
-import { getAccessToken } from '@/utils/auth-cookie'
+import { AUTH_CHANGED_EVENT, getAccessToken } from '@/utils/auth-cookie'
 import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
+import { isUnauthorizedRedirectError } from '@/utils/auth-session'
 
 const router = useRouter()
 const activeTab = ref<MyPageTab>('favorite')
@@ -41,13 +42,25 @@ const profileStats = computed(() => [
   { key: 'posts', label: '내가 작성한 글', count: myPostsTotal.value },
 ] as const)
 
-onMounted(() => {
+async function ensureAuthenticated() {
   if (!getAccessToken()) {
-    void router.replace(createLoginLocationWithRedirect(SiteRouter.mypage))
+    await router.replace(createLoginLocationWithRedirect(SiteRouter.mypage))
+  }
+}
+
+onMounted(() => {
+  void ensureAuthenticated()
+  window.addEventListener(AUTH_CHANGED_EVENT, ensureAuthenticated)
+
+  if (!getAccessToken()) {
     return
   }
 
   void loadMyPageData()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener(AUTH_CHANGED_EVENT, ensureAuthenticated)
 })
 
 async function loadMyPageData() {
@@ -72,6 +85,10 @@ async function loadMyPageData() {
     watchlistTotal.value = watchlistResponse.total
     myPostsTotal.value = postsResponse.total
   } catch (error) {
+    if (isUnauthorizedRedirectError(error)) {
+      return
+    }
+
     if (error instanceof MyPageServiceError && error.status === 401) {
       await router.replace(createLoginLocationWithRedirect(SiteRouter.mypage))
       return

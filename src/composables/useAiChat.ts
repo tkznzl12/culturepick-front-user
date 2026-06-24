@@ -10,6 +10,7 @@ import { AI_CHAT_WELCOME_MESSAGE } from '@/constants/aiChat'
 import { genreList } from '@/constants/genreList'
 import type { AiRecommendation, ChatMessage } from '@/types/aiChat'
 import type { GenreTagType } from '@/types/tag'
+import { isUnauthorizedRedirectError } from '@/utils/auth-session'
 
 const FALLBACK_POSTER_IMAGE = ''
 const FALLBACK_ASSISTANT_ERROR_MESSAGE =
@@ -194,6 +195,10 @@ export function useAiChat() {
         recommendations: recommendationItems,
       })
     } catch (error) {
+      if (isUnauthorizedRedirectError(error)) {
+        return
+      }
+
       messages.value.push({
         id: createMessageId(),
         role: 'assistant',

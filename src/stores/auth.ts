@@ -27,11 +27,16 @@ export const useAuthStore = defineStore('auth', () => {
     window.removeEventListener(AUTH_CHANGED_EVENT, syncUserFromToken)
   }
 
+  function resetAuthState() {
+    user.value = { id: null }
+  }
+
   return {
     user,
     isAuthenticated,
     syncUserFromToken,
     bindAuthChangeListener,
     unbindAuthChangeListener,
+    resetAuthState,
   }
 })

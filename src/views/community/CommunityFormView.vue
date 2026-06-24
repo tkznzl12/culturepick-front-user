@@ -14,8 +14,9 @@ import CommunityForm, {
 import type { CommunityEditorImageUploadHandler } from '@/components/community/CommunityEditor.vue'
 import { SiteRouter } from '@/constants/routes'
 import type { CommunityApiCategory } from '@/types/community'
-import { getAccessToken } from '@/utils/auth-cookie'
+import { AUTH_CHANGED_EVENT, getAccessToken } from '@/utils/auth-cookie'
 import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
+import { isUnauthorizedRedirectError } from '@/utils/auth-session'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
@@ -54,6 +55,11 @@ const categoryMap: Record<Exclude<CommunityFormValues['category'], null>, Commun
   free: 'free_discussion',
 }
 
+async function ensureAuthenticated() {
+  if (getAccessToken()) return
+  await router.replace(createLoginLocationWithRedirect(route.fullPath))
+}
+
 watch(canAccessForm, (canAccess) => {
   if (canAccess) return
   void router.replace(createLoginLocationWithRedirect(route.fullPath))
@@ -74,10 +80,13 @@ watch([isEditMode, editPostId], () => {
 onMounted(() => {
   authStore.syncUserFromToken()
   authStore.bindAuthChangeListener()
+  window.addEventListener(AUTH_CHANGED_EVENT, ensureAuthenticated)
+  void ensureAuthenticated()
 })
 
 onBeforeUnmount(() => {
   authStore.unbindAuthChangeListener()
+  window.removeEventListener(AUTH_CHANGED_EVENT, ensureAuthenticated)
 })
 
 async function loadEditPost() {
@@ -115,6 +124,10 @@ async function loadEditPost() {
     }
     loadedPostId.value = post.id
   } catch (error) {
+    if (isUnauthorizedRedirectError(error)) {
+      return
+    }
+
     const apiError = error as CommunityApiError
     if (apiError?.status === 404) {
       window.sessionStorage.setItem(COMMUNITY_NOT_FOUND_TOAST_KEY, '1')
@@ -139,6 +152,10 @@ const onImageUpload: CommunityEditorImageUploadHandler = async (file) => {
     const response = await uploadCommunityImage(file)
     return response.image_url
   } catch (error) {
+    if (isUnauthorizedRedirectError(error)) {
+      throw new Error('로그인 페이지로 이동 중입니다.')
+    }
+
     if (error instanceof CommunityServiceError) {
       throw new Error(error.message)
     }
@@ -177,6 +194,10 @@ async function onSubmit(values: CommunityFormValues) {
 
     await router.push(SiteRouter.communityPost(response.id))
   } catch (error) {
+    if (isUnauthorizedRedirectError(error)) {
+      return
+    }
+
     if (error instanceof CommunityServiceError) {
       if (error.status === 401) {
         submitErrorMessage.value = '로그인 후 이용 가능합니다.'

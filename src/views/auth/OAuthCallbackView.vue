@@ -10,7 +10,11 @@ import {
   consumeOAuthLoginRedirect,
   resolveRedirectPath,
 } from '@/utils/auth-redirect'
-import { clearNaverOAuthState, getNaverOAuthState } from '@/utils/oauth'
+import {
+  clearNaverOAuthState,
+  consumeOAuthRedirectUri,
+  getNaverOAuthState,
+} from '@/utils/oauth'
 
 const props = defineProps<{
   provider: OAuthProvider
@@ -50,10 +54,12 @@ const handleOAuthCallback = async () => {
   }
 
   const code = getCodeFromQuery()
+  const callbackRedirectUri =
+    consumeOAuthRedirectUri(props.provider) ?? `${window.location.origin}/auth/callback/${props.provider}`
   const requestData: SocialLoginRequest = {
     provider: props.provider,
     code,
-    redirect_uri: `${window.location.origin}/auth/callback/${props.provider}`,
+    redirect_uri: callbackRedirectUri,
   }
 
   if (props.provider === 'naver') {

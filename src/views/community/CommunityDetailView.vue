@@ -17,6 +17,7 @@ import { SiteRouter } from '@/constants/routes'
 import { useAuthStore } from '@/stores/auth'
 import type { CommunityCommentItem, CommunityPostDetailItem } from '@/types/community'
 import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
+import { isUnauthorizedRedirectError } from '@/utils/auth-session'
 
 const route = useRoute()
 const router = useRouter()
@@ -93,6 +94,10 @@ async function loadPostDetail() {
     post.value = detail
     await loadComments(detail.id)
   } catch (error) {
+    if (isUnauthorizedRedirectError(error)) {
+      return
+    }
+
     post.value = null
     if (error instanceof CommunityApiError && error.status === 404) {
       isNotFound.value = true
@@ -143,6 +148,10 @@ async function confirmDeletePost() {
     window.sessionStorage.setItem(COMMUNITY_DELETE_SUCCESS_TOAST_KEY, '1')
     await router.push(SiteRouter.community)
   } catch (error) {
+    if (isUnauthorizedRedirectError(error)) {
+      return
+    }
+
     if (error instanceof CommunityServiceError) {
       if (error.status === 404) {
         showToast('이미 삭제되었거나 존재하지 않는 게시글입니다.')
@@ -181,6 +190,10 @@ async function handleDeleteComment(commentId: number) {
       }
     }
   } catch (error) {
+    if (isUnauthorizedRedirectError(error)) {
+      return
+    }
+
     if (error instanceof CommunityServiceError) {
       showToast(error.message)
       return
@@ -219,6 +232,10 @@ async function onSubmitComment(content: string) {
     }
     commentResetSignal.value += 1
   } catch (error) {
+    if (isUnauthorizedRedirectError(error)) {
+      return
+    }
+
     if (error instanceof CommunityServiceError) {
       showToast(error.message)
       return

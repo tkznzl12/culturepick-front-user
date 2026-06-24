@@ -16,6 +16,8 @@ import type {
 } from '@/types/mypage'
 import type { GenreTagType } from '@/types/tag'
 import { getAccessToken } from '@/utils/auth-cookie'
+import { getCurrentPathWithQueryAndHash } from '@/utils/auth-redirect'
+import { handleUnauthorizedAccess } from '@/utils/auth-session'
 import { stripHtml } from '@/utils/stripHtml'
 
 export class MyPageServiceError extends Error {
@@ -194,7 +196,7 @@ function extractErrorMessage(data: unknown, fallback: string): string {
 async function fetchMyPageEndpoint<T>(endpoint: string): Promise<T> {
   const token = getAccessToken()
   if (!token) {
-    throw new MyPageServiceError('로그인이 필요합니다.', 401)
+    handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
   }
 
   const response = await fetch(buildApiUrl(endpoint), {
@@ -209,7 +211,7 @@ async function fetchMyPageEndpoint<T>(endpoint: string): Promise<T> {
 
   if (!response.ok) {
     if (response.status === 401) {
-      throw new MyPageServiceError('로그인이 필요합니다.', 401)
+      handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
     }
 
     throw new MyPageServiceError(

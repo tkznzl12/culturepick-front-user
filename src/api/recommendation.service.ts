@@ -1,5 +1,7 @@
 import { buildApiUrl } from '@/api/index'
 import { getAccessToken } from '@/utils/auth-cookie'
+import { getCurrentPathWithQueryAndHash } from '@/utils/auth-redirect'
+import { handleUnauthorizedAccess } from '@/utils/auth-session'
 
 const AI_RECOMMENDATION_ENDPOINT = '/api/v1/recommendations/ai/'
 
@@ -63,7 +65,7 @@ export async function getAiRecommendation(
 ): Promise<AiRecommendationResponse> {
   const token = getAccessToken()
   if (!token) {
-    throw new RecommendationServiceError('로그인 후 이용 가능합니다.', 401)
+    handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
   }
 
   const response = await fetch(buildApiUrl(AI_RECOMMENDATION_ENDPOINT), {
@@ -89,7 +91,7 @@ export async function getAiRecommendation(
     }
 
     if (response.status === 401) {
-      throw new RecommendationServiceError('로그인 후 이용 가능합니다.', response.status)
+      handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
     }
 
     if (response.status === 503) {

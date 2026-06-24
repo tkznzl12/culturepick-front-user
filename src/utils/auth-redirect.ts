@@ -4,7 +4,11 @@ const REDIRECT_QUERY_KEY = 'redirect'
 const OAUTH_LOGIN_REDIRECT_KEY = 'oauth-login-redirect'
 
 function isGuestRoute(path: string): boolean {
-  return path.startsWith(SiteRouter.login) || path.startsWith(SiteRouter.signUp)
+  return (
+    path.startsWith(SiteRouter.login) ||
+    path.startsWith(SiteRouter.signUp) ||
+    path.startsWith('/auth/callback/')
+  )
 }
 
 export function normalizeRedirectPath(path: unknown): string | null {

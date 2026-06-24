@@ -5,8 +5,9 @@ import { logout } from '@/api/auth'
 import { genreList } from '@/constants'
 import { SiteRouter } from '@/constants/routes'
 import type { LogoutErrorResponse } from '@/types/auth'
-import { AUTH_CHANGED_EVENT, clearAuthCookies, getAccessToken } from '@/utils/auth-cookie'
+import { AUTH_CHANGED_EVENT, getAccessToken } from '@/utils/auth-cookie'
 import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
+import { clearClientAuthState } from '@/utils/auth-session'
 import { buildSearchRoute } from '@/utils/search-route'
 import aiIcon from '@/assets/icons/ai-icon.svg'
 import searchIcon from '@/assets/icons/search-icon.svg'
@@ -65,9 +66,9 @@ const handleAuthChanged = () => {
 async function handleLogout() {
   try {
     await logout()
-    clearAuthCookies()
+    clearClientAuthState()
     isAuthenticated.value = false
-    await router.push(SiteRouter.index)
+    await router.replace(SiteRouter.index)
   } catch (error) {
     console.error('로그아웃 중 오류 발생:', error)
     const apiError = error as LogoutErrorResponse
@@ -77,9 +78,9 @@ async function handleLogout() {
       apiError?.message === '리프레시 토큰이 필요합니다.'
 
     if (isAuthError) {
-      clearAuthCookies()
+      clearClientAuthState()
       isAuthenticated.value = false
-      await router.push(SiteRouter.login)
+      await router.replace(SiteRouter.login)
     }
   }
 }

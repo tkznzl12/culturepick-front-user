@@ -4,9 +4,25 @@ const GOOGLE_OAUTH_BASE_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 const NAVER_OAUTH_BASE_URL = 'https://nid.naver.com/oauth2.0/authorize'
 const KAKAO_OAUTH_BASE_URL = 'https://kauth.kakao.com/oauth/authorize'
 const NAVER_OAUTH_STATE_KEY = 'naver_oauth_state'
+const OAUTH_REDIRECT_URI_KEY_PREFIX = 'oauth_redirect_uri'
 
 const getRedirectUri = (provider: OAuthProvider) =>
   `${window.location.origin}/auth/callback/${provider}`
+
+function getRedirectUriStorageKey(provider: OAuthProvider): string {
+  return `${OAUTH_REDIRECT_URI_KEY_PREFIX}:${provider}`
+}
+
+function stashOAuthRedirectUri(provider: OAuthProvider, redirectUri: string): void {
+  sessionStorage.setItem(getRedirectUriStorageKey(provider), redirectUri)
+}
+
+export function consumeOAuthRedirectUri(provider: OAuthProvider): string | null {
+  const key = getRedirectUriStorageKey(provider)
+  const redirectUri = sessionStorage.getItem(key)
+  sessionStorage.removeItem(key)
+  return redirectUri
+}
 
 const buildOAuthUrl = (baseUrl: string, params: Record<string, string>) => {
   const searchParams = new URLSearchParams(params)
@@ -23,10 +39,12 @@ const getRequiredEnv = (value: string | undefined, key: string) => {
 
 export const buildGoogleOAuthUrl = () => {
   const clientId = getRequiredEnv(import.meta.env.VITE_GOOGLE_CLIENT_ID, 'VITE_GOOGLE_CLIENT_ID')
+  const redirectUri = getRedirectUri('google')
+  stashOAuthRedirectUri('google', redirectUri)
 
   return buildOAuthUrl(GOOGLE_OAUTH_BASE_URL, {
     client_id: clientId,
-    redirect_uri: getRedirectUri('google'),
+    redirect_uri: redirectUri,
     response_type: 'code',
     scope: 'openid email profile',
   })
@@ -34,10 +52,12 @@ export const buildGoogleOAuthUrl = () => {
 
 export const buildKakaoOAuthUrl = () => {
   const clientId = getRequiredEnv(import.meta.env.VITE_KAKAO_CLIENT_ID, 'VITE_KAKAO_CLIENT_ID')
+  const redirectUri = getRedirectUri('kakao')
+  stashOAuthRedirectUri('kakao', redirectUri)
 
   return buildOAuthUrl(KAKAO_OAUTH_BASE_URL, {
     client_id: clientId,
-    redirect_uri: getRedirectUri('kakao'),
+    redirect_uri: redirectUri,
     response_type: 'code',
   })
 }
@@ -45,11 +65,13 @@ export const buildKakaoOAuthUrl = () => {
 export const buildNaverOAuthUrl = () => {
   const clientId = getRequiredEnv(import.meta.env.VITE_NAVER_CLIENT_ID, 'VITE_NAVER_CLIENT_ID')
   const state = crypto.randomUUID()
+  const redirectUri = getRedirectUri('naver')
   sessionStorage.setItem(NAVER_OAUTH_STATE_KEY, state)
+  stashOAuthRedirectUri('naver', redirectUri)
 
   return buildOAuthUrl(NAVER_OAUTH_BASE_URL, {
     client_id: clientId,
-    redirect_uri: getRedirectUri('naver'),
+    redirect_uri: redirectUri,
     response_type: 'code',
     state,
   })

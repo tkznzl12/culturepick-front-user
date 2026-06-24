@@ -10,6 +10,8 @@ import type {
   UpdateCommunityPostRequest,
 } from '@/types/community'
 import { getAccessToken } from '@/utils/auth-cookie'
+import { getCurrentPathWithQueryAndHash } from '@/utils/auth-redirect'
+import { handleUnauthorizedAccess } from '@/utils/auth-session'
 
 type CommunityFieldErrorKey = 'title' | 'content'
 
@@ -99,7 +101,7 @@ export async function createPost(
 
   if (!response.ok) {
     if (response.status === 401) {
-      throw new CommunityServiceError('로그인 후 이용 가능합니다.', 401)
+      handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
     }
 
     if (response.status === 400) {
@@ -140,7 +142,7 @@ export async function uploadCommunityImage(file: File): Promise<CommunityImageUp
 
   if (!response.ok) {
     if (response.status === 401) {
-      throw new CommunityServiceError('로그인 후 이용 가능합니다.', 401)
+      handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
     }
 
     throw new CommunityServiceError(
@@ -170,7 +172,7 @@ export async function updatePost(
 
   if (!response.ok) {
     if (response.status === 401) {
-      throw new CommunityServiceError('로그인 후 이용 가능합니다.', 401)
+      handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
     }
 
     if (response.status === 400) {
@@ -245,7 +247,7 @@ export async function createComment(
 
   if (!response.ok) {
     if (response.status === 401) {
-      throw new CommunityServiceError('로그인 후 이용 가능합니다.', 401)
+      handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
     }
 
     if (response.status === 400) {
@@ -281,7 +283,7 @@ export async function deleteComment(commentId: number): Promise<void> {
   const data = await response.json().catch(() => null)
 
   if (response.status === 401) {
-    throw new CommunityServiceError('로그인 후 이용 가능합니다.', 401)
+    handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
   }
 
   if (response.status === 403) {
@@ -314,7 +316,7 @@ export async function deletePost(postId: number): Promise<void> {
   const data = await response.json().catch(() => null)
 
   if (response.status === 401) {
-    throw new CommunityServiceError('로그인 후 이용 가능합니다.', 401)
+    handleUnauthorizedAccess(getCurrentPathWithQueryAndHash())
   }
 
   if (response.status === 403) {
