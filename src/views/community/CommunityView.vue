@@ -169,7 +169,8 @@ function onClickCreatePost() {
   >
     <div
       v-if="isAuthToastVisible"
-      class="fixed top-4 left-1/2 z-[70] -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur"
+      class="fixed top-4 left-1/2 -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur"
+      style="z-index: var(--z-toast)"
       role="status"
       aria-live="polite"
     >

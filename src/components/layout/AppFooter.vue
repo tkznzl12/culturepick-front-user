@@ -84,12 +84,6 @@ const legalLinks = [
             <li>이메일: support@culturepick.kr</li>
             <li>운영시간: 평일 10:00~18:00</li>
           </ul>
-          <a
-            href="#"
-            class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-[var(--color-primary)] transition-colors hover:text-[var(--hover-point-text)]"
-          >
-            고객지원 바로가기 →
-          </a>
         </div>
       </div>
 

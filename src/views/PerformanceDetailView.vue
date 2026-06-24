@@ -28,6 +28,23 @@ const {
 
 const isFavorite = computed(() => Boolean(data.value?.is_interested))
 const isPlanned = computed(() => Boolean(data.value?.is_watchlisted))
+const hasCastList = computed(() => castList.value.length > 0)
+const hasCrew = computed(() => {
+  const crew = data.value?.crew
+  if (typeof crew === 'string') return crew.trim().length > 0
+  return Boolean(crew)
+})
+const hasSynopsisSection = computed(() => {
+  const synopsis = data.value?.synopsis
+  const hasSynopsisText = typeof synopsis === 'string' ? synopsis.trim().length > 0 : Boolean(synopsis)
+
+  const imageList = data.value?.image_url
+  const hasImages = Array.isArray(imageList)
+    ? imageList.some((image) => typeof image === 'string' && image.trim().length > 0)
+    : false
+
+  return hasSynopsisText || hasImages
+})
 const venueLatitude = computed(() => Number(data.value?.venue?.latitude ?? NaN))
 const venueLongitude = computed(() => Number(data.value?.venue?.longitude ?? NaN))
 const shouldShowVenueMap = computed(() => {
@@ -147,7 +164,8 @@ onBeforeUnmount(() => {
   >
     <div
       v-if="isCopyToastVisible"
-      class="fixed top-4 left-1/2 z-[70] -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur"
+      class="fixed top-4 left-1/2 -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur"
+      style="z-index: var(--z-toast)"
       role="status"
       aria-live="polite"
     >
@@ -342,8 +360,25 @@ onBeforeUnmount(() => {
         </div>
 
 
+
         <div class="grid grid-cols-1 gap-6 pt-2">
-          <section class="detail-section">
+          <section v-if="hasCastList" class="detail-section">
+            <h2 class="detail-section__title">
+              <span class="detail-card-icon-wrap" aria-hidden="true">
+                <UsersIcon class="detail-card-icon" />
+              </span>
+              출연진
+            </h2>
+            <div class="flex flex-wrap gap-2">
+              <span v-for="cast in castList" :key="cast" class="detail-chip">{{ cast }}</span>
+            </div>
+          </section>
+
+          <section v-if="hasCrew" class="detail-section">
+            <h2 class="detail-section__title">제작진</h2>
+            <p class="detail-section__content">{{ data.crew }}</p>
+          </section>
+          <section v-if="hasSynopsisSection" class="detail-section">
             <h2 class="detail-section__title">
               <span class="detail-card-icon-wrap" aria-hidden="true">
                 <InfoIcon class="detail-card-icon" />
@@ -362,22 +397,7 @@ onBeforeUnmount(() => {
             </div>
           </section>
 
-          <section class="detail-section">
-            <h2 class="detail-section__title">
-              <span class="detail-card-icon-wrap" aria-hidden="true">
-                <UsersIcon class="detail-card-icon" />
-              </span>
-              출연진
-            </h2>
-            <div class="flex flex-wrap gap-2">
-              <span v-for="cast in castList" :key="cast" class="detail-chip">{{ cast }}</span>
-            </div>
-          </section>
-
-          <section class="detail-section">
-            <h2 class="detail-section__title">제작진</h2>
-            <p class="detail-section__content">{{ data.crew }}</p>
-          </section>
+ 
         </div>
       </div>
     </div>

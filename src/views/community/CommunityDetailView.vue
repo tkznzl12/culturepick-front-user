@@ -256,7 +256,8 @@ function showToast(message: string) {
   >
     <div
       v-if="isToastVisible"
-      class="fixed top-4 left-1/2 z-[70] -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur"
+      class="fixed top-4 left-1/2 -translate-x-1/2 rounded-xl border border-[#51A2FF]/35 bg-[#0f1a31]/95 px-4 py-2 text-sm font-semibold text-[#cbe3ff] shadow-lg backdrop-blur"
+      style="z-index: var(--z-toast)"
       role="status"
       aria-live="polite"
     >
@@ -274,7 +275,8 @@ function showToast(message: string) {
   >
     <div
       v-if="isDeleteModalOpen"
-      class="community-detail-modal fixed inset-0 z-[80] flex items-center justify-center bg-black/60 p-4"
+      class="community-detail-modal fixed inset-0 flex items-center justify-center bg-black/60 p-4"
+      style="z-index: var(--z-modal)"
       role="dialog"
       aria-modal="true"
       aria-labelledby="community-delete-modal-title"

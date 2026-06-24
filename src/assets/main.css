@@ -80,6 +80,12 @@
   --scrollbar-thumb-color: var(--line-component-border-color);
   --scrollbar-thumb-hover-color: var(--caption-text-color);
   --scrollbar-thumb-active-color: var(--color-primary);
+
+  /* layer */
+  --z-fab: 40;
+  --z-header: 3000;
+  --z-toast: 3200;
+  --z-modal: 3400;
 }
 
 input:-webkit-autofill,

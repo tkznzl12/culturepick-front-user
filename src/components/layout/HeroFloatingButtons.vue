@@ -12,7 +12,7 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="hero-fab pointer-events-none fixed bottom-8 right-6 z-40 flex flex-col gap-3 sm:right-8"
+    class="hero-fab pointer-events-none fixed bottom-8 right-6 flex flex-col gap-3 sm:right-8"
     aria-label="빠른 메뉴"
   >
     <button
@@ -38,6 +38,10 @@ const emit = defineEmits<{
 </template>
 
 <style scoped>
+.hero-fab {
+  z-index: var(--z-fab);
+}
+
 .hero-fab__btn {
   display: flex;
   align-items: center;

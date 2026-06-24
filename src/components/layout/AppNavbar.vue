@@ -167,7 +167,7 @@ onBeforeUnmount(() => {
 .app-navbar {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: var(--z-header);
   width: 100%;
   background-color: var(--dark-mode-background-color);
 }

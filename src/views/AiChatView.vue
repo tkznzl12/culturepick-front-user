@@ -90,7 +90,7 @@ function onSupport() {
                   <span />
                   <span />
                 </span>
-                <span class="sr-only">AI가 답변을 작성 중입니다</span>
+                <span class="ai-chat-typing__label">AI가 공연을 찾고 있습니다...</span>
               </div>
             </div>
           </div>
@@ -121,7 +121,7 @@ function onSupport() {
 .ai-chat-panel {
   display: flex;
   flex-direction: column;
-  height: min(72dvh, 44rem);
+  height: 72dvh;
   min-height: 28rem;
   overflow: hidden;
   border: 1px solid var(--input-border-color);
@@ -173,6 +173,9 @@ function onSupport() {
 }
 
 .ai-chat-typing__bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.875rem 1rem;
   border: 1px solid var(--input-border-color);
   border-radius: 1rem;
@@ -202,16 +205,9 @@ function onSupport() {
   animation-delay: 0.3s;
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.ai-chat-typing__label {
+  font-size: var(--font-size-caption);
+  color: var(--caption-text-color);
 }
 
 @keyframes ai-chat-typing {

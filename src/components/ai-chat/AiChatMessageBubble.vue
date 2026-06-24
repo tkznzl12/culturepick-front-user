@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { RouterLink } from 'vue-router'
 import EventCard from '@/components/card/EventCard.vue'
 import IconAi from '@/components/icons/IconAi.vue'
-import { AI_CHAT_SUGGESTIONS } from '@/mocks/aiChat'
+import { AI_CHAT_SUGGESTIONS } from '@/constants/aiChat'
 import { SiteRouter } from '@/constants/routes'
-import { navigateUnlessFavoriteClick } from '@/utils/event-card-navigation'
+import { isEventCardFavoriteTarget } from '@/utils/event-card-navigation'
 import type { ChatMessage } from '@/types/aiChat'
 
 const props = defineProps<{
@@ -22,6 +21,19 @@ const isUser = computed(() => props.message.role === 'user')
 const isAssistant = computed(() => props.message.role === 'assistant')
 
 const formattedContent = computed(() => props.message.content)
+
+function openPerformanceInNewTab(
+  event: MouseEvent | KeyboardEvent,
+  performanceId: string | number,
+) {
+  if (isEventCardFavoriteTarget(event.target)) {
+    event.preventDefault()
+    return
+  }
+
+  const targetPath = SiteRouter.performances(String(performanceId))
+  window.open(targetPath, '_blank', 'noopener,noreferrer')
+}
 </script>
 
 <template>
@@ -51,28 +63,22 @@ const formattedContent = computed(() => props.message.content)
       >
         <p class="ai-chat-message__rec-title">✨ 추천 공연</p>
         <div class="ai-chat-message__rec-grid">
-          <RouterLink
+          <div
             v-for="item in message.recommendations"
             :key="item.id"
-            v-slot="{ navigate }"
-            :to="SiteRouter.performances(String(item.id))"
-            custom
+            role="link"
+            tabindex="0"
+            class="block cursor-pointer rounded-3xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hover-point-text)]"
+            @click="openPerformanceInNewTab($event, item.id)"
+            @keydown.enter.prevent="openPerformanceInNewTab($event, item.id)"
           >
-            <div
-              role="link"
-              tabindex="0"
-              class="block cursor-pointer rounded-3xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hover-point-text)]"
-              @click="navigateUnlessFavoriteClick($event, navigate)"
-              @keydown.enter.prevent="navigateUnlessFavoriteClick($event, navigate)"
-            >
-              <EventCard
-                v-bind="item"
-                :is-hot="item.isHot ?? false"
-                :is-favorite="favoriteIds?.has(item.id)"
-                @toggle-favorite="emit('toggleFavorite', $event)"
-              />
-            </div>
-          </RouterLink>
+            <EventCard
+              v-bind="item"
+              :is-hot="item.isHot ?? false"
+              :is-favorite="favoriteIds?.has(item.id)"
+              @toggle-favorite="emit('toggleFavorite', $event)"
+            />
+          </div>
         </div>
       </div>
 
