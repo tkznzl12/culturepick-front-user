@@ -1,5 +1,5 @@
 import { reactive, ref, toRef } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { signup } from '@/api/auth'
 import { SiteRouter } from '@/constants/routes'
 import type { SignupFormErrors } from '@/types/auth'
@@ -21,6 +21,7 @@ const getMessageFromUnknown = (value: unknown): string => {
 
 export function useSignupForm() {
   const router = useRouter()
+  const route = useRoute()
   const showPassword = ref(false)
   const showPasswordConfirm = ref(false)
   const isSubmitting = ref(false)
@@ -96,8 +97,13 @@ export function useSignupForm() {
     try {
       const response = await signup(submitData)
       if (typeof response.message === 'string' && response.message.length > 0) {
+        const redirect = route.query.redirect
         // 기존 프로젝트 흐름 유지: 성공 화면으로 이동
-        await router.replace(SiteRouter.signUpSuccess)
+        await router.replace(
+          typeof redirect === 'string' && redirect
+            ? { path: SiteRouter.signUpSuccess, query: { redirect } }
+            : SiteRouter.signUpSuccess,
+        )
         return
       }
 

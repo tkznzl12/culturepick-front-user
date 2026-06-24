@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getCommunityPosts } from '@/api/community'
 import CommonButton from '@/components/common/CommonButton.vue'
 import CommunityFilter from '@/components/community/CommunityFilter.vue'
@@ -11,6 +11,7 @@ import SkeletonBlock from '@/components/skeleton/SkeletonBlock.vue'
 import { SiteRouter } from '@/constants/routes'
 import type { CommunityPostListItem } from '@/types/community'
 import { getAccessToken } from '@/utils/auth-cookie'
+import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
 
 type CategoryValue = 'all' | 'review' | 'recommend' | 'info' | 'free'
 
@@ -34,6 +35,7 @@ const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
 let currentAbortController: AbortController | null = null
 const router = useRouter()
+const route = useRoute()
 const isAuthToastVisible = ref(false)
 const toastMessage = ref('로그인한 유저만 작성 가능합니다.')
 let authToastTimer: ReturnType<typeof setTimeout> | null = null
@@ -153,8 +155,7 @@ function onClickCreatePost() {
     void router.push(SiteRouter.communityCreate)
     return
   }
-
-  showAuthToast('로그인한 유저만 작성 가능합니다.')
+  void router.replace(createLoginLocationWithRedirect(route.fullPath))
 }
 </script>
 

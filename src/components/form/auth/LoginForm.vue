@@ -13,6 +13,7 @@ const {
   loginData,
   showPassword,
   isSubmitting,
+  errorMessage,
   updateField,
   togglePasswordVisibility,
   handleLogin,
@@ -61,6 +62,15 @@ const {
       class="auth-form__submit"
       :disabled="isSubmitting"
     />
+
+    <p
+      v-if="errorMessage"
+      class="auth-form__error-message"
+      role="alert"
+      aria-live="polite"
+    >
+      {{ errorMessage }}
+    </p>
   </form>
 </template>
 
@@ -89,5 +99,11 @@ const {
 
 .auth-form__submit :deep(.common-button) {
   width: 100%;
+}
+
+.auth-form__error-message {
+  margin-top: -0.25rem;
+  font-size: var(--font-size-caption);
+  color: var(--red-tag-font-color);
 }
 </style>

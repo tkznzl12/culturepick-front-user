@@ -6,6 +6,7 @@ import { genreList } from '@/constants'
 import { SiteRouter } from '@/constants/routes'
 import type { LogoutErrorResponse } from '@/types/auth'
 import { AUTH_CHANGED_EVENT, clearAuthCookies, getAccessToken } from '@/utils/auth-cookie'
+import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
 import { buildSearchRoute } from '@/utils/search-route'
 import aiIcon from '@/assets/icons/ai-icon.svg'
 import searchIcon from '@/assets/icons/search-icon.svg'
@@ -38,6 +39,14 @@ const navLinks = computed<NavLink[]>(() => [
   })),
   { key: 'community', label: '자유게시판', to: SiteRouter.community },
 ])
+
+const loginRoute = computed(() => {
+  if (route.path === SiteRouter.login || route.path === SiteRouter.signUp) {
+    return SiteRouter.login
+  }
+
+  return createLoginLocationWithRedirect(route.fullPath)
+})
 
 function onSearchSubmit() {
   const keyword = searchQuery.value.trim()
@@ -146,7 +155,7 @@ onBeforeUnmount(() => {
           로그아웃
         </button>
 
-        <RouterLink v-else :to="SiteRouter.login" class="app-navbar__btn app-navbar__btn--line">
+        <RouterLink v-else :to="loginRoute" class="app-navbar__btn app-navbar__btn--line">
           로그인
         </RouterLink>
 

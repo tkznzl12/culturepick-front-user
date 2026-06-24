@@ -1,4 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { SiteRouter } from '@/constants/routes'
+import { getAccessToken } from '@/utils/auth-cookie'
+import {
+  createLoginLocationWithRedirect,
+  resolveRedirectPath,
+} from '@/utils/auth-redirect'
 import {
   PAGE_TITLES,
   getPerformanceListPageTitle,
@@ -48,6 +54,7 @@ const router = createRouter({
           path: 'ai-chat',
           name: 'ai-chat',
           component: () => import('../views/AiChatView.vue'),
+          meta: { requiresAuth: true },
         },
         {
           path: 'community',
@@ -58,11 +65,13 @@ const router = createRouter({
           path: 'community/edit',
           name: 'community-create',
           component: () => import('../views/community/CommunityFormView.vue'),
+          meta: { requiresAuth: true },
         },
         {
           path: 'community/edit/:id',
           name: 'community-edit',
           component: () => import('../views/community/CommunityFormView.vue'),
+          meta: { requiresAuth: true },
         },
         {
           path: 'community/:id',
@@ -73,6 +82,7 @@ const router = createRouter({
           path: 'mypage',
           name: 'mypage',
           component: () => import('../views/mypage/MyPageView.vue'),
+          meta: { requiresAuth: true },
         },
         {
           path: ':pathMatch(.*)*',
@@ -85,13 +95,13 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/auth/LoginView.vue'),
-      meta: { layout: 'auth' },
+      meta: { layout: 'auth', guestOnly: true },
     },
     {
       path: '/signup',
       name: 'signup',
       component: () => import('../views/auth/SignupView.vue'),
-      meta: { layout: 'auth' },
+      meta: { layout: 'auth', guestOnly: true },
     },
     {
       path: '/signup/success',
@@ -121,6 +131,32 @@ const router = createRouter({
       meta: { layout: 'auth' },
     },
   ],
+})
+
+router.beforeEach((to, from) => {
+  const isAuthenticated = Boolean(getAccessToken())
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    return {
+      ...createLoginLocationWithRedirect(to.fullPath),
+      replace: true,
+    }
+  }
+
+  if (to.meta.guestOnly && isAuthenticated) {
+    const fallbackPath =
+      from.name && from.fullPath !== to.fullPath
+        ? resolveRedirectPath(from.fullPath, SiteRouter.index)
+        : SiteRouter.index
+    const redirectPath = resolveRedirectPath(to.query.redirect, fallbackPath)
+
+    return {
+      path: redirectPath,
+      replace: true,
+    }
+  }
+
+  return true
 })
 
 router.afterEach((to) => {

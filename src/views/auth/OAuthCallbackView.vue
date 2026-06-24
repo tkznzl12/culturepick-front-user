@@ -5,6 +5,11 @@ import { socialLogin } from '@/api/auth'
 import { SiteRouter } from '@/constants/routes'
 import type { OAuthProvider, SocialLoginRequest } from '@/types/auth'
 import { clearAuthCookies, setAuthCookies } from '@/utils/auth-cookie'
+import {
+  buildLoginPathWithRedirect,
+  consumeOAuthLoginRedirect,
+  resolveRedirectPath,
+} from '@/utils/auth-redirect'
 import { clearNaverOAuthState, getNaverOAuthState } from '@/utils/oauth'
 
 const props = defineProps<{
@@ -57,23 +62,26 @@ const handleOAuthCallback = async () => {
 
   const response = await socialLogin(requestData)
   setAuthCookies(response.access, response.refresh)
-  await router.push(SiteRouter.index)
+  const redirectPath = resolveRedirectPath(
+    route.query.redirect,
+    consumeOAuthLoginRedirect() ?? SiteRouter.index,
+  )
+  await router.replace(redirectPath)
 }
 
 onMounted(async () => {
   try {
     await handleOAuthCallback()
   } catch (error) {
-     console.error('OAuth Error:', error)
-
-    debugger
+    console.error('OAuth Error:', error)
 
     if (props.provider === 'naver') {
       clearNaverOAuthState()
     }
 
     clearAuthCookies()
-    await router.push(SiteRouter.login)
+    const loginPath = buildLoginPathWithRedirect(consumeOAuthLoginRedirect())
+    await router.replace(loginPath)
   }
 })
 </script>

@@ -5,6 +5,10 @@ import {
   getRefreshToken,
   setAuthCookies,
 } from '@/utils/auth-cookie'
+import {
+  buildLoginPathWithRedirect,
+  getCurrentPathWithQueryAndHash,
+} from '@/utils/auth-redirect'
 
 const refreshAccessToken = async () => {
   const refreshToken = getRefreshToken()
@@ -65,7 +69,7 @@ export async function fetcher<T>(endpoint: string, options?: RequestInit): Promi
     } catch (error) {
       console.error(error)
       clearAuthCookies()
-      window.location.href = '/login'
+      window.location.href = buildLoginPathWithRedirect(getCurrentPathWithQueryAndHash())
       throw error
     }
   }

@@ -16,6 +16,7 @@ import CommunityDetailCard from '@/components/community/CommunityDetailCard.vue'
 import { SiteRouter } from '@/constants/routes'
 import { useAuthStore } from '@/stores/auth'
 import type { CommunityCommentItem, CommunityPostDetailItem } from '@/types/community'
+import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
 
 const route = useRoute()
 const router = useRouter()
@@ -194,7 +195,7 @@ async function onSubmitComment(content: string) {
   const targetPostId = post.value?.id ?? postId.value
   if (!targetPostId) return
   if (!authStore.isAuthenticated) {
-    showToast('로그인 후 이용 가능합니다.')
+    await router.replace(createLoginLocationWithRedirect(route.fullPath))
     return
   }
   if (isCommentSubmitting.value) return
@@ -228,6 +229,11 @@ async function onSubmitComment(content: string) {
   } finally {
     isCommentSubmitting.value = false
   }
+}
+
+function onRequireCommentAuth() {
+  if (authStore.isAuthenticated) return
+  void router.replace(createLoginLocationWithRedirect(route.fullPath))
 }
 
 function showToast(message: string) {
@@ -373,7 +379,7 @@ function showToast(message: string) {
             </p>
           </section>
 
-          <section class="mt-4">
+          <section class="mt-4" @click="onRequireCommentAuth">
             <CommunityCommentForm
               :disabled="!authStore.isAuthenticated"
               :disabled-message="

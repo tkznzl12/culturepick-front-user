@@ -16,6 +16,7 @@ import UserProfileCard from '@/components/mypage/UserProfileCard.vue'
 import { SiteRouter } from '@/constants/routes'
 import type { FavoritePerformance, MyPageTab, MyPost, PlannedPerformance, UserProfile } from '@/types/mypage'
 import { getAccessToken } from '@/utils/auth-cookie'
+import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
 
 const router = useRouter()
 const activeTab = ref<MyPageTab>('favorite')
@@ -42,7 +43,7 @@ const profileStats = computed(() => [
 
 onMounted(() => {
   if (!getAccessToken()) {
-    void router.replace(SiteRouter.login)
+    void router.replace(createLoginLocationWithRedirect(SiteRouter.mypage))
     return
   }
 
@@ -72,7 +73,7 @@ async function loadMyPageData() {
     myPostsTotal.value = postsResponse.total
   } catch (error) {
     if (error instanceof MyPageServiceError && error.status === 401) {
-      await router.replace(SiteRouter.login)
+      await router.replace(createLoginLocationWithRedirect(SiteRouter.mypage))
       return
     }
 

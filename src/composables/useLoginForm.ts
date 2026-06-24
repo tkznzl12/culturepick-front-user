@@ -1,12 +1,14 @@
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { login } from '@/api/auth'
 import { SiteRouter } from '@/constants/routes'
 import type { LoginErrorResponse } from '@/types/auth'
 import { setAuthCookies } from '@/utils/auth-cookie'
+import { resolveRedirectPath } from '@/utils/auth-redirect'
 
 export function useLoginForm() {
   const router = useRouter()
+  const route = useRoute()
   const showPassword = ref(false)
   const isSubmitting = ref(false)
   const errorMessage = ref('')
@@ -18,6 +20,9 @@ export function useLoginForm() {
 
   const updateField = (field: keyof typeof loginData, value: string) => {
     loginData[field] = value
+    if (errorMessage.value) {
+      errorMessage.value = ''
+    }
   }
 
   const togglePasswordVisibility = () => {
@@ -33,17 +38,23 @@ export function useLoginForm() {
     try {
       const response = await login(loginData)
       setAuthCookies(response.access, response.refresh)
-      await router.push(SiteRouter.index)
+      const redirectPath = resolveRedirectPath(route.query.redirect, SiteRouter.index)
+      await router.replace(redirectPath)
     } catch (error: unknown) {
       console.error(error)
+      const defaultMessage = '로그인이 불가합니다. 이메일이나 비밀번호를 확인해주세요.'
       const apiError = error as LoginErrorResponse
-      const message =
-        apiError?.detail?.detail ||
-        apiError?.message ||
-        (error instanceof Error ? error.message : '네트워크 오류가 발생했습니다. 다시 시도해 주세요.')
+      const serverMessage = apiError?.detail?.detail || apiError?.message || ''
 
-      errorMessage.value = message
-      alert(errorMessage.value)
+      if (
+        serverMessage.includes('네트워크') ||
+        serverMessage.includes('Network') ||
+        error instanceof TypeError
+      ) {
+        errorMessage.value = '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
+      } else {
+        errorMessage.value = defaultMessage
+      }
     } finally {
       isSubmitting.value = false
     }

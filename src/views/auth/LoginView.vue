@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { RouterLink } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import AuthCard from '@/components/form/auth/AuthCard.vue'
@@ -11,17 +13,37 @@ import {
   buildKakaoOAuthUrl,
   buildNaverOAuthUrl,
 } from '@/utils/oauth'
+import {
+  stashOAuthLoginRedirect,
+} from '@/utils/auth-redirect'
+
+const route = useRoute()
+
+const signUpRoute = computed(() => {
+  const redirect = route.query.redirect
+  if (typeof redirect !== 'string' || !redirect) {
+    return SiteRouter.signUp
+  }
+
+  return {
+    path: SiteRouter.signUp,
+    query: { redirect },
+  }
+})
 
 const handleKakaoLogin = () => {
+  stashOAuthLoginRedirect(route.query.redirect)
   window.location.href = buildKakaoOAuthUrl()
 }
 
 const handleNaverLogin = () => {
+  stashOAuthLoginRedirect(route.query.redirect)
   window.location.href = buildNaverOAuthUrl()
 
 }
 
 const handleGoogleLogin = () => {
+  stashOAuthLoginRedirect(route.query.redirect)
   window.location.href = buildGoogleOAuthUrl()
 }
 </script>
@@ -41,7 +63,7 @@ const handleGoogleLogin = () => {
 
       <template #footer>
         아직 계정이 없으신가요?
-        <RouterLink :to="SiteRouter.signUp">회원가입</RouterLink>
+        <RouterLink :to="signUpRoute">회원가입</RouterLink>
       </template>
     </AuthCard>
   </AuthLayout>

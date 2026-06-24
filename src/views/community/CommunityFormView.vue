@@ -15,6 +15,7 @@ import type { CommunityEditorImageUploadHandler } from '@/components/community/C
 import { SiteRouter } from '@/constants/routes'
 import type { CommunityApiCategory } from '@/types/community'
 import { getAccessToken } from '@/utils/auth-cookie'
+import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
@@ -27,7 +28,6 @@ const isSubmitting = ref(false)
 const isInitialLoading = ref(false)
 const submitErrorMessage = ref('')
 const serverFieldErrors = ref<Partial<Record<'title' | 'content', string>>>({})
-const COMMUNITY_AUTH_TOAST_KEY = 'community-auth-required-toast'
 const COMMUNITY_EDIT_FORBIDDEN_TOAST_KEY = 'community-edit-forbidden-toast'
 const COMMUNITY_NOT_FOUND_TOAST_KEY = 'community-not-found-toast'
 const loadedPostId = ref<number | null>(null)
@@ -56,8 +56,7 @@ const categoryMap: Record<Exclude<CommunityFormValues['category'], null>, Commun
 
 watch(canAccessForm, (canAccess) => {
   if (canAccess) return
-  window.sessionStorage.setItem(COMMUNITY_AUTH_TOAST_KEY, '1')
-  void router.replace(SiteRouter.community)
+  void router.replace(createLoginLocationWithRedirect(route.fullPath))
 }, { immediate: true })
 
 watch(isEditMode, (editing) => {

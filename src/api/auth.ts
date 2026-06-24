@@ -1,3 +1,4 @@
+import { buildApiUrl } from '@/api/index'
 import { fetcher } from '@/api/client'
 import type {
   LoginRequest,
@@ -18,10 +19,20 @@ export const signup = (data: SignupRequest) => {
 }
 
 export const login = (data: LoginRequest) => {
-  return fetcher<LoginResponse>('/api/v1/auth/login/', {
+  return fetch(buildApiUrl('/api/v1/auth/login/'), {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(data),
   })
+    .then(async (response) => {
+      const payload = await response.json().catch(() => null)
+      if (!response.ok) {
+        throw payload
+      }
+      return payload as LoginResponse
+    })
 }
 
 export const socialLogin = (data: SocialLoginRequest) => {

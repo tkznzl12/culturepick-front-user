@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import EventCard from '@/components/card/EventCard.vue'
 import HeroFloatingButtons from '@/components/layout/HeroFloatingButtons.vue'
 import PerformanceEmpty from '@/components/performances/PerformanceEmpty.vue'
@@ -16,6 +16,7 @@ import { SiteRouter } from '@/constants/routes'
 import { navigateUnlessFavoriteClick } from '@/utils/event-card-navigation'
 
 const router = useRouter()
+const route = useRoute()
 const {
   listQuery,
   performances,
@@ -147,6 +148,7 @@ onBeforeUnmount(() => {
       <PerformanceSearchBar
         class="mb-6"
         :keyword="listQuery.keyword"
+        :sync-token="route.fullPath"
         @search="submitKeyword"
       />
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { postPerformanceAction } from '@/api/performanceDetail'
 import CardTag from '@/components/card/CardTag.vue'
 import PerformanceDetailSkeleton from '@/components/skeleton/PerformanceDetailSkeleton.vue'
@@ -14,7 +15,11 @@ import UsersIcon from '@/assets/icons/users-Icon.svg?component'
 import NaverMap from '@/components/common/NaverMap.vue'
 import { usePerformanceDetail } from '@/composables/usePerformanceDetail'
 import { getAccessToken } from '@/utils/auth-cookie'
+import { createLoginLocationWithRedirect } from '@/utils/auth-redirect'
 import type { PerformanceActionType } from '@/types/performanceDetail'
+
+const route = useRoute()
+const router = useRouter()
 
 const {
   data,
@@ -191,7 +196,7 @@ function showToast(message: string, duration = 2000) {
 }
 
 function notifyAuthRequired() {
-  showToast('로그인이 필요한 서비스 입니다', 1800)
+  void router.replace(createLoginLocationWithRedirect(route.fullPath))
 }
 
 function isAuthError(error: unknown) {

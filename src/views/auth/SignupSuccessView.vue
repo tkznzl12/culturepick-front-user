@@ -1,8 +1,14 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import AuthCard from '@/components/form/auth/AuthCard.vue'
 import CommonButton from '@/components/common/CommonButton.vue'
-import { SiteRouter } from '@/constants/routes'
+import { buildLoginPathWithRedirect } from '@/utils/auth-redirect'
+
+const route = useRoute()
+
+const loginPath = computed(() => buildLoginPathWithRedirect(route.query.redirect))
 </script>
 
 <template>
@@ -13,7 +19,7 @@ import { SiteRouter } from '@/constants/routes'
     >
       <div class="signup-success__action">
         <CommonButton
-          :href="SiteRouter.login"
+          :href="loginPath"
           text="로그인 하러가기"
           variant="gradient-shadow"
         />

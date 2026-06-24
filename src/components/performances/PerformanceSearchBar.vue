@@ -4,6 +4,7 @@ import searchIcon from '@/assets/icons/search-icon.svg'
 
 const props = defineProps<{
   keyword?: string
+  syncToken?: string
 }>()
 
 const emit = defineEmits<{
@@ -13,9 +14,9 @@ const emit = defineEmits<{
 const searchInput = ref('')
 
 watch(
-  () => props.keyword,
-  (value) => {
-    searchInput.value = value ?? ''
+  () => [props.keyword, props.syncToken],
+  ([keyword]) => {
+    searchInput.value = keyword ?? ''
   },
   { immediate: true },
 )
