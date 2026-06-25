@@ -11,7 +11,7 @@ export const genreList: GenreItem[] = [
   { name: '뮤지컬', code: 'musical', icon: '🎵' },
   { name: '연극', code: 'play', icon: '🎬' },
   { name: '서양음악(클래식)', code: 'classic', icon: '🎻' },
-  { name: '한국음악', code: 'koreanMusic', icon: '🪈' },
+  { name: '한국음악(국악)', code: 'koreanMusic', icon: '🪈' },
   { name: '대중음악', code: 'concert', icon: '🎤' },
   { name: '무용(서양/한국무용)', code: 'dancing', icon: '💃' },
 ]
